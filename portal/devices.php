@@ -165,6 +165,7 @@
     </div>
 
     <script src="js/devices.js"></script>
+    <script type="module" src="../firebase.js"></script>
 </body>
 
 </html>

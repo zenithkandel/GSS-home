@@ -76,6 +76,7 @@
     </main>
 
     <script src="js/index.js"></script>
+    <script type="module" src="../firebase.js"></script>
 </body>
 
 </html>
