@@ -16,7 +16,7 @@
     <nav class="sidebar">
         <div class="logo">
             <div class="logo-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
+                <img src="../res/lifeline.png" alt="LifeLine">
             </div>
             <span class="logo-text">LifeLine</span>
         </div>
