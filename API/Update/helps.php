@@ -62,10 +62,15 @@ try {
     if (isset($input['for_messages'])) {
         $forMessages = $input['for_messages'];
         if (!is_array($forMessages)) {
-            $forMessages = [];
+            // Handle string input (e.g., "1,2,3" or empty)
+            if (is_string($forMessages) && !empty($forMessages)) {
+                $forMessages = array_map('intval', explode(',', $forMessages));
+            } else {
+                $forMessages = [];
+            }
         }
         $updates[] = "for_messages = :for_messages";
-        $params['for_messages'] = json_encode(array_map('intval', $forMessages));
+        $params['for_messages'] = empty($forMessages) ? '' : json_encode(array_map('intval', $forMessages));
     }
 
     if (empty($updates)) {
@@ -82,9 +87,10 @@ try {
     $fetchStmt->execute(['hid' => $helpId]);
     $help = $fetchStmt->fetch();
 
-    // Decode for_messages JSON
+    // Decode for_messages JSON for response
     if ($help && isset($help['for_messages'])) {
-        $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+        $decoded = json_decode($help['for_messages'], true);
+        $help['for_messages'] = is_array($decoded) ? $decoded : [];
     }
 
     sendResponse(true, $help, 'Help resource updated successfully');

@@ -104,6 +104,9 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeAlertModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+                <button class="btn btn-success" onclick="resolveAlert(currentAlert?.MID)">
+                    <i class="fa-solid fa-circle-check"></i> Mark Resolved
+                </button>
                 <button class="btn btn-primary" id="btn-open-maps" onclick="openCurrentInMaps()">
                     <i class="fa-solid fa-map-location-dot"></i> Open in Google Maps
                 </button>

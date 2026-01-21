@@ -27,21 +27,22 @@
             <span class="stat-label">Total</span>
         </div>
         <div class="stat-item">
-            <span class="stat-number text-danger" id="critical-count">-</span>
-            <span class="stat-label">Critical</span>
+            <span class="stat-number text-danger" id="active-count">-</span>
+            <span class="stat-label">Active</span>
         </div>
         <div class="stat-item">
-            <span class="stat-number text-warning" id="warning-count">-</span>
-            <span class="stat-label">Warnings</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-number text-success" id="info-count">-</span>
-            <span class="stat-label">Info</span>
+            <span class="stat-number text-success" id="resolved-count">-</span>
+            <span class="stat-label">Resolved</span>
         </div>
     </div>
 
     <div class="toolbar">
         <div class="toolbar-left">
+            <select class="filter-select" id="status-filter">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="resolved">Resolved</option>
+            </select>
             <select class="filter-select" id="device-filter">
                 <option value="">All Devices</option>
             </select>

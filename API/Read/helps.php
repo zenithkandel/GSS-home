@@ -32,9 +32,12 @@ try {
             sendResponse(false, null, 'Help resource not found', 404);
         }
 
-        // Decode for_messages JSON
+        // Decode for_messages JSON (handle empty string case)
         if (isset($help['for_messages'])) {
-            $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+            $decoded = json_decode($help['for_messages'], true);
+            $help['for_messages'] = is_array($decoded) ? $decoded : [];
+        } else {
+            $help['for_messages'] = [];
         }
 
         sendResponse(true, $help, 'Help resource retrieved successfully');
@@ -77,10 +80,13 @@ try {
     $stmt->execute();
     $helps = $stmt->fetchAll();
 
-    // Decode for_messages JSON for each help resource
+    // Decode for_messages JSON for each help resource (handle empty string case)
     foreach ($helps as &$help) {
         if (isset($help['for_messages'])) {
-            $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+            $decoded = json_decode($help['for_messages'], true);
+            $help['for_messages'] = is_array($decoded) ? $decoded : [];
+        } else {
+            $help['for_messages'] = [];
         }
     }
 

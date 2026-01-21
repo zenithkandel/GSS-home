@@ -41,7 +41,7 @@ try {
     $updates = [];
     $params = ['mid' => $messageId];
 
-    // Updatable fields (simplified - only RSSI and message_code)
+    // Updatable fields
     $allowedFields = ['RSSI', 'message_code'];
 
     foreach ($allowedFields as $field) {
@@ -49,6 +49,17 @@ try {
             $updates[] = "$field = :$field";
             $params[$field] = (int) $input[$field];
         }
+    }
+
+    // Handle status field separately (string value)
+    if (isset($input['status'])) {
+        $validStatuses = ['active', 'resolved'];
+        $status = trim($input['status']);
+        if (!in_array($status, $validStatuses)) {
+            sendResponse(false, null, 'Invalid status. Must be one of: ' . implode(', ', $validStatuses), 400);
+        }
+        $updates[] = "status = :status";
+        $params['status'] = $status;
     }
 
     if (empty($updates)) {

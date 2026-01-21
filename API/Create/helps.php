@@ -36,9 +36,14 @@ if (!in_array($status, $validStatuses)) {
 
 // Validate and encode for_messages as JSON array
 if (!is_array($forMessages)) {
-    $forMessages = [];
+    // Handle string input (e.g., "1,2,3" or empty)
+    if (is_string($forMessages) && !empty($forMessages)) {
+        $forMessages = array_map('intval', explode(',', $forMessages));
+    } else {
+        $forMessages = [];
+    }
 }
-$forMessagesJson = json_encode(array_map('intval', $forMessages));
+$forMessagesJson = empty($forMessages) ? '' : json_encode(array_map('intval', $forMessages));
 
 try {
     $db = getDB();
@@ -65,9 +70,10 @@ try {
     $fetchStmt->execute(['hid' => $helpId]);
     $help = $fetchStmt->fetch();
 
-    // Decode for_messages JSON
+    // Decode for_messages JSON for response
     if ($help && isset($help['for_messages'])) {
-        $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+        $decoded = json_decode($help['for_messages'], true);
+        $help['for_messages'] = is_array($decoded) ? $decoded : [];
     }
 
     sendResponse(true, $help, 'Help resource created successfully', 201);

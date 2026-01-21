@@ -89,12 +89,14 @@ async function loadMessages() {
     container.innerHTML = '<div class="loading"><span class="spinner"></span>Loading messages...</div>';
 
     try {
+        const status = document.getElementById('status-filter').value;
         const did = document.getElementById('device-filter').value;
         const messageCode = document.getElementById('message-type-filter').value;
         const fromDate = document.getElementById('from-date').value;
         const toDate = document.getElementById('to-date').value;
 
         let url = `${API_BASE}/Read/message.php?page=${currentPage}&limit=20`;
+        if (status) url += `&status=${status}`;
         if (did) url += `&did=${did}`;
         if (messageCode) url += `&message_code=${messageCode}`;
         if (fromDate) url += `&from=${fromDate}`;
@@ -123,16 +125,7 @@ async function loadMessages() {
     }
 }
 
-function getSeverity(messageCode) {
-    const code = parseInt(messageCode);
-    const critical = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const warning = [10, 11, 12, 13, 14];
-
-    if (critical.includes(code)) return 'critical';
-    if (warning.includes(code)) return 'warning';
-    return 'info';
-}
-
+// Get message icon based on code
 function getIcon(messageCode) {
     const icons = {
         1: '<i class="fa-solid fa-hospital"></i>',
@@ -154,6 +147,11 @@ function getIcon(messageCode) {
     return icons[messageCode] || '<i class="fa-solid fa-bolt"></i>';
 }
 
+// Get status from message (handles empty or null values)
+function getStatus(msg) {
+    return msg.status === 'resolved' ? 'resolved' : 'active';
+}
+
 function getRssiBars(rssi) {
     if (!rssi) return [false, false, false, false];
     const level = rssi > -50 ? 4 : rssi > -70 ? 3 : rssi > -85 ? 2 : 1;
@@ -162,9 +160,8 @@ function getRssiBars(rssi) {
 
 function updateStats() {
     document.getElementById('total-count').textContent = messages.length;
-    document.getElementById('critical-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'critical').length;
-    document.getElementById('warning-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'warning').length;
-    document.getElementById('info-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'info').length;
+    document.getElementById('active-count').textContent = messages.filter(m => getStatus(m) === 'active').length;
+    document.getElementById('resolved-count').textContent = messages.filter(m => getStatus(m) === 'resolved').length;
 }
 
 function renderTable() {
@@ -186,7 +183,7 @@ function renderTable() {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Severity</th>
+                    <th>Status</th>
                     <th>Message</th>
                     <th>Device</th>
                     <th>Location</th>
@@ -197,19 +194,19 @@ function renderTable() {
             </thead>
             <tbody>
                 ${messages.map(msg => {
-        const severity = getSeverity(msg.message_code);
+        const status = getStatus(msg);
         const bars = getRssiBars(msg.RSSI);
         return `
                     <tr>
                         <td><span style="color: var(--text-muted);">#${msg.MID}</span></td>
                         <td>
-                            <span class="severity-badge ${severity}">
-                                ${getIcon(msg.message_code)}
-                                ${severity.charAt(0).toUpperCase() + severity.slice(1)}
+                            <span class="status-badge ${status}">
+                                <i class="fa-solid fa-circle"></i>
+                                ${status.charAt(0).toUpperCase() + status.slice(1)}
                             </span>
                         </td>
                         <td class="message-text">
-                            <div class="message-type">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</div>
+                            <div class="message-type">${getIcon(msg.message_code)} ${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</div>
                             <div class="message-meta">Code: ${msg.message_code}</div>
                         </td>
                         <td><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 6px;"></i>${msg.device_name || 'Device ' + msg.DID}</td>
@@ -228,6 +225,7 @@ function renderTable() {
                         <td><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${formatTime(msg.timestamp)}</td>
                         <td class="actions">
                             <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View"><i class="fa-solid fa-eye"></i></button>
+                            ${status === 'active' ? `<button class="btn btn-icon success" onclick="markResolved(${msg.MID})" title="Mark Resolved"><i class="fa-solid fa-circle-check"></i></button>` : ''}
                             <button class="btn btn-icon delete" onclick="openDeleteModal(${msg.MID})" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
@@ -282,7 +280,7 @@ function viewMessage(id) {
     const msg = messages.find(m => m.MID == id);
     if (!msg) return;
 
-    const severity = getSeverity(msg.message_code);
+    const status = getStatus(msg);
     const details = document.getElementById('message-details');
 
     details.innerHTML = `
@@ -291,16 +289,16 @@ function viewMessage(id) {
             <span class="detail-value">#${msg.MID}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label"><i class="fa-solid fa-gauge-high"></i> Severity</span>
+            <span class="detail-label"><i class="fa-solid fa-circle-dot"></i> Status</span>
             <span class="detail-value">
-                <span class="severity-badge ${severity}">
-                    ${getIcon(msg.message_code)} ${severity.charAt(0).toUpperCase() + severity.slice(1)}
+                <span class="status-badge ${status}">
+                    <i class="fa-solid fa-circle"></i> ${status.charAt(0).toUpperCase() + status.slice(1)}
                 </span>
             </span>
         </div>
         <div class="detail-row">
             <span class="detail-label"><i class="fa-solid fa-message"></i> Message</span>
-            <span class="detail-value">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</span>
+            <span class="detail-value">${getIcon(msg.message_code)} ${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</span>
         </div>
         <div class="detail-row">
             <span class="detail-label"><i class="fa-solid fa-code"></i> Message Code</span>
@@ -325,6 +323,29 @@ function viewMessage(id) {
     `;
 
     document.getElementById('view-modal').classList.add('active');
+}
+
+// Mark message as resolved
+async function markResolved(id) {
+    try {
+        const res = await fetch(`${API_BASE}/Update/message.php`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ MID: id, status: 'resolved' })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            showToast('Message marked as resolved');
+            loadMessages();
+        } else {
+            showToast(data.message || 'Error updating status', 'error');
+        }
+    } catch (error) {
+        showToast('Error updating status', 'error');
+        console.error('Error:', error);
+    }
 }
 
 function closeViewModal() {
@@ -412,6 +433,7 @@ async function confirmDelete() {
 }
 
 // Filters
+document.getElementById('status-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
 document.getElementById('device-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
 document.getElementById('message-type-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
 document.getElementById('from-date').addEventListener('change', () => { currentPage = 1; loadMessages(); });

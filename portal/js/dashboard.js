@@ -50,20 +50,14 @@ function formatFullDate(timestamp) {
     return new Date(timestamp).toLocaleString();
 }
 
-// Get severity class
-function getSeverity(messageCode) {
-    const critical = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+// Get alert type class based on message code (for visual styling only)
+function getAlertTypeClass(messageCode) {
+    const emergency = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const warning = [10, 11, 12, 13, 14];
 
-    if (critical.includes(messageCode)) return 'critical';
-    if (warning.includes(messageCode)) return 'warning';
+    if (emergency.includes(parseInt(messageCode))) return 'emergency';
+    if (warning.includes(parseInt(messageCode))) return 'warning';
     return 'info';
-}
-
-// Get severity label
-function getSeverityLabel(messageCode) {
-    const severity = getSeverity(messageCode);
-    return severity.charAt(0).toUpperCase() + severity.slice(1);
 }
 
 // Get alert icon (FontAwesome)
@@ -88,21 +82,10 @@ function getAlertIcon(messageCode) {
     return icons[messageCode] || '<i class="fa-solid fa-bolt"></i>';
 }
 
-// Get coordinates from location name using Nominatim
-async function getCoordinates(placeName) {
-    try {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName + ", Nepal")}`;
-        const response = await fetch(url, {
-            headers: { "User-Agent": "LifeLine/1.0" }
-        });
-        const data = await response.json();
-        if (data.length > 0) {
-            return { lat: data[0].lat, lon: data[0].lon };
-        }
-    } catch (error) {
-        console.error('Geocoding error:', error);
-    }
-    return null;
+// Get Google Maps embed URL for a location
+function getGoogleMapsEmbedUrl(locationName) {
+    const query = encodeURIComponent(locationName + ", Nepal");
+    return `https://www.google.com/maps?q=${query}&output=embed`;
 }
 
 // Load help resources
@@ -150,7 +133,7 @@ function openAlertModal(alertData) {
     const body = document.getElementById('modal-alert-body');
     const title = document.getElementById('modal-alert-title');
 
-    const severity = getSeverity(alertData.message_code);
+    const typeClass = getAlertTypeClass(alertData.message_code);
     const responders = getRespondersForMessage(alertData.message_code);
 
     title.innerHTML = `${getAlertIcon(alertData.message_code)} ${alertData.message_text || 'Unknown Alert'}`;
@@ -160,11 +143,11 @@ function openAlertModal(alertData) {
             <!-- Alert Info Section -->
             <div class="alert-detail-info">
                 <div class="alert-detail-header">
-                    <div class="alert-icon ${severity}">${getAlertIcon(alertData.message_code)}</div>
+                    <div class="alert-icon ${typeClass}">${getAlertIcon(alertData.message_code)}</div>
                     <div class="alert-detail-title-wrap">
                         <h3 class="alert-detail-title">${alertData.message_text || 'Unknown Alert'}</h3>
-                        <span class="alert-severity-pill ${severity}">
-                            <i class="fa-solid fa-circle"></i> ${getSeverityLabel(alertData.message_code)}
+                        <span class="status-pill active">
+                            <i class="fa-solid fa-circle"></i> Active
                         </span>
                     </div>
                 </div>
@@ -234,35 +217,27 @@ function openAlertModal(alertData) {
 
     modal.classList.add('active');
 
-    // Load map after modal is shown (only once, no refresh)
+    // Load map after modal is shown
     if (alertData.location_name) {
         loadModalMap(alertData.location_name);
     }
 }
 
-// Load map in modal
-async function loadModalMap(locationName) {
+// Load map in modal using Google Maps
+function loadModalMap(locationName) {
     const mapContainer = document.getElementById('modal-map-container');
     if (!mapContainer) return;
 
-    const coords = await getCoordinates(locationName);
-    if (coords) {
-        const bbox = `${parseFloat(coords.lon) - 0.02},${parseFloat(coords.lat) - 0.02},${parseFloat(coords.lon) + 0.02},${parseFloat(coords.lat) + 0.02}`;
-        mapContainer.innerHTML = `
-            <iframe 
-                src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${coords.lat},${coords.lon}" 
-                loading="lazy"
-                style="width: 100%; height: 100%; border: none;"
-            ></iframe>
-        `;
-    } else {
-        mapContainer.innerHTML = `
-            <div class="map-loading">
-                <i class="fa-solid fa-map-location-xmark"></i>
-                <span>Could not load map for "${locationName}"</span>
-            </div>
-        `;
-    }
+    const embedUrl = getGoogleMapsEmbedUrl(locationName);
+    mapContainer.innerHTML = `
+        <iframe 
+            src="${embedUrl}" 
+            loading="lazy"
+            style="width: 100%; height: 100%; border: none;"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+    `;
 }
 
 // Close alert modal
@@ -274,14 +249,25 @@ function closeAlertModal() {
 // Open current alert in Google Maps
 function openCurrentInMaps() {
     if (!currentAlert || !currentAlert.location_name) return;
+    window.open(`https://www.google.com/maps/search/${encodeURIComponent(currentAlert.location_name + ", Nepal")}`, '_blank');
+}
 
-    getCoordinates(currentAlert.location_name).then(coords => {
-        if (coords) {
-            window.open(`https://www.google.com/maps?q=${coords.lat},${coords.lon}`, '_blank');
-        } else {
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(currentAlert.location_name + ", Nepal")}`, '_blank');
+// Resolve alert
+async function resolveAlert(mid) {
+    try {
+        const res = await fetch(`${API_BASE}/Update/message.php`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ MID: mid, status: 'resolved' })
+        });
+        const data = await res.json();
+        if (data.success) {
+            closeAlertModal();
+            fetchData(); // Refresh data
         }
-    });
+    } catch (error) {
+        console.error('Error resolving alert:', error);
+    }
 }
 
 // Render alerts (simplified cards without embedded maps)
@@ -293,8 +279,8 @@ function renderAlerts(messages) {
         container.innerHTML = `
             <div class="no-alerts">
                 <div class="no-alerts-icon"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="no-alerts-text">No active alerts</div>
-                <div class="no-alerts-sub">All systems operating normally</div>
+                <div class="no-alerts-text">No active alerts this week</div>
+                <div class="no-alerts-sub">All emergencies have been resolved</div>
             </div>
         `;
         badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 0 Active';
@@ -306,13 +292,13 @@ function renderAlerts(messages) {
     badge.className = 'badge danger';
 
     container.innerHTML = messages.map(msg => {
-        const severity = getSeverity(msg.message_code);
+        const typeClass = getAlertTypeClass(msg.message_code);
         const respondersCount = getRespondersForMessage(msg.message_code).length;
 
         return `
-            <div class="alert-card ${severity}" onclick='openAlertModal(${JSON.stringify(msg).replace(/'/g, "&#39;")})'>
+            <div class="alert-card ${typeClass}" onclick='openAlertModal(${JSON.stringify(msg).replace(/'/g, "&#39;")})'>
                 <div class="alert-card-inner">
-                    <div class="alert-icon ${severity}">${getAlertIcon(msg.message_code)}</div>
+                    <div class="alert-icon ${typeClass}">${getAlertIcon(msg.message_code)}</div>
                     <div class="alert-content">
                         <div class="alert-title">${msg.message_text || 'Unknown Alert'}</div>
                         <div class="alert-meta">
@@ -321,8 +307,8 @@ function renderAlerts(messages) {
                         </div>
                     </div>
                     <div class="alert-right">
-                        <span class="alert-severity-pill ${severity}">
-                            ${getSeverityLabel(msg.message_code)}
+                        <span class="status-pill active">
+                            <i class="fa-solid fa-circle"></i> Active
                         </span>
                         <span class="alert-responders">
                             <i class="fa-solid fa-user-helmet-safety"></i> ${respondersCount}
@@ -397,8 +383,13 @@ function updateStats(devices, messages) {
 // Fetch data
 async function fetchData() {
     try {
+        // Get date from 7 days ago for filtering
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const fromDate = weekAgo.toISOString().split('T')[0];
+
         const [messagesRes, devicesRes] = await Promise.all([
-            fetch(`${API_BASE}/Read/message.php?limit=20`),
+            fetch(`${API_BASE}/Read/message.php?limit=50&from=${fromDate}`),
             fetch(`${API_BASE}/Read/device.php?limit=50`)
         ]);
 
@@ -406,7 +397,10 @@ async function fetchData() {
         const devicesData = await devicesRes.json();
 
         if (messagesRes.ok && devicesRes.ok) {
-            const messages = messagesData.data?.messages || [];
+            // Filter only active alerts from this week
+            const messages = (messagesData.data?.messages || []).filter(m => 
+                m.status === 'active' || m.status === '' || !m.status
+            );
             const devices = devicesData.data?.devices || devicesData.data || [];
 
             renderAlerts(messages);
