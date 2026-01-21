@@ -21,8 +21,12 @@ function syncTheme() {
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toast-message');
+    const icon = toast.querySelector('i');
+    
     toast.className = `toast show ${type}`;
     toastMessage.textContent = message;
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
+    
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
@@ -90,10 +94,10 @@ async function loadDevices() {
 
             renderTable();
         } else {
-            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>${data.message}</div></div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="empty-state-text">${data.message}</div></div>`;
         }
     } catch (error) {
-        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div>Error loading devices</div></div>`;
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-circle-xmark"></i></div><div class="empty-state-text">Error loading devices</div></div>`;
         console.error('Error:', error);
     }
 }
@@ -104,9 +108,11 @@ function renderTable() {
     if (devices.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">◎</div>
+                <div class="empty-state-icon"><i class="fa-solid fa-microchip"></i></div>
                 <div class="empty-state-text">No devices found</div>
-                <button class="btn btn-primary" onclick="openModal('create')">+ Add First Device</button>
+                <button class="btn btn-primary" onclick="openModal('create')">
+                    <i class="fa-solid fa-plus"></i> Add First Device
+                </button>
             </div>
         `;
         document.getElementById('pagination').style.display = 'none';
@@ -128,20 +134,26 @@ function renderTable() {
             <tbody>
                 ${devices.map(device => `
                     <tr>
-                        <td>#${device.DID}</td>
-                        <td>${device.device_name || 'Unnamed Device'}</td>
-                        <td>📍 ${device.location_name || locations[device.LID] || 'Unknown'}</td>
+                        <td><span style="color: var(--text-muted);">#${device.DID}</span></td>
+                        <td><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 8px;"></i>${device.device_name || 'Unnamed Device'}</td>
+                        <td><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i>${device.location_name || locations[device.LID] || 'Unknown'}</td>
                         <td>
                             <span class="status-badge ${device.status || 'inactive'}">
-                                <span class="status-dot ${device.status || 'inactive'}"></span>
+                                <i class="fa-solid fa-circle"></i>
                                 ${(device.status || 'inactive').charAt(0).toUpperCase() + (device.status || 'inactive').slice(1)}
                             </span>
                         </td>
-                        <td>${formatTime(device.last_ping)}</td>
+                        <td><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 8px;"></i>${formatTime(device.last_ping)}</td>
                         <td class="actions">
-                            <button class="btn btn-icon view" onclick="viewLocation('${device.location_name || locations[device.LID] || ''}')" title="View on Map">📍</button>
-                            <button class="btn btn-icon edit" onclick="openModal('edit', ${device.DID})" title="Edit">✎</button>
-                            <button class="btn btn-icon delete" onclick="openDeleteModal(${device.DID})" title="Delete">🗑</button>
+                            <button class="btn btn-icon view" onclick="viewLocation('${device.location_name || locations[device.LID] || ''}')" title="View on Map">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </button>
+                            <button class="btn btn-icon edit" onclick="openModal('edit', ${device.DID})" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn btn-icon delete" onclick="openDeleteModal(${device.DID})" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </td>
                     </tr>
                 `).join('')}
@@ -173,7 +185,7 @@ function updatePagination(pagination) {
     info.textContent = `Showing ${start}-${end} of ${pagination.total}`;
 
     let html = '';
-    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page - 1})" ${pagination.page <= 1 ? 'disabled' : ''}>←</button>`;
+    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page - 1})" ${pagination.page <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
 
     for (let i = 1; i <= pagination.pages; i++) {
         if (i <= 3 || i > pagination.pages - 2 || Math.abs(i - pagination.page) <= 1) {
@@ -183,7 +195,7 @@ function updatePagination(pagination) {
         }
     }
 
-    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page + 1})" ${pagination.page >= pagination.pages ? 'disabled' : ''}>→</button>`;
+    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page + 1})" ${pagination.page >= pagination.pages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
     controls.innerHTML = html;
 }
 
@@ -203,7 +215,7 @@ function openModal(mode, id = null) {
     document.getElementById('device-id').value = '';
 
     if (mode === 'edit' && id) {
-        title.textContent = 'Edit Device';
+        title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Device';
         const device = devices.find(d => d.DID == id);
         if (device) {
             document.getElementById('device-id').value = device.DID;
@@ -212,7 +224,7 @@ function openModal(mode, id = null) {
             document.getElementById('device-status').value = device.status || 'active';
         }
     } else {
-        title.textContent = 'Add Device';
+        title.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Device';
     }
 
     overlay.classList.add('active');
