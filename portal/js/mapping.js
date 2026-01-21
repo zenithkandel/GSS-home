@@ -292,7 +292,7 @@ function openCreateModal() {
     document.getElementById('modal-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> New Index Mapping';
     document.getElementById('index-form').reset();
     document.getElementById('index-type').disabled = false;
-    document.getElementById('mapping-entries').innerHTML = '';
+    document.getElementById('mapping-entries').innerHTML = getEntriesHeader();
 
     // Add initial entry
     addMappingEntry();
@@ -342,12 +342,12 @@ function getEntriesHeader() {
 // Add mapping entry row
 function addMappingEntry(code = '', value = '') {
     const entriesContainer = document.getElementById('mapping-entries');
-    
+
     // Add header if this is the first entry
     if (!entriesContainer.querySelector('.mapping-entries-header')) {
         entriesContainer.innerHTML = getEntriesHeader();
     }
-    
+
     const entry = document.createElement('div');
     entry.className = 'mapping-entry';
     entry.innerHTML = `
