@@ -20,19 +20,75 @@ const analytics = getAnalytics(app);
 const messaging = getMessaging(app);
 
 // VAPID Key - Generate from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
-// Replace this with your actual VAPID key
-const VAPID_KEY = 'yQYFacjOfVjOOqTf_KsbMgaMqAWMDq2_C25Si7sl51A';
+// This must be the FULL public key (usually ~88 characters starting with 'B')
+const VAPID_KEY = 'BES5fRlcZH3MqhhoHIKYxCWttypqYIaisy0blc9v3hbYWhIQo9b8dxCB6YFk4ba4wOxHDZyfzneGPP7vi72Hmkw';
+
+/**
+ * Wait for service worker to become active
+ */
+async function waitForServiceWorkerActive(registration) {
+    if (registration.active) {
+        return registration;
+    }
+
+    const serviceWorker = registration.installing || registration.waiting;
+
+    if (!serviceWorker) {
+        throw new Error('No service worker found');
+    }
+
+    return new Promise((resolve, reject) => {
+        serviceWorker.addEventListener('statechange', () => {
+            if (serviceWorker.state === 'activated') {
+                resolve(registration);
+            } else if (serviceWorker.state === 'redundant') {
+                reject(new Error('Service worker became redundant'));
+            }
+        });
+
+        // Timeout after 10 seconds
+        setTimeout(() => reject(new Error('Service worker activation timeout')), 10000);
+    });
+}
 
 /**
  * Request notification permission and get FCM token
  */
-export async function initializePushNotifications() {
+export async function initializePushNotifications(retryCount = 0) {
+    const MAX_RETRIES = 3;
+
     try {
         // Check if notifications are supported
         if (!('Notification' in window)) {
             console.warn('This browser does not support notifications');
             return null;
         }
+
+        // Check if service workers are supported
+        if (!('serviceWorker' in navigator)) {
+            console.warn('This browser does not support service workers');
+            return null;
+        }
+
+        // Check for existing registration first
+        let swRegistration = await navigator.serviceWorker.getRegistration('/GSS%20home/');
+
+        if (!swRegistration) {
+            // Register service worker manually with correct path
+            swRegistration = await navigator.serviceWorker.register('/GSS%20home/firebase-messaging-sw.js', {
+                scope: '/GSS%20home/'
+            });
+            console.log('Service Worker registered:', swRegistration);
+        } else {
+            console.log('Using existing Service Worker registration:', swRegistration);
+        }
+
+        // Wait for the service worker to become active
+        swRegistration = await waitForServiceWorkerActive(swRegistration);
+        console.log('Service Worker is now active');
+
+        // Small delay to ensure SW is fully ready
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         // Request permission
         const permission = await Notification.requestPermission();
@@ -42,8 +98,11 @@ export async function initializePushNotifications() {
             return null;
         }
 
-        // Get FCM token
-        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+        // Get FCM token with our custom service worker registration
+        const token = await getToken(messaging, {
+            vapidKey: VAPID_KEY,
+            serviceWorkerRegistration: swRegistration
+        });
 
         if (token) {
             console.log('FCM Token:', token);
@@ -59,6 +118,14 @@ export async function initializePushNotifications() {
 
     } catch (error) {
         console.error('Error initializing push notifications:', error);
+
+        // Retry on push service errors
+        if (error.message?.includes('push service') && retryCount < MAX_RETRIES) {
+            console.log(`Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+            await new Promise(resolve => setTimeout(resolve, 2000 * (retryCount + 1)));
+            return initializePushNotifications(retryCount + 1);
+        }
+
         return null;
     }
 }
