@@ -28,14 +28,7 @@
             <!-- Logo Section -->
             <div class="login-header">
                 <a href="index.html" class="logo-link">
-                    <div class="logo">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                            <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" />
-                            <circle cx="20" cy="20" r="8" fill="currentColor" />
-                            <path d="M20 2 L20 8 M20 32 L20 38 M2 20 L8 20 M32 20 L38 20" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                    </div>
+                    <img src="res/lifeline.png" alt="LifeLine Logo" class="logo-img" />
                     <span class="logo-text">LifeLine</span>
                 </a>
                 <p class="login-subtitle">Emergency Response System</p>
