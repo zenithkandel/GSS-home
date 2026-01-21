@@ -19,6 +19,9 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const messaging = getMessaging(app);
 
+// Base path configuration - change this if deploying to a different path
+const BASE_PATH = '/GSS%20home';
+
 // VAPID Key - Generate from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
 // This must be the FULL public key (usually ~88 characters starting with 'B')
 const VAPID_KEY = 'BES5fRlcZH3MqhhoHIKYxCWttypqYIaisy0blc9v3hbYWhIQo9b8dxCB6YFk4ba4wOxHDZyfzneGPP7vi72Hmkw';
@@ -71,12 +74,12 @@ export async function initializePushNotifications(retryCount = 0) {
         }
 
         // Check for existing registration first
-        let swRegistration = await navigator.serviceWorker.getRegistration('/GSS%20home/');
+        let swRegistration = await navigator.serviceWorker.getRegistration(`${BASE_PATH}/`);
 
         if (!swRegistration) {
             // Register service worker manually with correct path
-            swRegistration = await navigator.serviceWorker.register('/GSS%20home/firebase-messaging-sw.js', {
-                scope: '/GSS%20home/'
+            swRegistration = await navigator.serviceWorker.register(`${BASE_PATH}/firebase-messaging-sw.js`, {
+                scope: `${BASE_PATH}/`
             });
             console.log('Service Worker registered:', swRegistration);
         } else {
@@ -135,7 +138,7 @@ export async function initializePushNotifications(retryCount = 0) {
  */
 async function registerToken(token) {
     try {
-        const response = await fetch('/GSS%20home/API/fcm_register.php', {
+        const response = await fetch(`${BASE_PATH}/API/fcm_register.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -164,8 +167,8 @@ onMessage(messaging, (payload) => {
     const notificationTitle = payload.notification?.title || 'LifeLine Alert';
     const notificationOptions = {
         body: payload.notification?.body || 'New emergency notification',
-        icon: '/GSS%20home/res/lifeline.png',
-        badge: '/GSS%20home/res/lifeline.png',
+        icon: `${BASE_PATH}/res/lifeline.png`,
+        badge: `${BASE_PATH}/res/lifeline.png`,
         vibrate: [200, 100, 200],
         requireInteraction: true,
         tag: 'lifeline-emergency',
@@ -188,7 +191,7 @@ onMessage(messaging, (payload) => {
                 }
             } else {
                 // Redirect to portal
-                window.location.href = '/GSS%20home/portal/index.php';
+                window.location.href = `${BASE_PATH}/portal/index.php`;
             }
             notification.close();
         };
@@ -208,7 +211,7 @@ export async function unregisterPushNotifications() {
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
 
         if (token) {
-            await fetch('/GSS%20home/API/fcm_register.php', {
+            await fetch(`${BASE_PATH}/API/fcm_register.php`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

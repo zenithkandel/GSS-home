@@ -4,6 +4,9 @@
 importScripts('https://www.gstatic.com/firebasejs/12.8.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.8.0/firebase-messaging-compat.js');
 
+// Base path configuration - change this if deploying to a different path
+const BASE_PATH = '/GSS%20home';
+
 // Initialize Firebase
 firebase.initializeApp({
     apiKey: "AIzaSyDq8x0Gb-1lBAVBmPZzfCOYmF6gqB1NstA",
@@ -24,8 +27,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || '🚨 LifeLine Emergency Alert';
     const notificationOptions = {
         body: payload.notification?.body || 'New emergency notification received',
-        icon: '/GSS%20home/res/lifeline.png',
-        badge: '/GSS%20home/res/lifeline.png',
+        icon: `${BASE_PATH}/res/lifeline.png`,
+        badge: `${BASE_PATH}/res/lifeline.png`,
         vibrate: [200, 100, 200, 100, 200],
         requireInteraction: true,
         tag: 'lifeline-emergency-' + Date.now(),
@@ -67,7 +70,7 @@ self.addEventListener('notificationclick', (event) => {
                 }
                 // Open new window
                 if (clients.openWindow) {
-                    return clients.openWindow('/GSS%20home/portal/index.php');
+                    return clients.openWindow(`${BASE_PATH}/portal/index.php`);
                 }
             })
     );

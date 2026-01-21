@@ -9,6 +9,9 @@
 define('FCM_SERVICE_ACCOUNT_PATH', __DIR__ . '/../config/firebase-service-account.json');
 define('FCM_PROJECT_ID', 'lifeline-notification');
 
+// Base path configuration - change this if deploying to a different path
+define('FCM_BASE_PATH', '/GSS%20home');
+
 /**
  * Get OAuth2 access token for FCM
  */
@@ -84,13 +87,13 @@ function sendFCMNotification($token, $title, $body, $data = [])
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => '/GSS%20home/res/lifeline.png',
-                    'badge' => '/GSS%20home/res/lifeline.png',
+                    'icon' => FCM_BASE_PATH . '/res/lifeline.png',
+                    'badge' => FCM_BASE_PATH . '/res/lifeline.png',
                     'vibrate' => [200, 100, 200],
                     'requireInteraction' => true
                 ],
                 'fcm_options' => [
-                    'link' => '/GSS%20home/portal/index.php'
+                    'link' => FCM_BASE_PATH . '/portal/index.php'
                 ]
             ],
             'data' => array_map('strval', $data)
@@ -182,13 +185,13 @@ function sendFCMToTopic($topic, $title, $body, $data = [])
             ],
             'webpush' => [
                 'notification' => [
-                    'icon' => '/GSS%20home/res/lifeline.png',
-                    'badge' => '/GSS%20home/res/lifeline.png',
+                    'icon' => FCM_BASE_PATH . '/res/lifeline.png',
+                    'badge' => FCM_BASE_PATH . '/res/lifeline.png',
                     'vibrate' => [200, 100, 200],
                     'requireInteraction' => true
                 ],
                 'fcm_options' => [
-                    'link' => '/GSS%20home/portal/index.php'
+                    'link' => FCM_BASE_PATH . '/portal/index.php'
                 ]
             ],
             'data' => array_map('strval', $data)
