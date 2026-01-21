@@ -51,14 +51,26 @@ function getSeverity(messageCode) {
     return 'info';
 }
 
-// Get alert icon
+// Get alert icon (FontAwesome)
 function getAlertIcon(messageCode) {
     const icons = {
-        1: '🏥', 2: '🤕', 3: '🤒', 4: '🔍', 5: '❄️',
-        6: '⛰️', 7: '🔥', 8: '🌊', 9: '👤', 10: '⚠️',
-        11: '🌪️', 12: '🏚️', 13: '💧', 14: '📡', 15: '✅'
+        1: '<i class="fa-solid fa-hospital"></i>',
+        2: '<i class="fa-solid fa-user-injured"></i>',
+        3: '<i class="fa-solid fa-thermometer-full"></i>',
+        4: '<i class="fa-solid fa-binoculars"></i>',
+        5: '<i class="fa-solid fa-snowflake"></i>',
+        6: '<i class="fa-solid fa-mountain"></i>',
+        7: '<i class="fa-solid fa-fire"></i>',
+        8: '<i class="fa-solid fa-water"></i>',
+        9: '<i class="fa-solid fa-person-walking"></i>',
+        10: '<i class="fa-solid fa-triangle-exclamation"></i>',
+        11: '<i class="fa-solid fa-tornado"></i>',
+        12: '<i class="fa-solid fa-house-crack"></i>',
+        13: '<i class="fa-solid fa-droplet"></i>',
+        14: '<i class="fa-solid fa-satellite-dish"></i>',
+        15: '<i class="fa-solid fa-circle-check"></i>'
     };
-    return icons[messageCode] || '⚡';
+    return icons[messageCode] || '<i class="fa-solid fa-bolt"></i>';
 }
 
 // Get coordinates from location name using Nominatim
@@ -87,7 +99,7 @@ async function loadAlertMap(alertId, locationName) {
     if (coords) {
         mapContainer.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon - 0.01},${coords.lat - 0.01},${parseFloat(coords.lon) + 0.01},${parseFloat(coords.lat) + 0.01}&layer=mapnik&marker=${coords.lat},${coords.lon}" loading="lazy"></iframe>`;
     } else {
-        mapContainer.innerHTML = `<div class="alert-map-loading">📍 ${locationName}</div>`;
+        mapContainer.innerHTML = `<div class="alert-map-loading"><i class="fa-solid fa-location-dot"></i><span>${locationName}</span></div>`;
     }
 }
 
@@ -109,40 +121,43 @@ function renderAlerts(messages) {
     if (!messages || messages.length === 0) {
         container.innerHTML = `
             <div class="no-alerts">
-                <div class="no-alerts-icon">✓</div>
-                <div>No active alerts</div>
+                <div class="no-alerts-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="no-alerts-text">No active alerts</div>
             </div>
         `;
-        badge.textContent = '0 Active';
+        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 0 Active';
         return;
     }
 
-    badge.textContent = `${messages.length} Active`;
+    badge.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${messages.length} Active`;
     const severity = (code) => getSeverity(code);
 
     container.innerHTML = messages.map(msg => `
         <div class="alert-card ${severity(msg.message_code)}">
             <div class="alert-map" id="map-${msg.MID}">
-                <div class="alert-map-loading">Loading map...</div>
+                <div class="alert-map-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading map...</span></div>
             </div>
             <div class="alert-body">
                 <div class="alert-header">
                     <div class="alert-icon">${getAlertIcon(msg.message_code)}</div>
                     <div class="alert-title-wrap">
                         <div class="alert-title">${msg.message_text || 'Unknown Alert'}</div>
-                        <span class="alert-severity ${severity(msg.message_code)}">${severity(msg.message_code)}</span>
+                        <span class="alert-severity ${severity(msg.message_code)}">
+                            <i class="fa-solid fa-circle"></i>
+                            ${severity(msg.message_code)}
+                        </span>
                     </div>
                 </div>
                 <div class="alert-meta">
-                    <span>📍 ${msg.location_name || 'Unknown Location'}</span>
-                    <span>📟 ${msg.device_name || 'Device ' + msg.DID}</span>
-                    ${msg.RSSI ? `<span>📶 ${msg.RSSI} dBm</span>` : ''}
+                    <span><i class="fa-solid fa-location-dot"></i> ${msg.location_name || 'Unknown Location'}</span>
+                    <span><i class="fa-solid fa-microchip"></i> ${msg.device_name || 'Device ' + msg.DID}</span>
+                    ${msg.RSSI ? `<span><i class="fa-solid fa-signal"></i> ${msg.RSSI} dBm</span>` : ''}
                 </div>
                 <div class="alert-footer">
-                    <div class="alert-time">🕐 ${formatTime(msg.timestamp)}</div>
+                    <div class="alert-time"><i class="fa-solid fa-clock"></i> ${formatTime(msg.timestamp)}</div>
                     <div class="alert-actions">
                         <button class="alert-btn" onclick="openInMaps('${(msg.location_name || '').replace(/'/g, "\\'")}')">
-                            🗺️ Open Maps
+                            <i class="fa-solid fa-map-location-dot"></i> Open Maps
                         </button>
                     </div>
                 </div>
@@ -165,7 +180,8 @@ function renderDevices(devices) {
     if (!devices || devices.length === 0) {
         container.innerHTML = `
             <div class="no-alerts">
-                No devices registered
+                <div class="no-alerts-icon"><i class="fa-solid fa-microchip"></i></div>
+                <div class="no-alerts-text">No devices registered</div>
             </div>
         `;
         return;
@@ -177,10 +193,10 @@ function renderDevices(devices) {
                 <div class="activity-dot ${device.status || 'inactive'}"></div>
                 <div>
                     <div class="activity-name">${device.device_name || 'Device ' + device.DID}</div>
-                    <div class="activity-location">📍 ${device.location_name || 'Location ' + device.LID}</div>
+                    <div class="activity-location"><i class="fa-solid fa-location-dot"></i> ${device.location_name || 'Location ' + device.LID}</div>
                 </div>
             </div>
-            <div class="activity-time">${formatTime(device.last_ping)}</div>
+            <div class="activity-time"><i class="fa-solid fa-clock"></i> ${formatTime(device.last_ping)}</div>
         </div>
     `).join('');
 }
