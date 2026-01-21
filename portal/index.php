@@ -51,6 +51,13 @@
                 </a>
             </li>
             <li>
+                <a href="mapping.php" class="nav-item" data-page="mapping">
+                    <span class="nav-icon"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="nav-label">Mapping</span>
+                    <span class="nav-indicator"></span>
+                </a>
+            </li>
+            <li>
                 <a href="settings.php" class="nav-item" data-page="settings">
                     <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
                     <span class="nav-label">Settings</span>

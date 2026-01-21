@@ -17,7 +17,8 @@
 <body>
     <div class="header">
         <h1><i class="fa-solid fa-diagram-project"></i> Index Mapping</h1>
-        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Mapping</button>
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New
+            Mapping</button>
     </div>
 
     <div class="stats-bar">
@@ -64,13 +65,14 @@
     <div class="modal-overlay" id="edit-modal">
         <div class="modal modal-lg">
             <div class="modal-header">
-                <span class="modal-title" id="modal-title"><i class="fa-solid fa-plus-circle"></i> New Index Mapping</span>
+                <span class="modal-title" id="modal-title"><i class="fa-solid fa-plus-circle"></i> New Index
+                    Mapping</span>
                 <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="index-form">
                     <input type="hidden" id="edit-id">
-                    
+
                     <div class="form-group">
                         <label for="index-type"><i class="fa-solid fa-tag"></i> Type *</label>
                         <select id="index-type" required>
@@ -83,7 +85,8 @@
 
                     <div class="form-group">
                         <label for="index-description"><i class="fa-solid fa-align-left"></i> Description</label>
-                        <textarea id="index-description" rows="2" placeholder="Describe what this index maps..."></textarea>
+                        <textarea id="index-description" rows="2"
+                            placeholder="Describe what this index maps..."></textarea>
                     </div>
 
                     <div class="form-group">
@@ -108,14 +111,16 @@
     <div class="modal-overlay" id="view-modal">
         <div class="modal modal-lg">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-eye"></i> <span id="view-title">Index Details</span></span>
+                <span class="modal-title"><i class="fa-solid fa-eye"></i> <span id="view-title">Index
+                        Details</span></span>
                 <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="view-content">
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i> Close</button>
-                <button class="btn btn-primary" id="view-edit-btn" onclick="editFromView()"><i class="fa-solid fa-pen"></i> Edit</button>
+                <button class="btn btn-primary" id="view-edit-btn" onclick="editFromView()"><i
+                        class="fa-solid fa-pen"></i> Edit</button>
             </div>
         </div>
     </div>
@@ -139,7 +144,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i> Delete</button>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                    Delete</button>
             </div>
         </div>
     </div>
