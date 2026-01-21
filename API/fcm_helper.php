@@ -12,19 +12,20 @@ define('FCM_PROJECT_ID', 'lifeline-notification');
 /**
  * Get OAuth2 access token for FCM
  */
-function getFCMAccessToken() {
+function getFCMAccessToken()
+{
     $serviceAccountPath = FCM_SERVICE_ACCOUNT_PATH;
-    
+
     if (!file_exists($serviceAccountPath)) {
         error_log('FCM: Service account file not found at ' . $serviceAccountPath);
         return null;
     }
-    
+
     $serviceAccount = json_decode(file_get_contents($serviceAccountPath), true);
-    
+
     // Create JWT
     $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
-    
+
     $now = time();
     $payload = base64_encode(json_encode([
         'iss' => $serviceAccount['client_email'],
@@ -33,15 +34,15 @@ function getFCMAccessToken() {
         'iat' => $now,
         'exp' => $now + 3600
     ]));
-    
+
     $signature = '';
     $privateKey = openssl_pkey_get_private($serviceAccount['private_key']);
     openssl_sign("$header.$payload", $signature, $privateKey, OPENSSL_ALGO_SHA256);
     $signature = base64_encode($signature);
-    
+
     // URL-safe base64
     $jwt = str_replace(['+', '/', '='], ['-', '_', ''], "$header.$payload.$signature");
-    
+
     // Exchange JWT for access token
     $ch = curl_init();
     curl_setopt_array($ch, [
@@ -54,10 +55,10 @@ function getFCMAccessToken() {
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded']
     ]);
-    
+
     $response = curl_exec($ch);
     curl_close($ch);
-    
+
     $data = json_decode($response, true);
     return $data['access_token'] ?? null;
 }
@@ -65,14 +66,15 @@ function getFCMAccessToken() {
 /**
  * Send FCM notification to a single token
  */
-function sendFCMNotification($token, $title, $body, $data = []) {
+function sendFCMNotification($token, $title, $body, $data = [])
+{
     $accessToken = getFCMAccessToken();
-    
+
     if (!$accessToken) {
         error_log('FCM: Failed to get access token');
         return false;
     }
-    
+
     $message = [
         'message' => [
             'token' => $token,
@@ -94,7 +96,7 @@ function sendFCMNotification($token, $title, $body, $data = []) {
             'data' => array_map('strval', $data)
         ]
     ];
-    
+
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL => 'https://fcm.googleapis.com/v1/projects/' . FCM_PROJECT_ID . '/messages:send',
@@ -106,31 +108,32 @@ function sendFCMNotification($token, $title, $body, $data = []) {
             'Content-Type: application/json'
         ]
     ]);
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
+
     if ($httpCode !== 200) {
         error_log('FCM Error: ' . $response);
         return false;
     }
-    
+
     return true;
 }
 
 /**
  * Send FCM notification to all registered tokens
  */
-function sendFCMToAll($title, $body, $data = []) {
+function sendFCMToAll($title, $body, $data = [])
+{
     try {
         $db = getDB();
         $stmt = $db->query("SELECT token FROM fcm_tokens WHERE active = 1");
         $tokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
+
         $successCount = 0;
         $failedTokens = [];
-        
+
         foreach ($tokens as $token) {
             if (sendFCMNotification($token, $title, $body, $data)) {
                 $successCount++;
@@ -138,20 +141,20 @@ function sendFCMToAll($title, $body, $data = []) {
                 $failedTokens[] = $token;
             }
         }
-        
+
         // Optionally deactivate failed tokens
         if (!empty($failedTokens)) {
             $placeholders = implode(',', array_fill(0, count($failedTokens), '?'));
             $deactivateStmt = $db->prepare("UPDATE fcm_tokens SET active = 0 WHERE token IN ($placeholders)");
             $deactivateStmt->execute($failedTokens);
         }
-        
+
         return [
             'success' => $successCount,
             'failed' => count($failedTokens),
             'total' => count($tokens)
         ];
-        
+
     } catch (Exception $e) {
         error_log('FCM sendToAll error: ' . $e->getMessage());
         return ['success' => 0, 'failed' => 0, 'total' => 0];
@@ -161,14 +164,15 @@ function sendFCMToAll($title, $body, $data = []) {
 /**
  * Send FCM notification to a topic (all subscribed devices)
  */
-function sendFCMToTopic($topic, $title, $body, $data = []) {
+function sendFCMToTopic($topic, $title, $body, $data = [])
+{
     $accessToken = getFCMAccessToken();
-    
+
     if (!$accessToken) {
         error_log('FCM: Failed to get access token');
         return false;
     }
-    
+
     $message = [
         'message' => [
             'topic' => $topic,
@@ -190,7 +194,7 @@ function sendFCMToTopic($topic, $title, $body, $data = []) {
             'data' => array_map('strval', $data)
         ]
     ];
-    
+
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL => 'https://fcm.googleapis.com/v1/projects/' . FCM_PROJECT_ID . '/messages:send',
@@ -202,16 +206,16 @@ function sendFCMToTopic($topic, $title, $body, $data = []) {
             'Content-Type: application/json'
         ]
     ]);
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
+
     if ($httpCode !== 200) {
         error_log('FCM Topic Error: ' . $response);
         return false;
     }
-    
+
     return true;
 }
 ?>
