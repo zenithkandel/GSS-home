@@ -97,9 +97,27 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeCreateModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                <button class="btn btn-primary" onclick="createMessage()"><i class="fa-solid fa-paper-plane"></i> Create
-                    Message</button>
+                <button class="btn" onclick="closeCreateModal()" id="cancel-btn"><i class="fa-solid fa-xmark"></i>
+                    Cancel</button>
+                <button class="btn btn-primary" onclick="createMessage()" id="send-btn">
+                    <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Create Message</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Sending...
+                    </span>
+                </button>
+            </div>
+
+            <!-- Progress overlay -->
+            <div class="sending-overlay" id="sending-overlay" style="display: none;">
+                <div class="sending-content">
+                    <div class="sending-spinner"></div>
+                    <p class="sending-title">Sending Emergency Alert</p>
+                    <p class="sending-subtitle" id="sending-status">Creating message...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p class="sending-info">Sending push notifications and emails to all registered receivers</p>
+                </div>
             </div>
         </div>
     </div>

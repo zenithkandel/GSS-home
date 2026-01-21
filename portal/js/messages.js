@@ -372,6 +372,37 @@ async function createMessage() {
         return;
     }
 
+    // Show loading state
+    const sendBtn = document.getElementById('send-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const btnText = sendBtn.querySelector('.btn-text');
+    const btnLoading = sendBtn.querySelector('.btn-loading');
+    const overlay = document.getElementById('sending-overlay');
+    const progressFill = document.getElementById('progress-fill');
+    const sendingStatus = document.getElementById('sending-status');
+
+    sendBtn.disabled = true;
+    cancelBtn.disabled = true;
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline-flex';
+    overlay.style.display = 'flex';
+
+    // Simulate progress stages
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        if (progress < 30) {
+            progress += 2;
+            sendingStatus.textContent = 'Creating message...';
+        } else if (progress < 60) {
+            progress += 1;
+            sendingStatus.textContent = 'Sending push notifications...';
+        } else if (progress < 85) {
+            progress += 0.5;
+            sendingStatus.textContent = 'Sending emails...';
+        }
+        progressFill.style.width = progress + '%';
+    }, 100);
+
     try {
         const res = await fetch(`${API_BASE}/Create/message.php`, {
             method: 'POST',
@@ -385,16 +416,46 @@ async function createMessage() {
 
         const data = await res.json();
 
+        // Complete progress
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
+        sendingStatus.textContent = 'Complete!';
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         if (data.success) {
-            showToast('Message created successfully');
+            // Build success message with notification stats
+            let successMsg = 'Message created successfully';
+            if (data.data) {
+                const parts = [];
+                if (data.data.notifications) {
+                    parts.push(`${data.data.notifications.success || 0} push`);
+                }
+                if (data.data.emails) {
+                    parts.push(`${data.data.emails.success || 0} email`);
+                }
+                if (parts.length > 0) {
+                    successMsg += ` (${parts.join(', ')} sent)`;
+                }
+            }
+            showToast(successMsg);
             closeCreateModal();
             loadMessages();
         } else {
             showToast(data.message || 'Error creating message', 'error');
         }
     } catch (error) {
+        clearInterval(progressInterval);
         showToast('Error creating message', 'error');
         console.error('Error:', error);
+    } finally {
+        // Reset UI
+        sendBtn.disabled = false;
+        cancelBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        overlay.style.display = 'none';
+        progressFill.style.width = '0%';
     }
 }
 
