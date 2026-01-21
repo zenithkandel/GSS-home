@@ -4,6 +4,8 @@
  * Sends push notifications via Firebase HTTP v1 API
  */
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 class FCMHelper
 {
     private $projectId;
@@ -13,7 +15,7 @@ class FCMHelper
 
     public function __construct()
     {
-        $this->serviceAccountPath = __DIR__ . '/../lifeline-notification-firebase-adminsdk-fbsvc-02eac2aba6.json';
+        $this->serviceAccountPath = __DIR__ . '/../lifeline-notification-firebase-adminsdk-fbsvc-ad9b1c5d15.json';
 
         // Load service account to get project ID
         $serviceAccount = json_decode(file_get_contents($this->serviceAccountPath), true);
