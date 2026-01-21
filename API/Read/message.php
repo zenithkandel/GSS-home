@@ -81,6 +81,17 @@ try {
         $params['to_date'] = $_GET['to'];
     }
 
+    // Filter by status (active/resolved)
+    if (isset($_GET['status'])) {
+        $statusVal = $_GET['status'];
+        if ($statusVal === 'active') {
+            // Active includes both 'active' and empty/null status
+            $query .= " AND (m.status = 'active' OR m.status = '' OR m.status IS NULL)";
+        } elseif ($statusVal === 'resolved') {
+            $query .= " AND m.status = 'resolved'";
+        }
+    }
+
     // Order by (newest first)
     $query .= " ORDER BY m.timestamp DESC";
 

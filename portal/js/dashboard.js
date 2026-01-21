@@ -146,7 +146,7 @@ function openAlertModal(alertData) {
                     <div class="alert-icon ${typeClass}">${getAlertIcon(alertData.message_code)}</div>
                     <div class="alert-detail-title-wrap">
                         <h3 class="alert-detail-title">${alertData.message_text || 'Unknown Alert'}</h3>
-                        <span class="status-pill active">
+                        <span class="status-pill unresolved">
                             <i class="fa-solid fa-circle"></i> Active
                         </span>
                     </div>
@@ -307,7 +307,7 @@ function renderAlerts(messages) {
                         </div>
                     </div>
                     <div class="alert-right">
-                        <span class="status-pill active">
+                        <span class="status-pill unresolved">
                             <i class="fa-solid fa-circle"></i> Active
                         </span>
                         <span class="alert-responders">
@@ -398,7 +398,7 @@ async function fetchData() {
 
         if (messagesRes.ok && devicesRes.ok) {
             // Filter only active alerts from this week
-            const messages = (messagesData.data?.messages || []).filter(m => 
+            const messages = (messagesData.data?.messages || []).filter(m =>
                 m.status === 'active' || m.status === '' || !m.status
             );
             const devices = devicesData.data?.devices || devicesData.data || [];
