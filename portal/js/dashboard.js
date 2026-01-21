@@ -118,9 +118,9 @@ async function loadMessageTypes() {
 function getRespondersForMessage(messageCode) {
     const code = parseInt(messageCode);
     return helpResources.filter(help => {
-        // If for_messages is empty or not set, they respond to all
+        // Only show helpers who explicitly have this message code in their for_messages
         if (!help.for_messages || help.for_messages.length === 0) {
-            return true;
+            return false;
         }
         return help.for_messages.includes(code);
     });
