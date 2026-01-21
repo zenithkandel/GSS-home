@@ -57,6 +57,13 @@
                     <span class="nav-indicator"></span>
                 </a>
             </li>
+            <li>
+                <a href="emails.php" class="nav-item" data-page="emails">
+                    <span class="nav-icon"><i class="fa-solid fa-envelope"></i></span>
+                    <span class="nav-label">Email Receivers</span>
+                    <span class="nav-indicator"></span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">

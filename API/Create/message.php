@@ -8,6 +8,7 @@
 require_once '../../database.php';
 require_once '../../vendor/autoload.php';
 require_once '../fcm_helper.php';
+require_once '../email_helper.php';
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -94,6 +95,29 @@ try {
         error_log('FCM notification error: ' . $e->getMessage());
         $message['notification_sent'] = false;
         $message['notification_error'] = $e->getMessage();
+    }
+
+    // Send email notifications to all registered email addresses
+    try {
+        $emailHelper = new EmailHelper();
+        $emailResult = $emailHelper->sendEmergencyEmail(
+            $db,
+            $message['device_name'] ?? null,
+            $message['location_name'] ?? 'Unknown Location',
+            $message['message_text'] ?? 'Emergency Alert',
+            $messageId,
+            $message['timestamp'] ?? null
+        );
+
+        $message['email_sent'] = true;
+        $message['emails'] = [
+            'success' => $emailResult['success'] ?? 0,
+            'failure' => $emailResult['failure'] ?? 0
+        ];
+    } catch (Exception $e) {
+        error_log('Email notification error: ' . $e->getMessage());
+        $message['email_sent'] = false;
+        $message['email_error'] = $e->getMessage();
     }
 
     sendResponse(true, $message, 'Emergency message created successfully', 201);

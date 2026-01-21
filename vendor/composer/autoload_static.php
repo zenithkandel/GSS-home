@@ -27,6 +27,7 @@ class ComposerStaticInit9340f0b83a524d25219ae11a7b4343e8
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Cache\\' => 10,
             'ParagonIE\\ConstantTime\\' => 23,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
         array (
@@ -72,6 +73,10 @@ class ComposerStaticInit9340f0b83a524d25219ae11a7b4343e8
         'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Monolog\\' => 
         array (
