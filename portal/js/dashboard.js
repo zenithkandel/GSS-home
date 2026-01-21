@@ -2,6 +2,9 @@
 const API_BASE = '../API';
 let pollTimer = null;
 let lastMessageId = 0;
+let currentAlert = null;
+let helpResources = [];
+let messageTypes = {};
 
 // Sync theme from parent
 function syncTheme() {
@@ -9,7 +12,6 @@ function syncTheme() {
         const theme = window.parent.lifelinePortal.getTheme();
         document.documentElement.setAttribute('data-theme', theme);
     } else {
-        // Fallback to localStorage
         const theme = localStorage.getItem('lifeline-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
     }
@@ -31,6 +33,7 @@ function updateLiveIndicator(status, text) {
 
 // Format timestamp
 function formatTime(timestamp) {
+    if (!timestamp) return 'Unknown';
     const date = new Date(timestamp);
     const now = new Date();
     const diff = (now - date) / 1000;
@@ -41,6 +44,12 @@ function formatTime(timestamp) {
     return date.toLocaleDateString();
 }
 
+// Format full date
+function formatFullDate(timestamp) {
+    if (!timestamp) return 'Unknown';
+    return new Date(timestamp).toLocaleString();
+}
+
 // Get severity class
 function getSeverity(messageCode) {
     const critical = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -49,6 +58,12 @@ function getSeverity(messageCode) {
     if (critical.includes(messageCode)) return 'critical';
     if (warning.includes(messageCode)) return 'warning';
     return 'info';
+}
+
+// Get severity label
+function getSeverityLabel(messageCode) {
+    const severity = getSeverity(messageCode);
+    return severity.charAt(0).toUpperCase() + severity.slice(1);
 }
 
 // Get alert icon (FontAwesome)
@@ -90,30 +105,186 @@ async function getCoordinates(placeName) {
     return null;
 }
 
-// Load map for an alert card
-async function loadAlertMap(alertId, locationName) {
-    const mapContainer = document.getElementById(`map-${alertId}`);
-    if (!mapContainer || !locationName) return;
-
-    const coords = await getCoordinates(locationName);
-    if (coords) {
-        mapContainer.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon - 0.01},${coords.lat - 0.01},${parseFloat(coords.lon) + 0.01},${parseFloat(coords.lat) + 0.01}&layer=mapnik&marker=${coords.lat},${coords.lon}" loading="lazy"></iframe>`;
-    } else {
-        mapContainer.innerHTML = `<div class="alert-map-loading"><i class="fa-solid fa-location-dot"></i><span>${locationName}</span></div>`;
+// Load help resources
+async function loadHelpResources() {
+    try {
+        const res = await fetch(`${API_BASE}/Read/helps.php?limit=100`);
+        const data = await res.json();
+        if (data.success) {
+            helpResources = data.data.helps || [];
+        }
+    } catch (error) {
+        console.error('Error loading help resources:', error);
     }
 }
 
-// Open location in Google Maps
-function openInMaps(locationName) {
-    if (!locationName) return;
-    getCoordinates(locationName).then(coords => {
+// Load message types
+async function loadMessageTypes() {
+    try {
+        const res = await fetch(`${API_BASE}/Read/index.php?type=message`);
+        const data = await res.json();
+        if (data.success && data.data.mapping) {
+            messageTypes = data.data.mapping;
+        }
+    } catch (error) {
+        console.error('Error loading message types:', error);
+    }
+}
+
+// Get available responders for a message code
+function getRespondersForMessage(messageCode) {
+    const code = parseInt(messageCode);
+    return helpResources.filter(help => {
+        // If for_messages is empty or not set, they respond to all
+        if (!help.for_messages || help.for_messages.length === 0) {
+            return true;
+        }
+        return help.for_messages.includes(code);
+    });
+}
+
+// Open alert detail modal
+function openAlertModal(alertData) {
+    currentAlert = alertData;
+    const modal = document.getElementById('alert-modal');
+    const body = document.getElementById('modal-alert-body');
+    const title = document.getElementById('modal-alert-title');
+
+    const severity = getSeverity(alertData.message_code);
+    const responders = getRespondersForMessage(alertData.message_code);
+
+    title.innerHTML = `${getAlertIcon(alertData.message_code)} ${alertData.message_text || 'Unknown Alert'}`;
+
+    body.innerHTML = `
+        <div class="alert-detail-grid">
+            <!-- Alert Info Section -->
+            <div class="alert-detail-info">
+                <div class="alert-detail-header">
+                    <div class="alert-icon ${severity}">${getAlertIcon(alertData.message_code)}</div>
+                    <div class="alert-detail-title-wrap">
+                        <h3 class="alert-detail-title">${alertData.message_text || 'Unknown Alert'}</h3>
+                        <span class="alert-severity-pill ${severity}">
+                            <i class="fa-solid fa-circle"></i> ${getSeverityLabel(alertData.message_code)}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="alert-detail-meta">
+                    <div class="detail-item location-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        ${alertData.location_name || 'Unknown Location'}
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-microchip"></i>
+                        ${alertData.device_name || 'Device ' + alertData.DID}
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-clock"></i>
+                        ${formatFullDate(alertData.timestamp)}
+                    </div>
+                    ${alertData.RSSI ? `
+                    <div class="detail-item">
+                        <i class="fa-solid fa-signal"></i>
+                        ${alertData.RSSI} dBm
+                    </div>` : ''}
+                    <div class="detail-item">
+                        <i class="fa-solid fa-hashtag"></i>
+                        ID: #${alertData.MID}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Map Section -->
+            <div class="alert-detail-map" id="modal-map-container">
+                <div class="map-loading">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span>Loading map...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Available Responders Section -->
+        <div class="responders-section">
+            <div class="responders-header">
+                <h4><i class="fa-solid fa-user-helmet-safety"></i> Available Responders</h4>
+                <span class="responders-count">${responders.length} found</span>
+            </div>
+            <div class="responders-list">
+                ${responders.length > 0 ? responders.map(r => `
+                    <div class="responder-card">
+                        <div class="responder-icon">
+                            <i class="fa-solid fa-user-helmet-safety"></i>
+                        </div>
+                        <div class="responder-info">
+                            <div class="responder-name">${r.name}</div>
+                            <div class="responder-phone">
+                                <i class="fa-solid fa-phone"></i> ${r.contact}
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : `
+                    <div class="no-responders">
+                        <i class="fa-solid fa-user-slash"></i>
+                        <span>No responders configured for this alert type</span>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+
+    modal.classList.add('active');
+
+    // Load map after modal is shown (only once, no refresh)
+    if (alertData.location_name) {
+        loadModalMap(alertData.location_name);
+    }
+}
+
+// Load map in modal
+async function loadModalMap(locationName) {
+    const mapContainer = document.getElementById('modal-map-container');
+    if (!mapContainer) return;
+
+    const coords = await getCoordinates(locationName);
+    if (coords) {
+        const bbox = `${parseFloat(coords.lon) - 0.02},${parseFloat(coords.lat) - 0.02},${parseFloat(coords.lon) + 0.02},${parseFloat(coords.lat) + 0.02}`;
+        mapContainer.innerHTML = `
+            <iframe 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${coords.lat},${coords.lon}" 
+                loading="lazy"
+                style="width: 100%; height: 100%; border: none;"
+            ></iframe>
+        `;
+    } else {
+        mapContainer.innerHTML = `
+            <div class="map-loading">
+                <i class="fa-solid fa-map-location-xmark"></i>
+                <span>Could not load map for "${locationName}"</span>
+            </div>
+        `;
+    }
+}
+
+// Close alert modal
+function closeAlertModal() {
+    document.getElementById('alert-modal').classList.remove('active');
+    currentAlert = null;
+}
+
+// Open current alert in Google Maps
+function openCurrentInMaps() {
+    if (!currentAlert || !currentAlert.location_name) return;
+
+    getCoordinates(currentAlert.location_name).then(coords => {
         if (coords) {
             window.open(`https://www.google.com/maps?q=${coords.lat},${coords.lon}`, '_blank');
+        } else {
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(currentAlert.location_name + ", Nepal")}`, '_blank');
         }
     });
 }
 
-// Render alerts
+// Render alerts (simplified cards without embedded maps)
 function renderAlerts(messages) {
     const container = document.getElementById('alerts-container');
     const badge = document.getElementById('alert-count');
@@ -123,69 +294,68 @@ function renderAlerts(messages) {
             <div class="no-alerts">
                 <div class="no-alerts-icon"><i class="fa-solid fa-circle-check"></i></div>
                 <div class="no-alerts-text">No active alerts</div>
+                <div class="no-alerts-sub">All systems operating normally</div>
             </div>
         `;
         badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 0 Active';
+        badge.className = 'badge success';
         return;
     }
 
     badge.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${messages.length} Active`;
-    const severity = (code) => getSeverity(code);
+    badge.className = 'badge danger';
 
-    container.innerHTML = messages.map(msg => `
-        <div class="alert-card ${severity(msg.message_code)}">
-            <div class="alert-map" id="map-${msg.MID}">
-                <div class="alert-map-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading map...</span></div>
-            </div>
-            <div class="alert-body">
-                <div class="alert-header">
-                    <div class="alert-icon">${getAlertIcon(msg.message_code)}</div>
-                    <div class="alert-title-wrap">
+    container.innerHTML = messages.map(msg => {
+        const severity = getSeverity(msg.message_code);
+        const respondersCount = getRespondersForMessage(msg.message_code).length;
+
+        return `
+            <div class="alert-card ${severity}" onclick='openAlertModal(${JSON.stringify(msg).replace(/'/g, "&#39;")})'>
+                <div class="alert-card-inner">
+                    <div class="alert-icon ${severity}">${getAlertIcon(msg.message_code)}</div>
+                    <div class="alert-content">
                         <div class="alert-title">${msg.message_text || 'Unknown Alert'}</div>
-                        <span class="alert-severity ${severity(msg.message_code)}">
-                            <i class="fa-solid fa-circle"></i>
-                            ${severity(msg.message_code)}
+                        <div class="alert-meta">
+                            <span><i class="fa-solid fa-location-dot"></i> ${msg.location_name || 'Unknown'}</span>
+                            <span><i class="fa-solid fa-clock"></i> ${formatTime(msg.timestamp)}</span>
+                        </div>
+                    </div>
+                    <div class="alert-right">
+                        <span class="alert-severity-pill ${severity}">
+                            ${getSeverityLabel(msg.message_code)}
+                        </span>
+                        <span class="alert-responders">
+                            <i class="fa-solid fa-user-helmet-safety"></i> ${respondersCount}
                         </span>
                     </div>
                 </div>
-                <div class="alert-meta">
-                    <span><i class="fa-solid fa-location-dot"></i> ${msg.location_name || 'Unknown Location'}</span>
+                <div class="alert-card-footer">
                     <span><i class="fa-solid fa-microchip"></i> ${msg.device_name || 'Device ' + msg.DID}</span>
-                    ${msg.RSSI ? `<span><i class="fa-solid fa-signal"></i> ${msg.RSSI} dBm</span>` : ''}
-                </div>
-                <div class="alert-footer">
-                    <div class="alert-time"><i class="fa-solid fa-clock"></i> ${formatTime(msg.timestamp)}</div>
-                    <div class="alert-actions">
-                        <button class="alert-btn" onclick="openInMaps('${(msg.location_name || '').replace(/'/g, "\\'")}')">
-                            <i class="fa-solid fa-map-location-dot"></i> Open Maps
-                        </button>
-                    </div>
+                    <span class="click-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Click for details</span>
                 </div>
             </div>
-        </div>
-    `).join('');
-
-    // Load maps for each alert
-    messages.forEach(msg => {
-        if (msg.location_name) {
-            loadAlertMap(msg.MID, msg.location_name);
-        }
-    });
+        `;
+    }).join('');
 }
 
 // Render device list
 function renderDevices(devices) {
     const container = document.getElementById('device-list');
+    const badge = document.getElementById('device-count');
 
     if (!devices || devices.length === 0) {
         container.innerHTML = `
             <div class="no-alerts">
                 <div class="no-alerts-icon"><i class="fa-solid fa-microchip"></i></div>
                 <div class="no-alerts-text">No devices registered</div>
+                <div class="no-alerts-sub">Add devices to start monitoring</div>
             </div>
         `;
+        badge.innerHTML = '<i class="fa-solid fa-microchip"></i> 0 Devices';
         return;
     }
+
+    badge.innerHTML = `<i class="fa-solid fa-microchip"></i> ${devices.length} Devices`;
 
     container.innerHTML = devices.slice(0, 10).map(device => `
         <div class="activity-item">
@@ -196,7 +366,10 @@ function renderDevices(devices) {
                     <div class="activity-location"><i class="fa-solid fa-location-dot"></i> ${device.location_name || 'Location ' + device.LID}</div>
                 </div>
             </div>
-            <div class="activity-time"><i class="fa-solid fa-clock"></i> ${formatTime(device.last_ping)}</div>
+            <div class="activity-right">
+                <span class="status-pill ${device.status || 'inactive'}">${(device.status || 'inactive').charAt(0).toUpperCase() + (device.status || 'inactive').slice(1)}</span>
+                <div class="activity-time"><i class="fa-solid fa-clock"></i> ${formatTime(device.last_ping)}</div>
+            </div>
         </div>
     `).join('');
 }
@@ -206,19 +379,19 @@ function updateStats(devices, messages) {
     const total = devices.length;
     const active = devices.filter(d => d.status === 'active').length;
     const offline = devices.filter(d => d.status === 'inactive').length;
-    const maintenance = devices.filter(d => d.status === 'maintenance').length;
+    const alertCount = messages.length;
 
     document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-total-sub').textContent = `${maintenance} in maintenance`;
+    document.getElementById('stat-total-sub').textContent = `Registered in system`;
 
     document.getElementById('stat-active').textContent = active;
-    document.getElementById('stat-active-sub').textContent = `${Math.round((active / total) * 100) || 0}% of fleet`;
+    document.getElementById('stat-active-sub').textContent = `${Math.round((active / total) * 100) || 0}% of fleet online`;
 
     document.getElementById('stat-offline').textContent = offline;
     document.getElementById('stat-offline-sub').textContent = offline > 0 ? 'Needs attention' : 'All good';
 
-    document.getElementById('stat-messages').textContent = messages.length;
-    document.getElementById('stat-messages-sub').textContent = 'Recent alerts';
+    document.getElementById('stat-alerts').textContent = alertCount;
+    document.getElementById('stat-alerts-sub').textContent = alertCount > 0 ? 'Pending review' : 'All clear';
 }
 
 // Fetch data
@@ -244,7 +417,6 @@ async function fetchData() {
             // Check for new messages
             if (messages.length > 0 && messages[0].MID > lastMessageId) {
                 if (lastMessageId > 0) {
-                    // New message received - could trigger notification
                     console.log('New alert received!');
                 }
                 lastMessageId = messages[0].MID;
@@ -261,12 +433,17 @@ async function fetchData() {
 // Start polling
 function startPolling() {
     fetchData();
-    pollTimer = setInterval(fetchData, 5000); // Poll every 5 seconds
+    pollTimer = setInterval(fetchData, 5000);
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     syncTheme();
+
+    // Load help resources and message types first (only once)
+    await Promise.all([loadHelpResources(), loadMessageTypes()]);
+
+    // Start polling for alerts/devices
     startPolling();
 
     // Listen for theme changes
