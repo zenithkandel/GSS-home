@@ -13,7 +13,7 @@ class EmailHelper
     private $host = 'mail.zenithkandel.com.np';
     private $username = 'lifeline@zenithkandel.com.np';
     private $password = '8038@Zenith';
-    private $port = 587;
+    private $port = 465;
     private $fromName = 'LifeLine Emergency';
 
     /**
@@ -30,13 +30,13 @@ class EmailHelper
             $mail->SMTPAuth = true;
             $mail->Username = $this->username;
             $mail->Password = $this->password;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  // SSL on port 465
             $mail->Port = $this->port;
-            
+
             // Timeout settings to prevent stalling
             $mail->Timeout = 10;       // 10 seconds timeout
             $mail->SMTPKeepAlive = false;
-            
+
             // Disable debug output
             $mail->SMTPDebug = 0;
 

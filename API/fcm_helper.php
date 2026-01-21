@@ -12,14 +12,41 @@ class FCMHelper
     private $serviceAccountPath;
     private $accessToken;
     private $tokenExpiry;
+    private $isConfigured = false;
 
     public function __construct()
     {
         $this->serviceAccountPath = __DIR__ . '/../lifeline-notification-firebase-adminsdk-fbsvc-ad9b1c5d15.json';
 
+        // Check if service account file exists
+        if (!file_exists($this->serviceAccountPath)) {
+            error_log('FCM: Service account file not found: ' . $this->serviceAccountPath);
+            return;
+        }
+
         // Load service account to get project ID
-        $serviceAccount = json_decode(file_get_contents($this->serviceAccountPath), true);
+        $contents = file_get_contents($this->serviceAccountPath);
+        if ($contents === false) {
+            error_log('FCM: Could not read service account file');
+            return;
+        }
+
+        $serviceAccount = json_decode($contents, true);
+        if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
+            error_log('FCM: Invalid service account JSON');
+            return;
+        }
+
         $this->projectId = $serviceAccount['project_id'];
+        $this->isConfigured = true;
+    }
+
+    /**
+     * Check if FCM is properly configured
+     */
+    public function isConfigured()
+    {
+        return $this->isConfigured;
     }
 
     /**
@@ -140,6 +167,8 @@ class FCMHelper
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);        // 10 seconds timeout
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);  // 5 seconds connect timeout
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -196,6 +225,11 @@ class FCMHelper
      */
     public function sendEmergencyNotification($db, $deviceName, $locationName, $messageText, $messageId = null)
     {
+        // Check if FCM is configured
+        if (!$this->isConfigured) {
+            return ['success' => false, 'message' => 'FCM not configured - service account file missing'];
+        }
+
         $tokens = self::getAllActiveTokens($db);
 
         if (empty($tokens)) {

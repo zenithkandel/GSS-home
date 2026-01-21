@@ -76,20 +76,24 @@ try {
     // Send push notifications to all registered devices
     try {
         $fcm = new FCMHelper();
-        $notificationResult = $fcm->sendEmergencyNotification(
-            $db,
-            $message['device_name'] ?? null,
-            $message['location_name'] ?? 'Unknown Location',
-            $message['message_text'] ?? 'Emergency Alert',
-            $messageId
-        );
+        if ($fcm->isConfigured()) {
+            $notificationResult = $fcm->sendEmergencyNotification(
+                $db,
+                $message['device_name'] ?? null,
+                $message['location_name'] ?? 'Unknown Location',
+                $message['message_text'] ?? 'Emergency Alert',
+                $messageId
+            );
 
-        // Add notification result to response
-        $message['notification_sent'] = true;
-        $message['notifications'] = [
-            'success' => $notificationResult['success'] ?? 0,
-            'failure' => $notificationResult['failure'] ?? 0
-        ];
+            $message['notification_sent'] = true;
+            $message['notifications'] = [
+                'success' => $notificationResult['success'] ?? 0,
+                'failure' => $notificationResult['failure'] ?? 0
+            ];
+        } else {
+            $message['notification_sent'] = false;
+            $message['notification_error'] = 'FCM not configured';
+        }
     } catch (Exception $e) {
         // Log error but don't fail the message creation
         error_log('FCM notification error: ' . $e->getMessage());
