@@ -181,9 +181,9 @@ function renderTable() {
             </thead>
             <tbody>
                 ${messages.map(msg => {
-                    const severity = getSeverity(msg.message_code);
-                    const bars = getRssiBars(msg.RSSI);
-                    return `
+        const severity = getSeverity(msg.message_code);
+        const bars = getRssiBars(msg.RSSI);
+        return `
                     <tr>
                         <td>#${msg.MID}</td>
                         <td>
@@ -216,7 +216,7 @@ function renderTable() {
                         </td>
                     </tr>
                 `;
-                }).join('')}
+    }).join('')}
             </tbody>
         </table>
     `;
