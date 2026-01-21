@@ -312,15 +312,8 @@ a {
     border: 1px solid var(--border-color);
 }
 
-.mountains-svg {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-}
-
-.connections-svg {
+/* Scene SVG - Full container */
+.scene-svg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -337,108 +330,49 @@ a {
     opacity: 0.4;
 }
 
-.signal-dot {
-    fill: var(--red);
+/* Light theme adjustments for scene */
+[data-theme="light"] .scene-svg #skyGrad stop:first-child {
+    stop-color: #87ceeb;
 }
 
-/* Network Nodes */
-.node {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+[data-theme="light"] .scene-svg #skyGrad stop:nth-child(2) {
+    stop-color: #add8e6;
 }
 
-.node-sos {
-    left: 50%;
-    top: 65%;
-    transform: translate(-50%, -50%);
+[data-theme="light"] .scene-svg #skyGrad stop:last-child {
+    stop-color: #e0f4ff;
 }
 
-.node-relay-1 {
-    left: 30%;
-    top: 45%;
-    transform: translate(-50%, -50%);
+[data-theme="light"] .scene-svg .stars {
+    opacity: 0;
 }
 
-.node-relay-2 {
-    left: 70%;
-    top: 40%;
-    transform: translate(-50%, -50%);
+[data-theme="light"] .scene-svg #hillGrad stop:first-child {
+    stop-color: #4ade80;
 }
 
-.node-relay-3 {
-    left: 77%;
-    top: 60%;
-    transform: translate(-50%, -50%);
+[data-theme="light"] .scene-svg #hillGrad stop:nth-child(2) {
+    stop-color: #22c55e;
 }
 
-.node-gateway {
-    left: 50%;
-    top: 15%;
-    transform: translate(-50%, -50%);
+[data-theme="light"] .scene-svg #hillGrad stop:last-child {
+    stop-color: #16a34a;
 }
 
-.node-body {
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--red);
-    position: relative;
+[data-theme="light"] .scene-svg #bgHillGrad stop {
+    stop-color: #86efac;
 }
 
-.node-body svg {
-    width: 24px;
-    height: 24px;
-    stroke: #ffffff;
+[data-theme="light"] .scene-svg #groundGrad stop {
+    stop-color: #bbf7d0;
 }
 
-.node-body-small {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-elevated);
-    border: 2px solid var(--border-color);
+[data-theme="light"] .scene-svg .bg-mountains polygon {
+    fill: #a7f3d0;
 }
 
-.node-body-small svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--text-muted);
-}
-
-.node-body-green {
-    background: var(--green);
-}
-
-.node-label {
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-}
-
-.node-pulse {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: var(--red);
-    animation: nodePulse 2s ease-out infinite;
-}
-
-@keyframes nodePulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.6;
-    }
-
-    100% {
-        transform: scale(2.5);
-        opacity: 0;
-    }
+[data-theme="light"] .scene-svg .trees polygon {
+    fill: #166534;
 }
 
 /* ========================================
