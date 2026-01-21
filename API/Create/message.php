@@ -74,11 +74,11 @@ try {
     // Send FCM push notification to all registered devices
     $notificationTitle = '🚨 Emergency Alert!';
     $notificationBody = ($message['device_name'] ?? 'Device ' . $did) . ': ' . ($message['message_text'] ?? 'Emergency Signal');
-    
+
     if ($message['location_name']) {
         $notificationBody .= ' at ' . $message['location_name'];
     }
-    
+
     $notificationData = [
         'type' => 'emergency',
         'message_id' => (string) $messageId,
@@ -86,10 +86,10 @@ try {
         'message_code' => (string) $messageCode,
         'timestamp' => date('c')
     ];
-    
+
     // Send to all registered tokens
     $fcmResult = sendFCMToAll($notificationTitle, $notificationBody, $notificationData);
-    
+
     // Also try sending to 'emergencies' topic
     sendFCMToTopic('emergencies', $notificationTitle, $notificationBody, $notificationData);
 

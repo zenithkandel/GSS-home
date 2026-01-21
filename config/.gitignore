@@ -1,0 +1,4 @@
+# Ignore service account keys - NEVER commit these!
+firebase-service-account.json
+*.pem
+*.key

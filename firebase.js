@@ -21,7 +21,7 @@ const messaging = getMessaging(app);
 
 // VAPID Key - Generate from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
 // Replace this with your actual VAPID key
-const VAPID_KEY = 'YOUR_VAPID_KEY_HERE';
+const VAPID_KEY = 'yQYFacjOfVjOOqTf_KsbMgaMqAWMDq2_C25Si7sl51A';
 
 /**
  * Request notification permission and get FCM token
@@ -36,7 +36,7 @@ export async function initializePushNotifications() {
 
         // Request permission
         const permission = await Notification.requestPermission();
-        
+
         if (permission !== 'granted') {
             console.warn('Notification permission denied');
             return null;
@@ -44,13 +44,13 @@ export async function initializePushNotifications() {
 
         // Get FCM token
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-        
+
         if (token) {
             console.log('FCM Token:', token);
-            
+
             // Register token with backend
             await registerToken(token);
-            
+
             return token;
         } else {
             console.warn('No registration token available');
@@ -75,9 +75,9 @@ async function registerToken(token) {
             },
             body: JSON.stringify({ token })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             console.log('FCM token registered successfully');
         } else {
@@ -93,7 +93,7 @@ async function registerToken(token) {
  */
 onMessage(messaging, (payload) => {
     console.log('Foreground message received:', payload);
-    
+
     const notificationTitle = payload.notification?.title || 'LifeLine Alert';
     const notificationOptions = {
         body: payload.notification?.body || 'New emergency notification',
@@ -108,8 +108,8 @@ onMessage(messaging, (payload) => {
     // Show notification
     if (Notification.permission === 'granted') {
         const notification = new Notification(notificationTitle, notificationOptions);
-        
-        notification.onclick = function(event) {
+
+        notification.onclick = function (event) {
             event.preventDefault();
             window.focus();
             // Navigate to messages page
@@ -126,10 +126,10 @@ onMessage(messaging, (payload) => {
             notification.close();
         };
     }
-    
+
     // Dispatch custom event for in-app handling
-    window.dispatchEvent(new CustomEvent('lifelineEmergency', { 
-        detail: payload 
+    window.dispatchEvent(new CustomEvent('lifelineEmergency', {
+        detail: payload
     }));
 });
 
@@ -139,7 +139,7 @@ onMessage(messaging, (payload) => {
 export async function unregisterPushNotifications() {
     try {
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-        
+
         if (token) {
             await fetch('/GSS%20home/API/fcm_register.php', {
                 method: 'DELETE',
