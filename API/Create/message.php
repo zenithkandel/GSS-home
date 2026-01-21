@@ -82,7 +82,7 @@ try {
             $message['message_text'] ?? 'Emergency Alert',
             $messageId
         );
-        
+
         // Add notification result to response
         $message['notification_sent'] = true;
         $message['notifications'] = [

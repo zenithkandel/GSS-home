@@ -109,7 +109,7 @@
             }).then((currentToken) => {
                 if (currentToken) {
                     console.log('Registration token retrieved: ', currentToken);
-                    
+
                     // Save token to database
                     fetch('../API/Create/fcm_token.php', {
                         method: 'POST',
@@ -118,17 +118,17 @@
                         },
                         body: JSON.stringify({ token: currentToken })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('FCM token saved successfully');
-                        } else {
-                            console.error('Failed to save FCM token:', data.error);
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error saving FCM token:', err);
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('FCM token saved successfully');
+                            } else {
+                                console.error('Failed to save FCM token:', data.error);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error saving FCM token:', err);
+                        });
                 } else {
                     // Show permission request UI
                     console.log('No registration token available. Request permission to generate one.');
