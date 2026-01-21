@@ -22,11 +22,11 @@ function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toast-message');
     const icon = toast.querySelector('i');
-    
+
     toast.className = `toast show ${type}`;
     toastMessage.textContent = message;
     icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
-    
+
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
@@ -360,9 +360,9 @@ async function viewLocation(locationName) {
 
     // Open modal
     document.getElementById('map-modal').classList.add('active');
-    document.getElementById('map-modal-title').textContent = `📍 ${locationName}`;
+    document.getElementById('map-modal-title').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${locationName}`;
     document.getElementById('map-location-name').textContent = locationName;
-    document.getElementById('map-container').innerHTML = '<div class="map-loading">Loading map...</div>';
+    document.getElementById('map-container').innerHTML = '<div class="map-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Loading map...</span></div>';
 
     try {
         const coords = await getCoordinates(locationName);
@@ -380,7 +380,7 @@ async function viewLocation(locationName) {
         currentMapCoords = null;
         document.getElementById('map-container').innerHTML = `
             <div class="map-loading">
-                <div style="font-size: 32px; margin-bottom: 12px;">📍</div>
+                <i class="fa-solid fa-location-dot" style="font-size: 32px; margin-bottom: 12px; color: var(--accent);"></i>
                 <div>Could not load map for "${locationName}"</div>
                 <div style="font-size: 12px; margin-top: 8px; color: var(--text-muted);">Location not found</div>
             </div>

@@ -22,8 +22,12 @@ function syncTheme() {
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toast-message');
+    const icon = toast.querySelector('i');
+
     toast.className = `toast show ${type}`;
     toastMessage.textContent = message;
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
+
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
@@ -111,10 +115,10 @@ async function loadMessages() {
             updateStats();
             renderTable();
         } else {
-            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>${data.message}</div></div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="empty-state-text">${data.message}</div></div>`;
         }
     } catch (error) {
-        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div>Error loading messages</div></div>`;
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-circle-xmark"></i></div><div class="empty-state-text">Error loading messages</div></div>`;
         console.error('Error:', error);
     }
 }
@@ -131,11 +135,23 @@ function getSeverity(messageCode) {
 
 function getIcon(messageCode) {
     const icons = {
-        1: '🏥', 2: '🤕', 3: '🤒', 4: '🔍', 5: '❄️',
-        6: '⛰️', 7: '🔥', 8: '🌊', 9: '👤', 10: '⚠️',
-        11: '🌪️', 12: '🏚️', 13: '💧', 14: '📡', 15: '✅'
+        1: '<i class="fa-solid fa-hospital"></i>',
+        2: '<i class="fa-solid fa-user-injured"></i>',
+        3: '<i class="fa-solid fa-thermometer-full"></i>',
+        4: '<i class="fa-solid fa-magnifying-glass"></i>',
+        5: '<i class="fa-solid fa-snowflake"></i>',
+        6: '<i class="fa-solid fa-mountain"></i>',
+        7: '<i class="fa-solid fa-fire"></i>',
+        8: '<i class="fa-solid fa-water"></i>',
+        9: '<i class="fa-solid fa-user"></i>',
+        10: '<i class="fa-solid fa-triangle-exclamation"></i>',
+        11: '<i class="fa-solid fa-tornado"></i>',
+        12: '<i class="fa-solid fa-house-crack"></i>',
+        13: '<i class="fa-solid fa-droplet"></i>',
+        14: '<i class="fa-solid fa-tower-broadcast"></i>',
+        15: '<i class="fa-solid fa-circle-check"></i>'
     };
-    return icons[messageCode] || '⚡';
+    return icons[messageCode] || '<i class="fa-solid fa-bolt"></i>';
 }
 
 function getRssiBars(rssi) {
@@ -157,7 +173,7 @@ function renderTable() {
     if (messages.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">✉</div>
+                <div class="empty-state-icon"><i class="fa-solid fa-message"></i></div>
                 <div class="empty-state-text">No messages found</div>
             </div>
         `;
@@ -185,7 +201,7 @@ function renderTable() {
         const bars = getRssiBars(msg.RSSI);
         return `
                     <tr>
-                        <td>#${msg.MID}</td>
+                        <td><span style="color: var(--text-muted);">#${msg.MID}</span></td>
                         <td>
                             <span class="severity-badge ${severity}">
                                 ${getIcon(msg.message_code)}
@@ -196,8 +212,8 @@ function renderTable() {
                             <div class="message-type">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</div>
                             <div class="message-meta">Code: ${msg.message_code}</div>
                         </td>
-                        <td>${msg.device_name || 'Device ' + msg.DID}</td>
-                        <td>📍 ${msg.location_name || 'Unknown'}</td>
+                        <td><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 6px;"></i>${msg.device_name || 'Device ' + msg.DID}</td>
+                        <td><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 6px;"></i>${msg.location_name || 'Unknown'}</td>
                         <td>
                             <div class="rssi-indicator">
                                 <div class="rssi-bars">
@@ -209,10 +225,10 @@ function renderTable() {
                                 <span style="font-size: 11px; color: var(--text-muted);">${msg.RSSI || '-'}</span>
                             </div>
                         </td>
-                        <td>${formatTime(msg.timestamp)}</td>
+                        <td><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${formatTime(msg.timestamp)}</td>
                         <td class="actions">
-                            <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View">👁</button>
-                            <button class="btn btn-icon delete" onclick="openDeleteModal(${msg.MID})" title="Delete">🗑</button>
+                            <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn btn-icon delete" onclick="openDeleteModal(${msg.MID})" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 `;
@@ -245,13 +261,13 @@ function updatePagination(pagination) {
     info.textContent = `Showing ${start}-${end} of ${pagination.total}`;
 
     let html = '';
-    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page - 1})" ${pagination.page <= 1 ? 'disabled' : ''}>←</button>`;
+    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page - 1})" ${pagination.page <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
 
     for (let i = 1; i <= Math.min(pagination.pages, 5); i++) {
         html += `<button class="btn page-btn ${i === pagination.page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
     }
 
-    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page + 1})" ${pagination.page >= pagination.pages ? 'disabled' : ''}>→</button>`;
+    html += `<button class="btn page-btn" onclick="goToPage(${pagination.page + 1})" ${pagination.page >= pagination.pages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
     controls.innerHTML = html;
 }
 
@@ -271,11 +287,11 @@ function viewMessage(id) {
 
     details.innerHTML = `
         <div class="detail-row">
-            <span class="detail-label">Message ID</span>
+            <span class="detail-label"><i class="fa-solid fa-hashtag"></i> Message ID</span>
             <span class="detail-value">#${msg.MID}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Severity</span>
+            <span class="detail-label"><i class="fa-solid fa-gauge-high"></i> Severity</span>
             <span class="detail-value">
                 <span class="severity-badge ${severity}">
                     ${getIcon(msg.message_code)} ${severity.charAt(0).toUpperCase() + severity.slice(1)}
@@ -283,27 +299,27 @@ function viewMessage(id) {
             </span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Message</span>
+            <span class="detail-label"><i class="fa-solid fa-message"></i> Message</span>
             <span class="detail-value">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Message Code</span>
+            <span class="detail-label"><i class="fa-solid fa-code"></i> Message Code</span>
             <span class="detail-value">${msg.message_code}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Device</span>
+            <span class="detail-label"><i class="fa-solid fa-microchip"></i> Device</span>
             <span class="detail-value">${msg.device_name || 'Device ' + msg.DID} (ID: ${msg.DID})</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Location</span>
-            <span class="detail-value">📍 ${msg.location_name || 'Unknown'}</span>
+            <span class="detail-label"><i class="fa-solid fa-location-dot"></i> Location</span>
+            <span class="detail-value">${msg.location_name || 'Unknown'}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Signal (RSSI)</span>
+            <span class="detail-label"><i class="fa-solid fa-signal"></i> Signal (RSSI)</span>
             <span class="detail-value">${msg.RSSI ? msg.RSSI + ' dBm' : 'Not recorded'}</span>
         </div>
         <div class="detail-row">
-            <span class="detail-label">Timestamp</span>
+            <span class="detail-label"><i class="fa-solid fa-clock"></i> Timestamp</span>
             <span class="detail-value">${new Date(msg.timestamp).toLocaleString()}</span>
         </div>
     `;
