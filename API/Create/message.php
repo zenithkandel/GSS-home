@@ -95,7 +95,6 @@ try {
             $message['notification_error'] = 'FCM not configured';
         }
     } catch (Exception $e) {
-        // Log error but don't fail the message creation
         error_log('FCM notification error: ' . $e->getMessage());
         $message['notification_sent'] = false;
         $message['notification_error'] = $e->getMessage();

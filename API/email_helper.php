@@ -10,7 +10,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class EmailHelper
 {
-    private $host = 'mail.zenithkandel.com.np';
+    private $host = 'localhost';  // Use localhost since we're on the same server
     private $username = 'lifeline@zenithkandel.com.np';
     private $password = '8038@Zenith';
     private $port = 465;
@@ -19,7 +19,7 @@ class EmailHelper
     /**
      * Send email to a single recipient
      */
-    public function sendEmail($to, $subject, $htmlBody, $textBody = null)
+    public function sendEmail($to, $subject, $htmlBody, $textBody = null, $debug = false)
     {
         $mail = new PHPMailer(true);
 
@@ -33,12 +33,21 @@ class EmailHelper
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  // SSL on port 465
             $mail->Port = $this->port;
 
-            // Timeout settings to prevent stalling
-            $mail->Timeout = 10;       // 10 seconds timeout
+            // Timeout settings
+            $mail->Timeout = 30;       // 30 seconds timeout
             $mail->SMTPKeepAlive = false;
 
-            // Disable debug output
-            $mail->SMTPDebug = 0;
+            // Debug mode for troubleshooting
+            $mail->SMTPDebug = $debug ? SMTP::DEBUG_CONNECTION : 0;
+
+            // SSL options - allow self-signed certificates
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                ]
+            ];
 
             // Recipients
             $mail->setFrom($this->username, $this->fromName);
