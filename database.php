@@ -6,6 +6,9 @@
  * Uses PDO for secure database operations.
  */
 
+// Set timezone to Nepal (UTC+5:45)
+date_default_timezone_set('Asia/Kathmandu');
+
 // Database configuration
 define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'lifeline');
@@ -33,6 +36,8 @@ class Database
 
         try {
             $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+            // Set MySQL timezone to Nepal (UTC+5:45)
+            $this->pdo->exec("SET time_zone = 'GMT+05:45'");
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int) $e->getCode());
         }

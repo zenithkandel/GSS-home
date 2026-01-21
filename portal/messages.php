@@ -108,7 +108,7 @@
             </div>
 
             <!-- Progress overlay -->
-            <div class="sending-overlay" id="sending-overlay" style="display: none;">
+            <div class="sending-overlay" id="sending-overlay">
                 <div class="sending-content">
                     <div class="sending-spinner"></div>
                     <p class="sending-title">Sending Emergency Alert</p>

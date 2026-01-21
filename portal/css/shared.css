@@ -891,6 +891,8 @@ textarea {
     box-shadow: var(--shadow-xl), 0 0 60px rgba(0, 0, 0, 0.3);
     transform: scale(0.95) translateY(20px);
     animation: modalSlideIn var(--transition-slow) ease forwards;
+    position: relative;
+    /* Required for overlay positioning */
 }
 
 @keyframes modalSlideIn {

@@ -240,7 +240,17 @@ function renderTable() {
 
 function formatTime(timestamp) {
     if (!timestamp) return 'Unknown';
-    const date = new Date(timestamp);
+
+    // Parse the timestamp - MySQL returns 'YYYY-MM-DD HH:MM:SS' format
+    // If it doesn't have timezone info, treat it as local time
+    let date;
+    if (timestamp.includes('T') || timestamp.includes('Z')) {
+        date = new Date(timestamp);
+    } else {
+        // MySQL format: 'YYYY-MM-DD HH:MM:SS' - treat as local time
+        date = new Date(timestamp.replace(' ', 'T'));
+    }
+
     const now = new Date();
     const diff = (now - date) / 1000;
 
@@ -318,11 +328,23 @@ function viewMessage(id) {
         </div>
         <div class="detail-row">
             <span class="detail-label"><i class="fa-solid fa-clock"></i> Timestamp</span>
-            <span class="detail-value">${new Date(msg.timestamp).toLocaleString()}</span>
+            <span class="detail-value">${formatDateFull(msg.timestamp)}</span>
         </div>
     `;
 
     document.getElementById('view-modal').classList.add('active');
+}
+
+// Format date fully for details view
+function formatDateFull(timestamp) {
+    if (!timestamp) return 'Unknown';
+    let date;
+    if (timestamp.includes('T') || timestamp.includes('Z')) {
+        date = new Date(timestamp);
+    } else {
+        date = new Date(timestamp.replace(' ', 'T'));
+    }
+    return date.toLocaleString();
 }
 
 // Mark message as resolved
@@ -363,47 +385,56 @@ function closeCreateModal() {
 }
 
 async function createMessage() {
+    console.log('createMessage called'); // Debug
+
     const did = document.getElementById('msg-device').value;
     const messageCode = document.getElementById('msg-type').value;
     const rssi = document.getElementById('msg-rssi').value;
+
+    console.log('Values:', { did, messageCode, rssi }); // Debug
 
     if (!did || !messageCode) {
         showToast('Please fill in all required fields', 'error');
         return;
     }
 
-    // Show loading state
+    // Get UI elements
     const sendBtn = document.getElementById('send-btn');
     const cancelBtn = document.getElementById('cancel-btn');
-    const btnText = sendBtn.querySelector('.btn-text');
-    const btnLoading = sendBtn.querySelector('.btn-loading');
+    const btnText = sendBtn ? sendBtn.querySelector('.btn-text') : null;
+    const btnLoading = sendBtn ? sendBtn.querySelector('.btn-loading') : null;
     const overlay = document.getElementById('sending-overlay');
     const progressFill = document.getElementById('progress-fill');
     const sendingStatus = document.getElementById('sending-status');
 
-    sendBtn.disabled = true;
-    cancelBtn.disabled = true;
-    btnText.style.display = 'none';
-    btnLoading.style.display = 'inline-flex';
-    overlay.style.display = 'flex';
+    console.log('Elements found:', { sendBtn: !!sendBtn, overlay: !!overlay }); // Debug
+
+    // Show loading state
+    if (sendBtn) sendBtn.disabled = true;
+    if (cancelBtn) cancelBtn.disabled = true;
+    if (btnText) btnText.style.display = 'none';
+    if (btnLoading) btnLoading.style.display = 'inline-flex';
+    if (overlay) overlay.classList.add('active');
 
     // Simulate progress stages
     let progress = 0;
     const progressInterval = setInterval(() => {
         if (progress < 30) {
             progress += 2;
-            sendingStatus.textContent = 'Creating message...';
+            if (sendingStatus) sendingStatus.textContent = 'Creating message...';
         } else if (progress < 60) {
             progress += 1;
-            sendingStatus.textContent = 'Sending push notifications...';
+            if (sendingStatus) sendingStatus.textContent = 'Sending push notifications...';
         } else if (progress < 85) {
             progress += 0.5;
-            sendingStatus.textContent = 'Sending emails...';
+            if (sendingStatus) sendingStatus.textContent = 'Sending emails...';
         }
-        progressFill.style.width = progress + '%';
+        if (progressFill) progressFill.style.width = progress + '%';
     }, 100);
 
     try {
+        console.log('Sending request...'); // Debug
+
         const res = await fetch(`${API_BASE}/Create/message.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -414,12 +445,15 @@ async function createMessage() {
             })
         });
 
+        console.log('Response received:', res.status); // Debug
+
         const data = await res.json();
+        console.log('Data:', data); // Debug
 
         // Complete progress
         clearInterval(progressInterval);
-        progressFill.style.width = '100%';
-        sendingStatus.textContent = 'Complete!';
+        if (progressFill) progressFill.style.width = '100%';
+        if (sendingStatus) sendingStatus.textContent = 'Complete!';
 
         await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -442,20 +476,20 @@ async function createMessage() {
             closeCreateModal();
             loadMessages();
         } else {
-            showToast(data.message || 'Error creating message', 'error');
+            showToast(data.message || data.error || 'Error creating message', 'error');
         }
     } catch (error) {
         clearInterval(progressInterval);
-        showToast('Error creating message', 'error');
+        showToast('Error creating message: ' + error.message, 'error');
         console.error('Error:', error);
     } finally {
         // Reset UI
-        sendBtn.disabled = false;
-        cancelBtn.disabled = false;
-        btnText.style.display = 'inline';
-        btnLoading.style.display = 'none';
-        overlay.style.display = 'none';
-        progressFill.style.width = '0%';
+        if (sendBtn) sendBtn.disabled = false;
+        if (cancelBtn) cancelBtn.disabled = false;
+        if (btnText) btnText.style.display = 'inline';
+        if (btnLoading) btnLoading.style.display = 'none';
+        if (overlay) overlay.classList.remove('active');
+        if (progressFill) progressFill.style.width = '0%';
     }
 }
 
