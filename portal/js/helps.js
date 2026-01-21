@@ -196,8 +196,8 @@ function renderTable() {
             </thead>
             <tbody>
                 ${helps.map(help => {
-                    const forMessages = help.for_messages || [];
-                    return `
+        const forMessages = help.for_messages || [];
+        return `
                     <tr>
                         <td>#${help.HID}</td>
                         <td><strong>${help.name}</strong></td>
@@ -213,12 +213,12 @@ function renderTable() {
                         <td>
                             <div class="for-messages-list">
                                 ${forMessages.length > 0 ?
-                                    forMessages.slice(0, 2).map(code =>
-                                        `<span class="message-tag" title="${messageTypes[code] || 'Code ' + code}">${getMessageShortName(code)}</span>`
-                                    ).join('') +
-                                    (forMessages.length > 2 ? `<span class="message-tag-more">+${forMessages.length - 2} more</span>` : '')
-                                    : '<span style="color: var(--text-muted); font-size: 12px;">All types</span>'
-                                }
+                forMessages.slice(0, 2).map(code =>
+                    `<span class="message-tag" title="${messageTypes[code] || 'Code ' + code}">${getMessageShortName(code)}</span>`
+                ).join('') +
+                (forMessages.length > 2 ? `<span class="message-tag-more">+${forMessages.length - 2} more</span>` : '')
+                : '<span style="color: var(--text-muted); font-size: 12px;">All types</span>'
+            }
                             </div>
                         </td>
                         <td class="actions">
@@ -227,7 +227,7 @@ function renderTable() {
                         </td>
                     </tr>
                 `;
-                }).join('')}
+    }).join('')}
             </tbody>
         </table>
     `;
