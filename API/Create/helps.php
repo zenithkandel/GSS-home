@@ -26,6 +26,7 @@ $contact = trim($input['contact']);
 $eta = isset($input['eta']) ? trim($input['eta']) : null;
 $status = isset($input['status']) ? $input['status'] : 'available';
 $location = isset($input['location']) ? trim($input['location']) : null;
+$forMessages = isset($input['for_messages']) ? $input['for_messages'] : [];
 
 // Validate status
 $validStatuses = ['available', 'dispatched', 'busy'];
@@ -33,13 +34,19 @@ if (!in_array($status, $validStatuses)) {
     sendResponse(false, null, 'Invalid status. Must be one of: ' . implode(', ', $validStatuses), 400);
 }
 
+// Validate and encode for_messages as JSON array
+if (!is_array($forMessages)) {
+    $forMessages = [];
+}
+$forMessagesJson = json_encode(array_map('intval', $forMessages));
+
 try {
     $db = getDB();
 
     // Insert new help resource
     $stmt = $db->prepare("
-        INSERT INTO helps (name, contact, eta, status, location) 
-        VALUES (:name, :contact, :eta, :status, :location)
+        INSERT INTO helps (name, contact, eta, status, location, for_messages) 
+        VALUES (:name, :contact, :eta, :status, :location, :for_messages)
     ");
 
     $stmt->execute([
@@ -47,7 +54,8 @@ try {
         'contact' => $contact,
         'eta' => $eta,
         'status' => $status,
-        'location' => $location
+        'location' => $location,
+        'for_messages' => $forMessagesJson
     ]);
 
     $helpId = $db->lastInsertId();
@@ -56,6 +64,11 @@ try {
     $fetchStmt = $db->prepare("SELECT * FROM helps WHERE HID = :hid");
     $fetchStmt->execute(['hid' => $helpId]);
     $help = $fetchStmt->fetch();
+
+    // Decode for_messages JSON
+    if ($help && isset($help['for_messages'])) {
+        $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+    }
 
     sendResponse(true, $help, 'Help resource created successfully', 201);
 

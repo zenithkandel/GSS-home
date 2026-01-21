@@ -58,6 +58,16 @@ try {
         }
     }
 
+    // Handle for_messages array separately
+    if (isset($input['for_messages'])) {
+        $forMessages = $input['for_messages'];
+        if (!is_array($forMessages)) {
+            $forMessages = [];
+        }
+        $updates[] = "for_messages = :for_messages";
+        $params['for_messages'] = json_encode(array_map('intval', $forMessages));
+    }
+
     if (empty($updates)) {
         sendResponse(false, null, 'No fields to update', 400);
     }
@@ -71,6 +81,11 @@ try {
     $fetchStmt = $db->prepare("SELECT * FROM helps WHERE HID = :hid");
     $fetchStmt->execute(['hid' => $helpId]);
     $help = $fetchStmt->fetch();
+
+    // Decode for_messages JSON
+    if ($help && isset($help['for_messages'])) {
+        $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+    }
 
     sendResponse(true, $help, 'Help resource updated successfully');
 

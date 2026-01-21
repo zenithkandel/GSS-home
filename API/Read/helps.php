@@ -32,6 +32,11 @@ try {
             sendResponse(false, null, 'Help resource not found', 404);
         }
 
+        // Decode for_messages JSON
+        if (isset($help['for_messages'])) {
+            $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+        }
+
         sendResponse(true, $help, 'Help resource retrieved successfully');
     }
 
@@ -71,6 +76,13 @@ try {
 
     $stmt->execute();
     $helps = $stmt->fetchAll();
+
+    // Decode for_messages JSON for each help resource
+    foreach ($helps as &$help) {
+        if (isset($help['for_messages'])) {
+            $help['for_messages'] = json_decode($help['for_messages'], true) ?? [];
+        }
+    }
 
     // Get total count for pagination
     $countQuery = "SELECT COUNT(*) FROM helps WHERE 1=1";

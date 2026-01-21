@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - LifeLine</title>
+    <link rel="stylesheet" href="css/shared.css">
+    <style>
+        /* Page specific styles */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            width: auto;
+            min-width: 180px;
+        }
+
+        .date-input {
+            width: auto;
+            min-width: 150px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-tertiary);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .severity-badge.critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .severity-badge.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .severity-badge.info {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .message-text {
+            max-width: 250px;
+        }
+
+        .message-type {
+            font-weight: 500;
+        }
+
+        .message-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .rssi-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rssi-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+        }
+
+        .rssi-bar {
+            width: 3px;
+            background: var(--border-color);
+        }
+
+        .rssi-bar.active {
+            background: var(--success);
+        }
+
+        .rssi-bar:nth-child(1) {
+            height: 6px;
+        }
+
+        .rssi-bar:nth-child(2) {
+            height: 10px;
+        }
+
+        .rssi-bar:nth-child(3) {
+            height: 14px;
+        }
+
+        .rssi-bar:nth-child(4) {
+            height: 18px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .btn-icon.view:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-icon.delete:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Detail View */
+        .detail-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 120px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 12px 0;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            min-width: 36px;
+            height: 36px;
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Emergency Messages</h1>
+        <button class="btn btn-primary" onclick="openCreateModal()">+ New Message</button>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number" id="total-count">-</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-danger" id="critical-count">-</span>
+            <span class="stat-label">Critical</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-warning" id="warning-count">-</span>
+            <span class="stat-label">Warnings</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-success" id="info-count">-</span>
+            <span class="stat-label">Info</span>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <select class="filter-select" id="device-filter">
+                <option value="">All Devices</option>
+            </select>
+            <select class="filter-select" id="message-type-filter">
+                <option value="">All Message Types</option>
+            </select>
+            <input type="date" class="date-input" id="from-date" placeholder="From">
+            <input type="date" class="date-input" id="to-date" placeholder="To">
+        </div>
+        <button class="btn" onclick="loadMessages()">↻ Refresh</button>
+    </div>
+
+    <div id="table-container">
+        <div class="loading">
+            <span class="spinner"></span>
+            Loading messages...
+        </div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display: none;">
+        <div class="pagination-info" id="pagination-info">Showing 0 of 0</div>
+        <div class="pagination-controls" id="pagination-controls"></div>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">New Emergency Message</span>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="message-form">
+                    <div class="form-group">
+                        <label for="msg-device">Device *</label>
+                        <select id="msg-device" required>
+                            <option value="">Select Device</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="msg-type">Message Type *</label>
+                        <select id="msg-type" required>
+                            <option value="">Select Message Type</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="msg-rssi">Signal Strength (RSSI)</label>
+                        <input type="number" id="msg-rssi" placeholder="-65" min="-120" max="0">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeCreateModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createMessage()">Create Message</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="view-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Message Details</span>
+                <button class="modal-close" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="message-details">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeViewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <span class="modal-title">Confirm Delete</span>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this message?</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-primary" style="background: var(--danger); border-color: var(--danger);"
+                    onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        const API_BASE = '../API';
+        let messages = [];
+        let devices = [];
+        let messageTypes = {};
+        let currentPage = 1;
+        let totalPages = 1;
+        let deleteId = null;
+
+        // Theme sync
+        function syncTheme() {
+            if (window.parent && window.parent.lifelinePortal) {
+                const theme = window.parent.lifelinePortal.getTheme();
+                document.documentElement.setAttribute('data-theme', theme);
+            } else {
+                const theme = localStorage.getItem('lifeline-theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toast.className = `toast show ${type}`;
+            toastMessage.textContent = message;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                const [devicesRes, typesRes] = await Promise.all([
+                    fetch(`${API_BASE}/Read/device.php?limit=100`),
+                    fetch(`${API_BASE}/Read/index.php?type=message`)
+                ]);
+
+                const devicesData = await devicesRes.json();
+                const typesData = await typesRes.json();
+
+                if (devicesData.success) {
+                    devices = devicesData.data.devices || devicesData.data || [];
+                    populateDeviceDropdowns();
+                }
+
+                if (typesData.success && typesData.data.mapping) {
+                    messageTypes = typesData.data.mapping;
+                    populateTypeDropdowns();
+                }
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+            }
+        }
+
+        function populateDeviceDropdowns() {
+            const filterSelect = document.getElementById('device-filter');
+            const formSelect = document.getElementById('msg-device');
+
+            filterSelect.innerHTML = '<option value="">All Devices</option>';
+            formSelect.innerHTML = '<option value="">Select Device</option>';
+
+            devices.forEach(device => {
+                const name = device.device_name || `Device ${device.DID}`;
+                filterSelect.innerHTML += `<option value="${device.DID}">${name}</option>`;
+                formSelect.innerHTML += `<option value="${device.DID}">${name} (${device.location_name || 'Unknown'})</option>`;
+            });
+        }
+
+        function populateTypeDropdowns() {
+            const filterSelect = document.getElementById('message-type-filter');
+            const formSelect = document.getElementById('msg-type');
+
+            filterSelect.innerHTML = '<option value="">All Message Types</option>';
+            formSelect.innerHTML = '<option value="">Select Message Type</option>';
+
+            Object.entries(messageTypes).forEach(([code, text]) => {
+                filterSelect.innerHTML += `<option value="${code}">${text}</option>`;
+                formSelect.innerHTML += `<option value="${code}">${text}</option>`;
+            });
+        }
+
+        // Load messages
+        async function loadMessages() {
+            const container = document.getElementById('table-container');
+            container.innerHTML = '<div class="loading"><span class="spinner"></span>Loading messages...</div>';
+
+            try {
+                const did = document.getElementById('device-filter').value;
+                const messageCode = document.getElementById('message-type-filter').value;
+                const fromDate = document.getElementById('from-date').value;
+                const toDate = document.getElementById('to-date').value;
+
+                let url = `${API_BASE}/Read/message.php?page=${currentPage}&limit=20`;
+                if (did) url += `&did=${did}`;
+                if (messageCode) url += `&message_code=${messageCode}`;
+                if (fromDate) url += `&from=${fromDate}`;
+                if (toDate) url += `&to=${toDate}`;
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.success) {
+                    messages = data.data.messages || data.data || [];
+                    const pagination = data.data.pagination;
+
+                    if (pagination) {
+                        totalPages = pagination.pages;
+                        updatePagination(pagination);
+                    }
+
+                    updateStats();
+                    renderTable();
+                } else {
+                    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>${data.message}</div></div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div>Error loading messages</div></div>`;
+                console.error('Error:', error);
+            }
+        }
+
+        function getSeverity(messageCode) {
+            const code = parseInt(messageCode);
+            const critical = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            const warning = [10, 11, 12, 13, 14];
+
+            if (critical.includes(code)) return 'critical';
+            if (warning.includes(code)) return 'warning';
+            return 'info';
+        }
+
+        function getIcon(messageCode) {
+            const icons = {
+                1: '🏥', 2: '🤕', 3: '🤒', 4: '🔍', 5: '❄️',
+                6: '⛰️', 7: '🔥', 8: '🌊', 9: '👤', 10: '⚠️',
+                11: '🌪️', 12: '🏚️', 13: '💧', 14: '📡', 15: '✅'
+            };
+            return icons[messageCode] || '⚡';
+        }
+
+        function getRssiBars(rssi) {
+            if (!rssi) return [false, false, false, false];
+            const level = rssi > -50 ? 4 : rssi > -70 ? 3 : rssi > -85 ? 2 : 1;
+            return [level >= 1, level >= 2, level >= 3, level >= 4];
+        }
+
+        function updateStats() {
+            document.getElementById('total-count').textContent = messages.length;
+            document.getElementById('critical-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'critical').length;
+            document.getElementById('warning-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'warning').length;
+            document.getElementById('info-count').textContent = messages.filter(m => getSeverity(m.message_code) === 'info').length;
+        }
+
+        function renderTable() {
+            const container = document.getElementById('table-container');
+
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✉</div>
+                        <div class="empty-state-text">No messages found</div>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Severity</th>
+                            <th>Message</th>
+                            <th>Device</th>
+                            <th>Location</th>
+                            <th>Signal</th>
+                            <th>Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${messages.map(msg => {
+                const severity = getSeverity(msg.message_code);
+                const bars = getRssiBars(msg.RSSI);
+                return `
+                            <tr>
+                                <td>#${msg.MID}</td>
+                                <td>
+                                    <span class="severity-badge ${severity}">
+                                        ${getIcon(msg.message_code)}
+                                        ${severity.charAt(0).toUpperCase() + severity.slice(1)}
+                                    </span>
+                                </td>
+                                <td class="message-text">
+                                    <div class="message-type">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</div>
+                                    <div class="message-meta">Code: ${msg.message_code}</div>
+                                </td>
+                                <td>${msg.device_name || 'Device ' + msg.DID}</td>
+                                <td>📍 ${msg.location_name || 'Unknown'}</td>
+                                <td>
+                                    <div class="rssi-indicator">
+                                        <div class="rssi-bars">
+                                            <div class="rssi-bar ${bars[0] ? 'active' : ''}"></div>
+                                            <div class="rssi-bar ${bars[1] ? 'active' : ''}"></div>
+                                            <div class="rssi-bar ${bars[2] ? 'active' : ''}"></div>
+                                            <div class="rssi-bar ${bars[3] ? 'active' : ''}"></div>
+                                        </div>
+                                        <span style="font-size: 11px; color: var(--text-muted);">${msg.RSSI || '-'}</span>
+                                    </div>
+                                </td>
+                                <td>${formatTime(msg.timestamp)}</td>
+                                <td class="actions">
+                                    <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View">👁</button>
+                                    <button class="btn btn-icon delete" onclick="openDeleteModal(${msg.MID})" title="Delete">🗑</button>
+                                </td>
+                            </tr>
+                        `;
+            }).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('pagination').style.display = 'flex';
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return 'Unknown';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = (now - date) / 1000;
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return date.toLocaleString();
+        }
+
+        function updatePagination(pagination) {
+            const info = document.getElementById('pagination-info');
+            const controls = document.getElementById('pagination-controls');
+
+            const start = (pagination.page - 1) * pagination.limit + 1;
+            const end = Math.min(pagination.page * pagination.limit, pagination.total);
+            info.textContent = `Showing ${start}-${end} of ${pagination.total}`;
+
+            let html = '';
+            html += `<button class="btn page-btn" onclick="goToPage(${pagination.page - 1})" ${pagination.page <= 1 ? 'disabled' : ''}>←</button>`;
+
+            for (let i = 1; i <= Math.min(pagination.pages, 5); i++) {
+                html += `<button class="btn page-btn ${i === pagination.page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            html += `<button class="btn page-btn" onclick="goToPage(${pagination.page + 1})" ${pagination.page >= pagination.pages ? 'disabled' : ''}>→</button>`;
+            controls.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadMessages();
+        }
+
+        // View message
+        function viewMessage(id) {
+            const msg = messages.find(m => m.MID == id);
+            if (!msg) return;
+
+            const severity = getSeverity(msg.message_code);
+            const details = document.getElementById('message-details');
+
+            details.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Message ID</span>
+                    <span class="detail-value">#${msg.MID}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Severity</span>
+                    <span class="detail-value">
+                        <span class="severity-badge ${severity}">
+                            ${getIcon(msg.message_code)} ${severity.charAt(0).toUpperCase() + severity.slice(1)}
+                        </span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Message</span>
+                    <span class="detail-value">${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Message Code</span>
+                    <span class="detail-value">${msg.message_code}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Device</span>
+                    <span class="detail-value">${msg.device_name || 'Device ' + msg.DID} (ID: ${msg.DID})</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location</span>
+                    <span class="detail-value">📍 ${msg.location_name || 'Unknown'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Signal (RSSI)</span>
+                    <span class="detail-value">${msg.RSSI ? msg.RSSI + ' dBm' : 'Not recorded'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Timestamp</span>
+                    <span class="detail-value">${new Date(msg.timestamp).toLocaleString()}</span>
+                </div>
+            `;
+
+            document.getElementById('view-modal').classList.add('active');
+        }
+
+        function closeViewModal() {
+            document.getElementById('view-modal').classList.remove('active');
+        }
+
+        // Create message
+        function openCreateModal() {
+            document.getElementById('message-form').reset();
+            document.getElementById('create-modal').classList.add('active');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-modal').classList.remove('active');
+        }
+
+        async function createMessage() {
+            const did = document.getElementById('msg-device').value;
+            const messageCode = document.getElementById('msg-type').value;
+            const rssi = document.getElementById('msg-rssi').value;
+
+            if (!did || !messageCode) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/Create/message.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        DID: parseInt(did),
+                        message_code: parseInt(messageCode),
+                        RSSI: rssi ? parseInt(rssi) : null
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Message created successfully');
+                    closeCreateModal();
+                    loadMessages();
+                } else {
+                    showToast(data.message || 'Error creating message', 'error');
+                }
+            } catch (error) {
+                showToast('Error creating message', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Delete
+        function openDeleteModal(id) {
+            deleteId = id;
+            document.getElementById('delete-modal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            deleteId = null;
+            document.getElementById('delete-modal').classList.remove('active');
+        }
+
+        async function confirmDelete() {
+            if (!deleteId) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/Delete/message.php?id=${deleteId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Message deleted successfully');
+                    closeDeleteModal();
+                    loadMessages();
+                } else {
+                    showToast(data.message || 'Error deleting message', 'error');
+                }
+            } catch (error) {
+                showToast('Error deleting message', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Filters
+        document.getElementById('device-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
+        document.getElementById('message-type-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
+        document.getElementById('from-date').addEventListener('change', () => { currentPage = 1; loadMessages(); });
+        document.getElementById('to-date').addEventListener('change', () => { currentPage = 1; loadMessages(); });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            syncTheme();
+            loadInitialData().then(() => loadMessages());
+        });
+    </script>
+</body>
+
+</html>
