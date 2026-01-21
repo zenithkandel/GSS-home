@@ -3,7 +3,7 @@ self.addEventListener('push', function (event) {
     const payload = event.data.json();
     const notif = payload.notification || {};
     const data = payload.data || {};
-    
+
     const options = {
         body: notif.body || data.body || 'New emergency alert',
         icon: notif.icon || data.icon || '/res/lifeline.png',
@@ -12,11 +12,11 @@ self.addEventListener('push', function (event) {
         tag: 'lifeline-emergency',
         renotify: true,
         requireInteraction: true,
-        data: { 
-            url: notif.click_action || data.click_action || '/portal/dashboard.php' 
+        data: {
+            url: notif.click_action || data.click_action || '/portal/dashboard.php'
         }
     };
-    
+
     event.waitUntil(
         self.registration.showNotification(
             notif.title || data.title || '🚨 LifeLine Emergency',
