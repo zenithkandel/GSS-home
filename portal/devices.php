@@ -107,6 +107,27 @@
         </div>
     </div>
 
+    <!-- Map Modal -->
+    <div class="modal-overlay" id="map-modal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <span class="modal-title" id="map-modal-title">📍 Location</span>
+                <button class="modal-close" onclick="closeMapModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <div class="map-container" id="map-container">
+                    <div class="map-loading">Loading map...</div>
+                </div>
+                <div class="map-info" id="map-info">
+                    <span class="map-location-name" id="map-location-name"></span>
+                    <button class="btn btn-primary" id="open-gmaps-btn" onclick="openInGoogleMaps()">
+                        🗺️ Open in Google Maps
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast" id="toast">
         <span id="toast-message"></span>

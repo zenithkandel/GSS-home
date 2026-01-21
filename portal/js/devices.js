@@ -312,8 +312,12 @@ async function confirmDelete() {
     }
 }
 
-// Google Maps location lookup
-async function getGoogleMapsUrl(placeName) {
+// Map Modal Variables
+let currentMapLocation = null;
+let currentMapCoords = null;
+
+// Get coordinates from location name using Nominatim
+async function getCoordinates(placeName) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName + ", Nepal")}`;
 
     const response = await fetch(url, {
@@ -328,10 +332,10 @@ async function getGoogleMapsUrl(placeName) {
         throw new Error("Location not found");
     }
 
-    const lat = data[0].lat;
-    const lon = data[0].lon;
-
-    return `https://www.google.com/maps?q=${lat},${lon}`;
+    return {
+        lat: data[0].lat,
+        lon: data[0].lon
+    };
 }
 
 async function viewLocation(locationName) {
@@ -340,14 +344,50 @@ async function viewLocation(locationName) {
         return;
     }
 
-    showToast('Looking up location...', 'success');
+    currentMapLocation = locationName;
+
+    // Open modal
+    document.getElementById('map-modal').classList.add('active');
+    document.getElementById('map-modal-title').textContent = `📍 ${locationName}`;
+    document.getElementById('map-location-name').textContent = locationName;
+    document.getElementById('map-container').innerHTML = '<div class="map-loading">Loading map...</div>';
 
     try {
-        const mapUrl = await getGoogleMapsUrl(locationName);
-        window.open(mapUrl, '_blank');
+        const coords = await getCoordinates(locationName);
+        currentMapCoords = coords;
+
+        // Create OpenStreetMap embed
+        const bbox = `${parseFloat(coords.lon) - 0.01},${parseFloat(coords.lat) - 0.01},${parseFloat(coords.lon) + 0.01},${parseFloat(coords.lat) + 0.01}`;
+        document.getElementById('map-container').innerHTML = `
+            <iframe 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${coords.lat},${coords.lon}" 
+                loading="lazy"
+            ></iframe>
+        `;
     } catch (error) {
-        showToast('Could not find location on map', 'error');
+        currentMapCoords = null;
+        document.getElementById('map-container').innerHTML = `
+            <div class="map-loading">
+                <div style="font-size: 32px; margin-bottom: 12px;">📍</div>
+                <div>Could not load map for "${locationName}"</div>
+                <div style="font-size: 12px; margin-top: 8px; color: var(--text-muted);">Location not found</div>
+            </div>
+        `;
         console.error('Location lookup error:', error);
+    }
+}
+
+function closeMapModal() {
+    document.getElementById('map-modal').classList.remove('active');
+    currentMapLocation = null;
+    currentMapCoords = null;
+}
+
+function openInGoogleMaps() {
+    if (currentMapCoords) {
+        window.open(`https://www.google.com/maps?q=${currentMapCoords.lat},${currentMapCoords.lon}`, '_blank');
+    } else if (currentMapLocation) {
+        window.open(`https://www.google.com/maps/search/${encodeURIComponent(currentMapLocation + ", Nepal")}`, '_blank');
     }
 }
 

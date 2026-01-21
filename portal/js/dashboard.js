@@ -61,6 +61,46 @@ function getAlertIcon(messageCode) {
     return icons[messageCode] || '⚡';
 }
 
+// Get coordinates from location name using Nominatim
+async function getCoordinates(placeName) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName + ", Nepal")}`;
+        const response = await fetch(url, {
+            headers: { "User-Agent": "LifeLine/1.0" }
+        });
+        const data = await response.json();
+        if (data.length > 0) {
+            return { lat: data[0].lat, lon: data[0].lon };
+        }
+    } catch (error) {
+        console.error('Geocoding error:', error);
+    }
+    return null;
+}
+
+// Load map for an alert card
+async function loadAlertMap(alertId, locationName) {
+    const mapContainer = document.getElementById(`map-${alertId}`);
+    if (!mapContainer || !locationName) return;
+
+    const coords = await getCoordinates(locationName);
+    if (coords) {
+        mapContainer.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon - 0.01},${coords.lat - 0.01},${parseFloat(coords.lon) + 0.01},${parseFloat(coords.lat) + 0.01}&layer=mapnik&marker=${coords.lat},${coords.lon}" loading="lazy"></iframe>`;
+    } else {
+        mapContainer.innerHTML = `<div class="alert-map-loading">📍 ${locationName}</div>`;
+    }
+}
+
+// Open location in Google Maps
+function openInMaps(locationName) {
+    if (!locationName) return;
+    getCoordinates(locationName).then(coords => {
+        if (coords) {
+            window.open(`https://www.google.com/maps?q=${coords.lat},${coords.lon}`, '_blank');
+        }
+    });
+}
+
 // Render alerts
 function renderAlerts(messages) {
     const container = document.getElementById('alerts-container');
@@ -78,21 +118,44 @@ function renderAlerts(messages) {
     }
 
     badge.textContent = `${messages.length} Active`;
+    const severity = (code) => getSeverity(code);
 
     container.innerHTML = messages.map(msg => `
-        <div class="alert-card ${getSeverity(msg.message_code)}">
-            <div class="alert-icon">${getAlertIcon(msg.message_code)}</div>
-            <div class="alert-content">
-                <div class="alert-title">${msg.message_text || 'Unknown Alert'}</div>
+        <div class="alert-card ${severity(msg.message_code)}">
+            <div class="alert-map" id="map-${msg.MID}">
+                <div class="alert-map-loading">Loading map...</div>
+            </div>
+            <div class="alert-body">
+                <div class="alert-header">
+                    <div class="alert-icon">${getAlertIcon(msg.message_code)}</div>
+                    <div class="alert-title-wrap">
+                        <div class="alert-title">${msg.message_text || 'Unknown Alert'}</div>
+                        <span class="alert-severity ${severity(msg.message_code)}">${severity(msg.message_code)}</span>
+                    </div>
+                </div>
                 <div class="alert-meta">
                     <span>📍 ${msg.location_name || 'Unknown Location'}</span>
                     <span>📟 ${msg.device_name || 'Device ' + msg.DID}</span>
                     ${msg.RSSI ? `<span>📶 ${msg.RSSI} dBm</span>` : ''}
                 </div>
+                <div class="alert-footer">
+                    <div class="alert-time">🕐 ${formatTime(msg.timestamp)}</div>
+                    <div class="alert-actions">
+                        <button class="alert-btn" onclick="openInMaps('${(msg.location_name || '').replace(/'/g, "\\'")}')">
+                            🗺️ Open Maps
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="alert-time">${formatTime(msg.timestamp)}</div>
         </div>
     `).join('');
+
+    // Load maps for each alert
+    messages.forEach(msg => {
+        if (msg.location_name) {
+            loadAlertMap(msg.MID, msg.location_name);
+        }
+    });
 }
 
 // Render device list
