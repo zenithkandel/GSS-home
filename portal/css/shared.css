@@ -621,9 +621,17 @@ textarea {
     color: var(--text-secondary);
 }
 
-.stat-value.success { color: var(--success); }
-.stat-value.warning { color: var(--warning); }
-.stat-value.danger { color: var(--danger); }
+.stat-value.success {
+    color: var(--success);
+}
+
+.stat-value.warning {
+    color: var(--warning);
+}
+
+.stat-value.danger {
+    color: var(--danger);
+}
 
 /* ========================================
    DATA TABLES

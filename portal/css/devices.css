@@ -1,11 +1,11 @@
-/* Devices Page Styles - Enhanced UI */
+/* Devices Page Styles */
 
 /* ========================================
    MAP MODAL
    ======================================== */
 .map-container {
     width: 100%;
-    height: 400px;
+    height: 360px;
     background: var(--bg-tertiary);
     position: relative;
     overflow: hidden;
@@ -15,12 +15,6 @@
     width: 100%;
     height: 100%;
     border: none;
-    filter: grayscale(20%);
-    transition: filter var(--transition-normal);
-}
-
-.map-container:hover iframe {
-    filter: grayscale(0%);
 }
 
 .map-loading {
@@ -29,15 +23,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--text-muted);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .map-loading i {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--accent);
 }
 
@@ -45,17 +39,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 24px;
+    padding: 14px 20px;
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-color);
 }
 
 .map-location-name {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .map-location-name::before {
@@ -73,33 +67,17 @@
     overflow: hidden;
 }
 
-.data-table th:first-child {
-    border-top-left-radius: var(--radius-lg);
-}
-
-.data-table th:last-child {
-    border-top-right-radius: var(--radius-lg);
-}
-
-.data-table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: var(--radius-lg);
-}
-
-.data-table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: var(--radius-lg);
-}
-
 /* ========================================
    RESPONSIVE
    ======================================== */
 @media (max-width: 768px) {
     .map-container {
-        height: 300px;
+        height: 280px;
     }
 
     .map-info {
         flex-direction: column;
-        gap: 14px;
+        gap: 12px;
         align-items: stretch;
     }
 
@@ -107,31 +85,4 @@
         width: 100%;
         justify-content: center;
     }
-}
-
-.map-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-.map-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-}
-
-.map-location-name {
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-.map-location-name::before {
-    content: '📍 ';
 }
