@@ -176,7 +176,6 @@
     </div>
 
     <script src="js/mapping.js"></script>
-    <script type="module" src="../firebase.js"></script>
 </body>
 
 </html>

@@ -167,7 +167,6 @@
     </div>
 
     <script src="js/helps.js"></script>
-    <script type="module" src="../firebase.js"></script>
 </body>
 
 </html>

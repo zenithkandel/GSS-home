@@ -24,7 +24,7 @@ const BASE_PATH = '/GSS%20home';
 
 // VAPID Key - Generate from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
 // This must be the FULL public key (usually ~88 characters starting with 'B')
-const VAPID_KEY = 'BES5fRlcZH3MqhhoHIKYxCWttypqYIaisy0blc9v3hbYWhIQo9b8dxCB6YFk4ba4wOxHDZyfzneGPP7vi72Hmkw';
+const VAPID_KEY = 'BJTRqCBgTVqr0ZTEWGJ8D2kiN1d5Lpz1ODthM_4zHf4KbZcj1Vv6kZaB-JZyVsZmEWIruN0qA7zqIXmco-fgngc';
 
 /**
  * Wait for service worker to become active

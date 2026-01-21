@@ -148,7 +148,6 @@
     </div>
 
     <script src="js/messages.js"></script>
-    <script type="module" src="../firebase.js"></script>
 </body>
 
 </html>
