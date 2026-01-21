@@ -118,6 +118,11 @@
             font-size: 14px;
         }
 
+        .btn-icon.view:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         .btn-icon.edit:hover {
             border-color: var(--warning);
             color: var(--warning);
@@ -533,6 +538,7 @@
                                 </td>
                                 <td>${formatTime(device.last_ping)}</td>
                                 <td class="actions">
+                                    <button class="btn btn-icon view" onclick="viewLocation('${device.location_name || locations[device.LID] || ''}')" title="View on Map">📍</button>
                                     <button class="btn btn-icon edit" onclick="openModal('edit', ${device.DID})" title="Edit">✎</button>
                                     <button class="btn btn-icon delete" onclick="openDeleteModal(${device.DID})" title="Delete">🗑</button>
                                 </td>
@@ -720,6 +726,45 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        // Google Maps location lookup
+        async function getGoogleMapsUrl(placeName) {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName + ", Nepal")}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    "User-Agent": "LifeLine/1.0"
+                }
+            });
+
+            const data = await response.json();
+
+            if (!data.length) {
+                throw new Error("Location not found");
+            }
+
+            const lat = data[0].lat;
+            const lon = data[0].lon;
+
+            return `https://www.google.com/maps?q=${lat},${lon}`;
+        }
+
+        async function viewLocation(locationName) {
+            if (!locationName) {
+                showToast('No location specified for this device', 'error');
+                return;
+            }
+
+            showToast('Looking up location...', 'success');
+
+            try {
+                const mapUrl = await getGoogleMapsUrl(locationName);
+                window.open(mapUrl, '_blank');
+            } catch (error) {
+                showToast('Could not find location on map', 'error');
+                console.error('Location lookup error:', error);
+            }
         }
 
         // Initialize
