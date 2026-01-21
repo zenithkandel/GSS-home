@@ -104,6 +104,13 @@ a {
     width: 32px;
     height: 32px;
     object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Light theme - show logo normally */
+[data-theme="light"] .logo-img,
+[data-theme="light"] .footer-logo-img {
+    filter: none;
 }
 
 .nav-links {
@@ -719,6 +726,7 @@ a {
     width: 28px;
     height: 28px;
     object-fit: contain;
+    filter: brightness(0) invert(1);
 }
 
 .footer-brand p {
