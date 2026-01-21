@@ -6,6 +6,8 @@
  */
 
 require_once '../../database.php';
+require_once '../../vendor/autoload.php';
+require_once '../fcm_helper.php';
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -69,6 +71,30 @@ try {
     ");
     $fetchStmt->execute(['mid' => $messageId]);
     $message = $fetchStmt->fetch();
+
+    // Send push notifications to all registered devices
+    try {
+        $fcm = new FCMHelper();
+        $notificationResult = $fcm->sendEmergencyNotification(
+            $db,
+            $message['device_name'] ?? null,
+            $message['location_name'] ?? 'Unknown Location',
+            $message['message_text'] ?? 'Emergency Alert',
+            $messageId
+        );
+        
+        // Add notification result to response
+        $message['notification_sent'] = true;
+        $message['notifications'] = [
+            'success' => $notificationResult['success'] ?? 0,
+            'failure' => $notificationResult['failure'] ?? 0
+        ];
+    } catch (Exception $e) {
+        // Log error but don't fail the message creation
+        error_log('FCM notification error: ' . $e->getMessage());
+        $message['notification_sent'] = false;
+        $message['notification_error'] = $e->getMessage();
+    }
 
     sendResponse(true, $message, 'Emergency message created successfully', 201);
 
