@@ -34,10 +34,6 @@
             <span class="stat-number text-warning" id="message-count">-</span>
             <span class="stat-label">Message</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-number text-success" id="help-count">-</span>
-            <span class="stat-label">Help</span>
-        </div>
     </div>
 
     <div class="toolbar">
@@ -46,7 +42,6 @@
                 <option value="">All Types</option>
                 <option value="location">Location</option>
                 <option value="message">Message</option>
-                <option value="help">Help</option>
             </select>
             <input type="text" class="search-input" id="search-input" placeholder="Search mappings...">
         </div>
@@ -79,7 +74,6 @@
                             <option value="">Select Type</option>
                             <option value="location">Location</option>
                             <option value="message">Message</option>
-                            <option value="help">Help</option>
                         </select>
                     </div>
 

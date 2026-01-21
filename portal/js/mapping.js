@@ -46,10 +46,14 @@ async function loadIndexes() {
         const data = await res.json();
 
         if (data.success) {
-            // Handle both single index and array response
-            if (Array.isArray(data.data)) {
+            // Handle different response formats
+            if (data.data.indexes && Array.isArray(data.data.indexes)) {
+                // All indexes response: { indexes: [...], total: n }
+                indexes = data.data.indexes;
+            } else if (Array.isArray(data.data)) {
                 indexes = data.data;
             } else if (data.data.mapping) {
+                // Single index response
                 indexes = [data.data];
             } else {
                 indexes = [];
@@ -84,15 +88,13 @@ function updateStats() {
     document.getElementById('total-count').textContent = indexes.length;
     document.getElementById('location-count').textContent = indexes.filter(i => i.type === 'location').length;
     document.getElementById('message-count').textContent = indexes.filter(i => i.type === 'message').length;
-    document.getElementById('help-count').textContent = indexes.filter(i => i.type === 'help').length;
 }
 
 // Get type icon
 function getTypeIcon(type) {
     const icons = {
         'location': 'fa-solid fa-location-dot',
-        'message': 'fa-solid fa-message',
-        'help': 'fa-solid fa-hands-helping'
+        'message': 'fa-solid fa-message'
     };
     return icons[type] || 'fa-solid fa-tag';
 }
@@ -309,10 +311,10 @@ async function editIndex(iid) {
     document.getElementById('index-type').disabled = true; // Can't change type
     document.getElementById('index-description').value = index.description || '';
 
-    // Populate mapping entries
+    // Populate mapping entries with header
     const mapping = typeof index.mapping === 'string' ? JSON.parse(index.mapping) : index.mapping;
     const entriesContainer = document.getElementById('mapping-entries');
-    entriesContainer.innerHTML = '';
+    entriesContainer.innerHTML = getEntriesHeader();
 
     Object.entries(mapping).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).forEach(([code, value]) => {
         addMappingEntry(code, value);
@@ -326,16 +328,33 @@ function closeEditModal() {
     document.getElementById('edit-modal').classList.remove('show');
 }
 
+// Get header for entries
+function getEntriesHeader() {
+    return `
+        <div class="mapping-entries-header">
+            <span class="code-label">Code</span>
+            <span class="value-label">Value</span>
+            <span class="action-label"></span>
+        </div>
+    `;
+}
+
 // Add mapping entry row
 function addMappingEntry(code = '', value = '') {
     const entriesContainer = document.getElementById('mapping-entries');
+    
+    // Add header if this is the first entry
+    if (!entriesContainer.querySelector('.mapping-entries-header')) {
+        entriesContainer.innerHTML = getEntriesHeader();
+    }
+    
     const entry = document.createElement('div');
     entry.className = 'mapping-entry';
     entry.innerHTML = `
-        <input type="number" class="code-input" placeholder="Code" value="${code}" min="1">
-        <input type="text" class="value-input" placeholder="Value" value="${escapeHtml(value)}">
-        <button type="button" class="remove-entry" onclick="this.parentElement.remove()">
-            <i class="fa-solid fa-xmark"></i>
+        <input type="number" class="code-input" placeholder="e.g. 1" value="${code}" min="1">
+        <input type="text" class="value-input" placeholder="e.g. Namche Bazaar" value="${escapeHtml(value)}">
+        <button type="button" class="remove-entry" onclick="this.parentElement.remove()" title="Remove">
+            <i class="fa-solid fa-trash"></i>
         </button>
     `;
     entriesContainer.appendChild(entry);
