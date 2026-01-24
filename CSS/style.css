@@ -418,13 +418,23 @@ img {
     -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 0%, transparent 70%);
 }
 
-.hero-content {
+/* Hero Split Layout */
+.hero-wrapper {
     position: relative;
     z-index: 2;
     max-width: var(--max-width);
     margin: 0 auto;
     padding: var(--space-8) var(--space-6);
-    padding-bottom: var(--space-32);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    align-items: center;
+    min-height: calc(100vh - var(--nav-height));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
 }
 
 .hero-tag {
@@ -670,114 +680,124 @@ img {
     text-transform: uppercase;
 }
 
-/* Hero illustration */
+/* Hero illustration - Split layout right side */
 .hero-illustration {
-    position: absolute;
-    bottom: 120px;
-    right: var(--space-6);
-    width: 400px;
-    max-width: 40vw;
+    position: relative;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
     animation: fadeInUp 0.8s var(--ease-out) 3.1s forwards;
 }
 
-.signal-svg {
+.hero-devices-svg {
     width: 100%;
+    max-width: 500px;
     height: auto;
-    color: var(--color-gray-500);
 }
 
-.device-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    fill: var(--color-gray-500);
+/* Sender device animations */
+.sender-device .wave-s1,
+.sender-device .wave-s2,
+.sender-device .wave-s3 {
+    animation: wavePulse 2s ease-out infinite;
 }
 
-.signal-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.05em;
-    fill: var(--color-gray-600);
+.sender-device .wave-s2 { animation-delay: 0.3s; }
+.sender-device .wave-s3 { animation-delay: 0.6s; }
+
+@keyframes wavePulse {
+    0% { opacity: 0.8; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(10px); }
 }
 
-/* Signal animation */
-.wave {
-    opacity: 0;
-    animation: waveOut 2s var(--ease-out) infinite;
+.sender-device .antenna-glow {
+    animation: glowPulse 1s ease-in-out infinite;
 }
 
-.wave-1 {
-    animation-delay: 0s;
+@keyframes glowPulse {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px #dc2626); }
+    50% { opacity: 0.6; filter: drop-shadow(0 0 8px #dc2626); }
 }
 
-.wave-2 {
-    animation-delay: 0.3s;
+.sender-device .sos-blink {
+    animation: sosBlink 0.5s ease-in-out infinite;
 }
 
-.wave-3 {
-    animation-delay: 0.6s;
+@keyframes sosBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
 
-@keyframes waveOut {
-    0% {
-        opacity: 0.8;
-    }
-
-    100% {
-        opacity: 0;
-    }
+.sender-device .progress-bar {
+    animation: progressFill 2s ease-in-out infinite;
 }
 
-.wave-receive {
-    opacity: 0;
-    animation: waveIn 2s var(--ease-out) infinite;
+@keyframes progressFill {
+    0% { width: 0; }
+    50% { width: 76px; }
+    100% { width: 0; }
 }
 
-.wave-r1 {
-    animation-delay: 1s;
+/* Receiver device animations */
+.receiver-device .wave-r1,
+.receiver-device .wave-r2 {
+    animation: waveReceive 2s ease-out infinite;
 }
 
-.wave-r2 {
-    animation-delay: 1.2s;
+.receiver-device .wave-r2 { animation-delay: 0.3s; }
+
+@keyframes waveReceive {
+    0% { opacity: 0; transform: translateX(-10px); }
+    50% { opacity: 0.7; }
+    100% { opacity: 0; transform: translateX(0); }
 }
 
-@keyframes waveIn {
-    0% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 0.8;
-    }
-
-    100% {
-        opacity: 0;
-    }
+.receiver-device .antenna-receive {
+    animation: receiveGlow 2s ease-in-out infinite;
 }
 
-.signal-dot {
-    animation: signalTravel 3s linear infinite;
+@keyframes receiveGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; filter: drop-shadow(0 0 6px #22c55e); }
 }
 
-.dot-1 {
-    animation-delay: 0s;
+.receiver-device .led-blink {
+    animation: ledPulse 1s ease-in-out infinite;
 }
 
-.dot-2 {
-    animation-delay: 1s;
+.receiver-device .led-blink-slow {
+    animation: ledPulse 2s ease-in-out infinite;
 }
 
-.dot-3 {
-    animation-delay: 2s;
+.receiver-device .led-alert {
+    animation: ledAlert 0.5s ease-in-out infinite;
 }
 
-@keyframes signalTravel {
-    0% {
-        cx: 80;
-        opacity: 0;
-    }
+@keyframes ledPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+@keyframes ledAlert {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px #dc2626); }
+    50% { opacity: 0.5; }
+}
+
+.receiver-device .time-blink {
+    animation: timeBlink 1s step-end infinite;
+}
+
+@keyframes timeBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Signal connection */
+.signal-pulse {
+    filter: drop-shadow(0 0 4px #dc2626);
+}
 
     10% {
         opacity: 1;
