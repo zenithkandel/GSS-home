@@ -1,16 +1,14 @@
 /* =====================================================
    LifeLine - Main JavaScript
-   Three.js + GSAP + ScrollTrigger
+   Organic Visualizations + GSAP ScrollTrigger
    ===================================================== */
 
 // Wait for DOM and libraries to load
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all modules
     initLoader();
-    initCursor();
     initNavigation();
-    initThreeHero();
-    initMeshCanvas();
+    initTopoHero();
+    initRelayCanvas();
     initScrollAnimations();
     initCounters();
     initParallax();
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function initLoader() {
     const loader = document.getElementById('loader');
 
-    // Simulate loading time for resources
     window.addEventListener('load', () => {
         setTimeout(() => {
             loader.classList.add('hidden');
@@ -30,58 +27,7 @@ function initLoader() {
         }, 2200);
     });
 
-    // Prevent scrolling during load
     document.body.style.overflow = 'hidden';
-}
-
-/* =====================================================
-   Custom Cursor
-   ===================================================== */
-function initCursor() {
-    const cursor = document.getElementById('cursor');
-    const follower = document.getElementById('cursorFollower');
-
-    if (!cursor || !follower) return;
-
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    let followerX = 0, followerY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    // Smooth cursor animation
-    function animateCursor() {
-        // Cursor follows instantly
-        cursorX += (mouseX - cursorX) * 0.5;
-        cursorY += (mouseY - cursorY) * 0.5;
-        cursor.style.left = cursorX + 'px';
-        cursor.style.top = cursorY + 'px';
-
-        // Follower has lag
-        followerX += (mouseX - followerX) * 0.15;
-        followerY += (mouseY - followerY) * 0.15;
-        follower.style.left = followerX + 'px';
-        follower.style.top = followerY + 'px';
-
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Hover effects
-    const interactiveElements = document.querySelectorAll('a, button, .btn');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursor.classList.add('active');
-            follower.classList.add('active');
-        });
-        el.addEventListener('mouseleave', () => {
-            cursor.classList.remove('active');
-            follower.classList.remove('active');
-        });
-    });
 }
 
 /* =====================================================
@@ -92,7 +38,6 @@ function initNavigation() {
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
 
-    // Scroll effect
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
         const currentScroll = window.scrollY;
@@ -106,7 +51,6 @@ function initNavigation() {
         lastScroll = currentScroll;
     }, { passive: true });
 
-    // Mobile toggle
     if (navToggle) {
         navToggle.addEventListener('click', () => {
             navToggle.classList.toggle('active');
@@ -114,7 +58,6 @@ function initNavigation() {
         });
     }
 
-    // Smooth scroll for nav links
     document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
@@ -132,7 +75,6 @@ function initNavigation() {
                     behavior: 'smooth'
                 });
 
-                // Close mobile menu
                 navToggle?.classList.remove('active');
                 navLinks?.classList.remove('active');
             }
@@ -141,269 +83,271 @@ function initNavigation() {
 }
 
 /* =====================================================
-   Three.js Hero - 3D Mountain Terrain with Nodes
+   Topographic Mountain Contour Hero Background
+   Organic, hand-drawn feel - inspired by survey maps
    ===================================================== */
-function initThreeHero() {
+function initTopoHero() {
     const container = document.getElementById('heroCanvas');
-    if (!container || typeof THREE === 'undefined') return;
+    if (!container) return;
 
-    // Scene setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    container.appendChild(canvas);
 
-    const renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    let width, height;
+    let mouseX = 0.5, mouseY = 0.5;
+    let time = 0;
 
-    // Materials
-    const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xdc2626 });
-    const lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x404040,
-        transparent: true,
-        opacity: 0.3
-    });
-    const signalMaterial = new THREE.MeshBasicMaterial({
-        color: 0xdc2626,
-        transparent: true,
-        opacity: 0.8
-    });
+    // Mountain peaks - these form the basis of our topographic map
+    const peaks = [];
+    const numPeaks = 6;
 
-    // Create terrain (simplified mountain points)
-    const terrainPoints = [];
-    const gridSize = 20;
-    const gridSpacing = 2;
-
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            const x = (i - gridSize / 2) * gridSpacing;
-            const z = (j - gridSize / 2) * gridSpacing;
-
-            // Create mountain-like height using multiple sine waves
-            const height =
-                Math.sin(i * 0.3) * Math.cos(j * 0.3) * 3 +
-                Math.sin(i * 0.15 + 1) * 2 +
-                Math.cos(j * 0.2) * 2 +
-                Math.random() * 0.5;
-
-            terrainPoints.push(new THREE.Vector3(x, height, z));
+    function generatePeaks() {
+        peaks.length = 0;
+        for (let i = 0; i < numPeaks; i++) {
+            peaks.push({
+                x: 0.15 + Math.random() * 0.7,
+                y: 0.2 + Math.random() * 0.6,
+                height: 0.3 + Math.random() * 0.7,
+                spread: 0.15 + Math.random() * 0.2
+            });
         }
     }
 
-    // Create dots for terrain
-    const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-    const dotMaterial = new THREE.MeshBasicMaterial({ color: 0x2a2a2a });
-
-    terrainPoints.forEach(point => {
-        const dot = new THREE.Mesh(dotGeometry, dotMaterial);
-        dot.position.copy(point);
-        scene.add(dot);
-    });
-
-    // Create grid lines
-    const lineGeometry = new THREE.BufferGeometry();
-    const linePositions = [];
-
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize - 1; j++) {
-            const idx = i * gridSize + j;
-            const p1 = terrainPoints[idx];
-            const p2 = terrainPoints[idx + 1];
-            linePositions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
-        }
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * window.devicePixelRatio;
+        canvas.height = height * window.devicePixelRatio;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        generatePeaks();
     }
 
-    for (let i = 0; i < gridSize - 1; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            const idx = i * gridSize + j;
-            const p1 = terrainPoints[idx];
-            const p2 = terrainPoints[idx + gridSize];
-            linePositions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
-        }
-    }
-
-    lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-    const grid = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(grid);
-
-    // Create network nodes (LoRa devices)
-    const nodes = [];
-    const nodePositions = [
-        { x: -8, z: -6 },
-        { x: -4, z: 2 },
-        { x: 0, z: -4 },
-        { x: 4, z: 0 },
-        { x: 8, z: -2 },
-        { x: -2, z: 6 },
-        { x: 6, z: 6 },
-        { x: -6, z: 4 },
-    ];
-
-    const nodeGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-
-    nodePositions.forEach((pos, i) => {
-        // Find height at this position
-        const terrainIndex = Math.floor((pos.x / gridSpacing + gridSize / 2)) * gridSize +
-            Math.floor((pos.z / gridSpacing + gridSize / 2));
-        const height = terrainPoints[Math.min(terrainIndex, terrainPoints.length - 1)]?.y || 2;
-
-        const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
-        node.position.set(pos.x, height + 1.5, pos.z);
-        scene.add(node);
-        nodes.push(node);
-
-        // Add glow ring
-        const ringGeometry = new THREE.RingGeometry(0.3, 0.35, 32);
-        const ringMaterial = new THREE.MeshBasicMaterial({
-            color: 0xdc2626,
-            transparent: true,
-            opacity: 0.5,
-            side: THREE.DoubleSide
-        });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring.position.copy(node.position);
-        ring.rotation.x = -Math.PI / 2;
-        ring.userData = { baseOpacity: 0.5, phase: Math.random() * Math.PI * 2 };
-        scene.add(ring);
-        nodes.push(ring);
-    });
-
-    // Create connections between nearby nodes
-    const connectionLines = [];
-    const actualNodes = nodes.filter((_, i) => i % 2 === 0); // Only spheres, not rings
-
-    for (let i = 0; i < actualNodes.length; i++) {
-        for (let j = i + 1; j < actualNodes.length; j++) {
-            const dist = actualNodes[i].position.distanceTo(actualNodes[j].position);
-            if (dist < 12) {
-                const connectionGeometry = new THREE.BufferGeometry().setFromPoints([
-                    actualNodes[i].position,
-                    actualNodes[j].position
-                ]);
-                const connectionMaterial = new THREE.LineBasicMaterial({
-                    color: 0xdc2626,
-                    transparent: true,
-                    opacity: 0.2
-                });
-                const line = new THREE.Line(connectionGeometry, connectionMaterial);
-                scene.add(line);
-                connectionLines.push(line);
-            }
-        }
-    }
-
-    // Signal particles
-    const signals = [];
-
-    function createSignal() {
-        if (actualNodes.length < 2) return;
-
-        const startIdx = Math.floor(Math.random() * actualNodes.length);
-        let endIdx = Math.floor(Math.random() * actualNodes.length);
-        while (endIdx === startIdx) {
-            endIdx = Math.floor(Math.random() * actualNodes.length);
-        }
-
-        const signalGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-        const signal = new THREE.Mesh(signalGeometry, signalMaterial.clone());
-        signal.position.copy(actualNodes[startIdx].position);
-        signal.userData = {
-            start: actualNodes[startIdx].position.clone(),
-            end: actualNodes[endIdx].position.clone(),
-            progress: 0,
-            speed: 0.008 + Math.random() * 0.005
-        };
-        scene.add(signal);
-        signals.push(signal);
-    }
-
-    // Create initial signals
-    for (let i = 0; i < 3; i++) {
-        setTimeout(() => createSignal(), i * 500);
-    }
-
-    // Camera position
-    camera.position.set(0, 15, 25);
-    camera.lookAt(0, 0, 0);
-
-    // Mouse interaction
-    let mouseX = 0, mouseY = 0;
-    let targetRotationX = 0, targetRotationY = 0;
+    resize();
+    window.addEventListener('resize', debounce(resize, 200));
 
     document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        mouseX = e.clientX / width;
+        mouseY = e.clientY / height;
     });
 
-    // Animation loop
-    let time = 0;
-    function animate() {
-        requestAnimationFrame(animate);
-        time += 0.01;
-
-        // Rotate scene based on mouse
-        targetRotationY = mouseX * 0.2;
-        targetRotationX = mouseY * 0.1;
-
-        scene.rotation.y += (targetRotationY - scene.rotation.y) * 0.02;
-        scene.rotation.x += (targetRotationX - scene.rotation.x) * 0.02;
-
-        // Animate node rings (pulse effect)
-        nodes.forEach((node, i) => {
-            if (i % 2 === 1) { // Rings
-                const phase = node.userData.phase;
-                node.material.opacity = node.userData.baseOpacity * (0.5 + 0.5 * Math.sin(time * 2 + phase));
-                node.scale.setScalar(1 + 0.1 * Math.sin(time * 2 + phase));
-            }
+    // Calculate elevation at a point based on all peaks
+    function getElevation(x, y, t) {
+        let elevation = 0;
+        
+        peaks.forEach((peak, i) => {
+            // Add subtle movement to peaks
+            const px = peak.x + Math.sin(t * 0.5 + i) * 0.02;
+            const py = peak.y + Math.cos(t * 0.3 + i * 1.5) * 0.015;
+            
+            const dx = x - px;
+            const dy = y - py;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            // Gaussian-like falloff for natural mountain shape
+            const contribution = peak.height * Math.exp(-(dist * dist) / (2 * peak.spread * peak.spread));
+            elevation += contribution;
         });
-
-        // Animate signals
-        signals.forEach((signal, index) => {
-            signal.userData.progress += signal.userData.speed;
-
-            if (signal.userData.progress >= 1) {
-                // Reset signal
-                scene.remove(signal);
-                signals.splice(index, 1);
-                setTimeout(createSignal, Math.random() * 1000);
-            } else {
-                // Lerp position
-                signal.position.lerpVectors(
-                    signal.userData.start,
-                    signal.userData.end,
-                    signal.userData.progress
-                );
-
-                // Fade out at end
-                signal.material.opacity = signal.userData.progress < 0.8 ? 0.8 : (1 - signal.userData.progress) * 4;
-            }
-        });
-
-        // Pulse connection lines
-        connectionLines.forEach((line, i) => {
-            line.material.opacity = 0.1 + 0.1 * Math.sin(time + i);
-        });
-
-        renderer.render(scene, camera);
+        
+        // Add some noise for natural terrain feel
+        const noiseX = Math.sin(x * 15 + t * 0.2) * 0.02;
+        const noiseY = Math.cos(y * 12 + t * 0.15) * 0.02;
+        elevation += noiseX + noiseY;
+        
+        // Mouse influence - subtle terrain deformation
+        const mouseDist = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
+        elevation += 0.1 * Math.exp(-mouseDist * mouseDist * 8);
+        
+        return elevation;
     }
-    animate();
 
-    // Resize handler
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    // Draw a single contour line using marching squares approximation
+    function drawContourLine(level, t) {
+        const resolution = 80;
+        const cellW = width / resolution;
+        const cellH = height / resolution;
+        
+        ctx.beginPath();
+        
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const x = i / resolution;
+                const y = j / resolution;
+                
+                // Sample elevation at four corners
+                const e00 = getElevation(x, y, t);
+                const e10 = getElevation(x + 1/resolution, y, t);
+                const e01 = getElevation(x, y + 1/resolution, t);
+                const e11 = getElevation(x + 1/resolution, y + 1/resolution, t);
+                
+                // Determine which corners are above the contour level
+                const b00 = e00 > level ? 1 : 0;
+                const b10 = e10 > level ? 1 : 0;
+                const b01 = e01 > level ? 1 : 0;
+                const b11 = e11 > level ? 1 : 0;
+                
+                const caseIndex = b00 + b10 * 2 + b01 * 4 + b11 * 8;
+                
+                // Skip cases with no contour crossing
+                if (caseIndex === 0 || caseIndex === 15) continue;
+                
+                const px = i * cellW;
+                const py = j * cellH;
+                
+                // Draw line segments based on marching squares case
+                const points = getMarchingSquaresPoints(caseIndex, px, py, cellW, cellH, e00, e10, e01, e11, level);
+                
+                if (points.length >= 2) {
+                    ctx.moveTo(points[0].x, points[0].y);
+                    ctx.lineTo(points[1].x, points[1].y);
+                }
+                if (points.length >= 4) {
+                    ctx.moveTo(points[2].x, points[2].y);
+                    ctx.lineTo(points[3].x, points[3].y);
+                }
+            }
+        }
+        
+        ctx.stroke();
+    }
+
+    function getMarchingSquaresPoints(caseIndex, x, y, w, h, e00, e10, e01, e11, level) {
+        const points = [];
+        
+        // Interpolation helpers
+        const interpX = (e1, e2) => (level - e1) / (e2 - e1);
+        
+        // Edge midpoints with interpolation
+        const top = { x: x + w * interpX(e00, e10), y: y };
+        const bottom = { x: x + w * interpX(e01, e11), y: y + h };
+        const left = { x: x, y: y + h * interpX(e00, e01) };
+        const right = { x: x + w, y: y + h * interpX(e10, e11) };
+        
+        // Marching squares lookup
+        switch (caseIndex) {
+            case 1: case 14: points.push(left, top); break;
+            case 2: case 13: points.push(top, right); break;
+            case 3: case 12: points.push(left, right); break;
+            case 4: case 11: points.push(bottom, left); break;
+            case 5: points.push(left, top, bottom, right); break;
+            case 6: case 9: points.push(top, bottom); break;
+            case 7: case 8: points.push(bottom, right); break;
+            case 10: points.push(top, left, bottom, right); break;
+        }
+        
+        return points;
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        time += 0.008;
+        
+        // Clear with slight fade for subtle trails
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.15)';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Draw contour lines at different elevations
+        const numContours = 12;
+        
+        for (let i = 0; i < numContours; i++) {
+            const level = 0.1 + (i / numContours) * 0.8;
+            const brightness = 25 + (i / numContours) * 35;
+            const alpha = 0.3 + (i / numContours) * 0.4;
+            
+            ctx.strokeStyle = `rgba(${brightness}, ${brightness}, ${brightness}, ${alpha})`;
+            ctx.lineWidth = i === numContours - 1 ? 1.5 : 0.8;
+            
+            drawContourLine(level, time);
+        }
+        
+        // Draw signal nodes on the terrain
+        drawSignalNodes(time);
+    }
+
+    // Signal nodes that sit on the topographic map
+    const signalNodes = [
+        { baseX: 0.2, baseY: 0.3 },
+        { baseX: 0.35, baseY: 0.55 },
+        { baseX: 0.5, baseY: 0.35 },
+        { baseX: 0.65, baseY: 0.6 },
+        { baseX: 0.8, baseY: 0.4 },
+    ];
+
+    let activeSignal = { from: 0, to: 1, progress: 0 };
+
+    function drawSignalNodes(t) {
+        // Update signal
+        activeSignal.progress += 0.008;
+        if (activeSignal.progress >= 1) {
+            activeSignal.from = activeSignal.to;
+            activeSignal.to = (activeSignal.to + 1) % signalNodes.length;
+            activeSignal.progress = 0;
+        }
+
+        // Draw connections
+        ctx.strokeStyle = 'rgba(220, 38, 38, 0.15)';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < signalNodes.length - 1; i++) {
+            const n1 = signalNodes[i];
+            const n2 = signalNodes[i + 1];
+            
+            ctx.beginPath();
+            ctx.setLineDash([4, 8]);
+            ctx.moveTo(n1.baseX * width, n1.baseY * height);
+            ctx.lineTo(n2.baseX * width, n2.baseY * height);
+            ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        // Draw nodes
+        signalNodes.forEach((node, i) => {
+            const x = node.baseX * width;
+            const y = node.baseY * height;
+            const pulse = Math.sin(t * 3 + i * 1.2) * 0.5 + 0.5;
+            
+            // Outer glow
+            ctx.beginPath();
+            ctx.arc(x, y, 12 + pulse * 6, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(220, 38, 38, ${0.1 + pulse * 0.1})`;
+            ctx.fill();
+            
+            // Core
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#dc2626';
+            ctx.fill();
+        });
+
+        // Draw traveling signal
+        const from = signalNodes[activeSignal.from];
+        const to = signalNodes[activeSignal.to];
+        const sigX = from.baseX + (to.baseX - from.baseX) * activeSignal.progress;
+        const sigY = from.baseY + (to.baseY - from.baseY) * activeSignal.progress;
+        
+        ctx.beginPath();
+        ctx.arc(sigX * width, sigY * height, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(220, 38, 38, 0.9)';
+        ctx.fill();
+        
+        // Signal trail
+        ctx.beginPath();
+        ctx.arc(sigX * width, sigY * height, 12, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(220, 38, 38, 0.3)';
+        ctx.fill();
+    }
+
+    draw();
 }
 
 /* =====================================================
-   Mesh Canvas - 2D Network Visualization
+   Relay Network Canvas - How It Works Step 2
+   Shows signal hopping between mountain stations
    ===================================================== */
-function initMeshCanvas() {
-    const canvas = document.getElementById('meshCanvas');
+function initRelayCanvas() {
+    const canvas = document.getElementById('relayCanvas');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -417,149 +361,213 @@ function initMeshCanvas() {
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', debounce(resize, 200));
 
-    // Nodes
-    const nodes = [];
-    const numNodes = 8;
+    const width = () => container.clientWidth;
+    const height = () => container.clientHeight;
 
-    for (let i = 0; i < numNodes; i++) {
-        nodes.push({
-            x: 50 + Math.random() * (container.clientWidth - 100),
-            y: 50 + Math.random() * (container.clientHeight - 100),
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            radius: 6,
-            pulsePhase: Math.random() * Math.PI * 2
-        });
-    }
+    // Define relay stations as mountain positions
+    const stations = [
+        { x: 0.1, y: 0.7, label: 'Origin' },
+        { x: 0.3, y: 0.4, label: 'Relay 1' },
+        { x: 0.5, y: 0.6, label: 'Relay 2' },
+        { x: 0.7, y: 0.35, label: 'Relay 3' },
+        { x: 0.9, y: 0.5, label: 'Gateway' },
+    ];
 
-    // Signals traveling between nodes
-    const signals = [];
-
-    function createSignal() {
-        if (nodes.length < 2) return;
-        const startIdx = Math.floor(Math.random() * nodes.length);
-        let endIdx = Math.floor(Math.random() * nodes.length);
-        while (endIdx === startIdx) endIdx = Math.floor(Math.random() * nodes.length);
-
-        signals.push({
-            startNode: startIdx,
-            endNode: endIdx,
-            progress: 0,
-            speed: 0.01 + Math.random() * 0.01
-        });
-    }
-
-    // Create initial signals
-    for (let i = 0; i < 3; i++) {
-        setTimeout(createSignal, i * 300);
-    }
+    // Signal traveling through the relay chain
+    let signal = { 
+        currentHop: 0, 
+        progress: 0, 
+        active: true,
+        trail: []
+    };
 
     let time = 0;
 
-    function animate() {
-        requestAnimationFrame(animate);
-        time += 0.02;
-
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-
-        ctx.clearRect(0, 0, width, height);
-
-        // Update node positions
-        nodes.forEach(node => {
-            node.x += node.vx;
-            node.y += node.vy;
-
-            // Bounce off edges
-            if (node.x < 50 || node.x > width - 50) node.vx *= -1;
-            if (node.y < 50 || node.y > height - 50) node.vy *= -1;
-
-            // Keep in bounds
-            node.x = Math.max(50, Math.min(width - 50, node.x));
-            node.y = Math.max(50, Math.min(height - 50, node.y));
+    function drawMountainSilhouette() {
+        const w = width();
+        const h = height();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        
+        // Draw jagged mountain silhouette
+        const points = [
+            { x: 0, y: 0.85 },
+            { x: 0.08, y: 0.7 },
+            { x: 0.15, y: 0.75 },
+            { x: 0.22, y: 0.5 },
+            { x: 0.28, y: 0.55 },
+            { x: 0.35, y: 0.35 },
+            { x: 0.42, y: 0.45 },
+            { x: 0.48, y: 0.55 },
+            { x: 0.55, y: 0.4 },
+            { x: 0.62, y: 0.5 },
+            { x: 0.7, y: 0.3 },
+            { x: 0.78, y: 0.42 },
+            { x: 0.85, y: 0.38 },
+            { x: 0.92, y: 0.55 },
+            { x: 1, y: 0.6 },
+        ];
+        
+        points.forEach(p => {
+            ctx.lineTo(p.x * w, p.y * h);
         });
-
-        // Draw connections
-        ctx.strokeStyle = 'rgba(60, 60, 60, 0.3)';
-        ctx.lineWidth = 1;
-
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = nodes[j].x - nodes[i].x;
-                const dy = nodes[j].y - nodes[i].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < 200) {
-                    const opacity = (1 - dist / 200) * 0.3;
-                    ctx.strokeStyle = `rgba(80, 80, 80, ${opacity})`;
-                    ctx.beginPath();
-                    ctx.moveTo(nodes[i].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.stroke();
-                }
-            }
-        }
-
-        // Draw and update signals
-        signals.forEach((signal, idx) => {
-            signal.progress += signal.speed;
-
-            if (signal.progress >= 1) {
-                signals.splice(idx, 1);
-                setTimeout(createSignal, Math.random() * 500);
-                return;
-            }
-
-            const start = nodes[signal.startNode];
-            const end = nodes[signal.endNode];
-            const x = start.x + (end.x - start.x) * signal.progress;
-            const y = start.y + (end.y - start.y) * signal.progress;
-
-            // Signal glow
-            const gradient = ctx.createRadialGradient(x, y, 0, x, y, 15);
-            gradient.addColorStop(0, 'rgba(220, 38, 38, 0.8)');
-            gradient.addColorStop(1, 'rgba(220, 38, 38, 0)');
-
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(x, y, 15, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Signal core
-            ctx.fillStyle = '#dc2626';
-            ctx.beginPath();
-            ctx.arc(x, y, 4, 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        // Draw nodes
-        nodes.forEach((node, i) => {
-            const pulse = 0.5 + 0.5 * Math.sin(time * 2 + node.pulsePhase);
-
-            // Outer ring
-            ctx.strokeStyle = `rgba(220, 38, 38, ${0.2 + pulse * 0.3})`;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.radius + 4 + pulse * 4, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Node fill
-            ctx.fillStyle = '#dc2626';
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Node highlight
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.arc(node.x - 2, node.y - 2, 2, 0, Math.PI * 2);
-            ctx.fill();
-        });
+        
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        
+        // Mountain gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, h);
+        gradient.addColorStop(0, 'rgba(30, 30, 30, 0.8)');
+        gradient.addColorStop(1, 'rgba(20, 20, 20, 0.4)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
     }
 
-    animate();
+    function drawStation(station, index, t) {
+        const w = width();
+        const h = height();
+        const x = station.x * w;
+        const y = station.y * h;
+        
+        const isActive = index <= signal.currentHop;
+        const pulse = Math.sin(t * 2 + index) * 0.5 + 0.5;
+        
+        // Tower structure
+        ctx.strokeStyle = isActive ? '#dc2626' : 'rgba(100, 100, 100, 0.6)';
+        ctx.lineWidth = 2;
+        
+        // Tower base
+        ctx.beginPath();
+        ctx.moveTo(x - 8, y);
+        ctx.lineTo(x, y - 25);
+        ctx.lineTo(x + 8, y);
+        ctx.stroke();
+        
+        // Cross beams
+        ctx.beginPath();
+        ctx.moveTo(x - 5, y - 8);
+        ctx.lineTo(x + 5, y - 8);
+        ctx.moveTo(x - 3, y - 16);
+        ctx.lineTo(x + 3, y - 16);
+        ctx.stroke();
+        
+        // Signal rings when active
+        if (isActive) {
+            for (let r = 0; r < 3; r++) {
+                const radius = 10 + r * 12 + pulse * 5;
+                const alpha = (1 - r / 3) * 0.3 * (0.5 + pulse * 0.5);
+                
+                ctx.beginPath();
+                ctx.arc(x, y - 25, radius, -Math.PI * 0.75, -Math.PI * 0.25);
+                ctx.strokeStyle = `rgba(220, 38, 38, ${alpha})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+        
+        // Label
+        ctx.fillStyle = isActive ? 'rgba(220, 38, 38, 0.9)' : 'rgba(150, 150, 150, 0.7)';
+        ctx.font = '10px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(station.label, x, y + 15);
+    }
+
+    function drawConnections(t) {
+        const w = width();
+        const h = height();
+        
+        for (let i = 0; i < stations.length - 1; i++) {
+            const from = stations[i];
+            const to = stations[i + 1];
+            const isActive = i < signal.currentHop;
+            
+            ctx.beginPath();
+            ctx.setLineDash([6, 6]);
+            ctx.moveTo(from.x * w, from.y * h - 25);
+            ctx.lineTo(to.x * w, to.y * h - 25);
+            ctx.strokeStyle = isActive ? 'rgba(220, 38, 38, 0.4)' : 'rgba(80, 80, 80, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    }
+
+    function drawSignal(t) {
+        if (!signal.active) return;
+        
+        const w = width();
+        const h = height();
+        
+        const from = stations[signal.currentHop];
+        const to = stations[signal.currentHop + 1];
+        
+        if (!to) {
+            // Reset signal
+            signal.currentHop = 0;
+            signal.progress = 0;
+            signal.trail = [];
+            return;
+        }
+        
+        const x = from.x + (to.x - from.x) * signal.progress;
+        const y = (from.y + (to.y - from.y) * signal.progress) - 0.07; // Arc above the line
+        
+        // Add to trail
+        signal.trail.push({ x, y, alpha: 1 });
+        if (signal.trail.length > 15) signal.trail.shift();
+        
+        // Draw trail
+        signal.trail.forEach((pt, i) => {
+            const alpha = (i / signal.trail.length) * 0.6;
+            ctx.beginPath();
+            ctx.arc(pt.x * w, pt.y * h, 3 + (i / signal.trail.length) * 2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(220, 38, 38, ${alpha})`;
+            ctx.fill();
+        });
+        
+        // Main signal
+        ctx.beginPath();
+        ctx.arc(x * w, y * h, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#dc2626';
+        ctx.fill();
+        
+        // Glow
+        ctx.beginPath();
+        ctx.arc(x * w, y * h, 12, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(220, 38, 38, 0.3)';
+        ctx.fill();
+        
+        // Update
+        signal.progress += 0.012;
+        if (signal.progress >= 1) {
+            signal.currentHop++;
+            signal.progress = 0;
+            signal.trail = [];
+        }
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        time += 0.016;
+        
+        const w = width();
+        const h = height();
+        
+        // Clear
+        ctx.fillStyle = 'rgba(15, 15, 15, 1)';
+        ctx.fillRect(0, 0, w, h);
+        
+        // Draw elements
+        drawMountainSilhouette();
+        drawConnections(time);
+        stations.forEach((s, i) => drawStation(s, i, time));
+        drawSignal(time);
+    }
+
+    draw();
 }
 
 /* =====================================================
@@ -708,7 +716,6 @@ function animateCounter(element) {
         const elapsed = currentTime - start;
         const progress = Math.min(elapsed / duration, 1);
 
-        // Ease out cubic
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = target * eased;
 
@@ -734,7 +741,6 @@ function animateCounter(element) {
 function initParallax() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    // Hero content parallax
     gsap.to('.hero-content', {
         scrollTrigger: {
             trigger: '.hero',
@@ -747,7 +753,6 @@ function initParallax() {
         ease: 'none'
     });
 
-    // Hero illustration parallax
     gsap.to('.hero-illustration', {
         scrollTrigger: {
             trigger: '.hero',
@@ -759,7 +764,6 @@ function initParallax() {
         ease: 'none'
     });
 
-    // Problem visual parallax
     gsap.to('.problem-visual', {
         scrollTrigger: {
             trigger: '.section-problem',
@@ -771,7 +775,6 @@ function initParallax() {
         ease: 'none'
     });
 
-    // Section backgrounds subtle movement
     gsap.utils.toArray('.section').forEach(section => {
         gsap.to(section, {
             scrollTrigger: {
@@ -807,12 +810,10 @@ function debounce(func, wait) {
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 if (prefersReducedMotion.matches) {
-    // Disable GSAP animations
     if (typeof gsap !== 'undefined') {
         gsap.globalTimeline.timeScale(0);
     }
 
-    // Disable CSS animations
     document.documentElement.style.setProperty('--transition-fast', '0ms');
     document.documentElement.style.setProperty('--transition-base', '0ms');
     document.documentElement.style.setProperty('--transition-slow', '0ms');

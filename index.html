@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="LifeLine - Emergency Response Network. Save lives in remote areas without internet using LoRa mesh technology."
+      content="LifeLine - Emergency Response Network. Save lives in remote areas without internet using long-range LoRa technology."
     />
     <title>LifeLine | Emergency Response Network</title>
 
@@ -27,10 +27,6 @@
     <link rel="stylesheet" href="CSS/style.css" />
   </head>
   <body>
-    <!-- Cursor follower -->
-    <div class="cursor" id="cursor"></div>
-    <div class="cursor-follower" id="cursorFollower"></div>
-
     <!-- Loading screen -->
     <div class="loader" id="loader">
       <div class="loader-content">
@@ -518,16 +514,16 @@
             <span class="connector-label">LoRa Signal</span>
           </div>
 
-          <!-- Step 2: Mesh -->
+          <!-- Step 2: Relay Network -->
           <div class="flow-step" data-step="2">
             <div class="step-visual">
-              <div class="mesh-visualization" id="meshViz">
-                <canvas id="meshCanvas"></canvas>
+              <div class="relay-visualization" id="relayViz">
+                <canvas id="relayCanvas"></canvas>
               </div>
             </div>
             <div class="step-content">
               <div class="step-number">02</div>
-              <h3 class="step-title">Mesh Network</h3>
+              <h3 class="step-title">Relay Network</h3>
               <p class="step-desc">
                 Signals hop from node to node across the mountains until they
                 reach a gateway. No towers, no internet — just clever radio
@@ -535,7 +531,7 @@
               </p>
               <ul class="step-features">
                 <li>Up to 15km per hop</li>
-                <li>Self-healing topology</li>
+                <li>Multi-hop routing</li>
                 <li>Line-of-sight optimized</li>
               </ul>
             </div>
@@ -745,10 +741,10 @@
                 />
               </svg>
             </div>
-            <h3 class="tech-title">Mesh Topology</h3>
+            <h3 class="tech-title">Multi-Hop Relay</h3>
             <p class="tech-desc">
-              Self-healing network where each node can relay signals, ensuring
-              no single point of failure.
+              Intelligent routing where each node can relay signals, extending
+              coverage across vast mountain ranges.
             </p>
           </div>
 
