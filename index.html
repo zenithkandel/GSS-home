@@ -1,1234 +1,569 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LifeLine - Emergency Response Network. Save lives in remote areas without internet using LoRa mesh technology.">
     <title>LifeLine | Emergency Response Network</title>
-    <link rel="stylesheet" href="CSS/style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+    
+    <!-- Preload critical assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <!-- Cursor follower -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <!-- Loading screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-signal">
+                <div class="signal-dot"></div>
+                <div class="signal-wave"></div>
+                <div class="signal-wave"></div>
+                <div class="signal-wave"></div>
+            </div>
+            <div class="loader-text">ESTABLISHING CONNECTION</div>
+            <div class="loader-progress">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <nav class="nav">
-      <div class="nav-inner">
-        <a href="#" class="nav-logo">
-          <img src="res/lifeline.png" alt="LifeLine Logo" class="logo-img" />
-          <span>LifeLine</span>
-        </a>
-        <div class="nav-links">
-          <a href="#problem" class="nav-link">Problem</a>
-          <a href="#solution" class="nav-link">Solution</a>
-          <a href="#stats" class="nav-link">Impact</a>
-          <a href="#tech" class="nav-link">Tech</a>
+    <nav class="nav" id="nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                    <circle cx="20" cy="20" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                    <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3"/>
+                </svg>
+                <span class="logo-text">LifeLine</span>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="#problem" class="nav-link" data-index="01">The Problem</a>
+                <a href="#solution" class="nav-link" data-index="02">How It Works</a>
+                <a href="#impact" class="nav-link" data-index="03">Impact</a>
+                <a href="#technology" class="nav-link" data-index="04">Technology</a>
+            </div>
+            
+            <div class="nav-actions">
+                <a href="login.php" class="nav-cta">
+                    <span>Access Portal</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-        <div class="nav-actions">
-          <button
-            class="theme-toggle"
-            id="themeToggle"
-            aria-label="Toggle theme"
-          >
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-            </svg>
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <path
-                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-              />
-            </svg>
-          </button>
-          <a href="login.php" class="nav-cta">Portal →</a>
-        </div>
-      </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-content">
-        <div class="hero-tag">OFFLINE EMERGENCY SYSTEM</div>
-        <h1 class="hero-title">
-          Save Lives<br />
-          <span class="title-highlight">Without Internet</span>
-        </h1>
-        <p class="hero-subtitle">
-          LoRa mesh network for Nepal's remote mountains
-        </p>
-        <div class="hero-buttons">
-          <a href="#solution" class="btn btn-primary">How It Works</a>
-          <a href="login.php" class="btn btn-outline">Access Portal</a>
+    <section class="hero" id="hero">
+        <div class="hero-canvas" id="heroCanvas"></div>
+        
+        <div class="hero-content">
+            <div class="hero-tag">
+                <span class="tag-dot"></span>
+                <span class="tag-text">OFFLINE EMERGENCY SYSTEM</span>
+            </div>
+            
+            <h1 class="hero-title">
+                <span class="title-line">
+                    <span class="title-word">When</span>
+                    <span class="title-word">Networks</span>
+                </span>
+                <span class="title-line">
+                    <span class="title-word">Fail,</span>
+                    <span class="title-word title-accent">LifeLine</span>
+                </span>
+                <span class="title-line">
+                    <span class="title-word">Doesn't.</span>
+                </span>
+            </h1>
+            
+            <p class="hero-description">
+                A LoRa mesh network saving lives across Nepal's most remote mountains — 
+                where no cell tower reaches, our signal still travels.
+            </p>
+            
+            <div class="hero-actions">
+                <a href="#solution" class="btn btn-primary">
+                    <span>See How It Works</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
+                </a>
+                <a href="login.php" class="btn btn-ghost">
+                    <span>Emergency Portal</span>
+                </a>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-value" data-count="10">0</span>
+                    <span class="stat-label">Active Nodes</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-value" data-count="50" data-suffix="km">0</span>
+                    <span class="stat-label">Coverage Range</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-value" data-prefix="<" data-count="30" data-suffix="s">0</span>
+                    <span class="stat-label">Alert Time</span>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="hero-visual">
-        <!-- Detailed Illustration: Emergency Response Flow -->
-        <div class="network-illustration">
-          <div class="network-bg"></div>
-
-          <!-- Complete Scene SVG -->
-          <svg
-            class="scene-svg"
-            viewBox="0 0 600 400"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <defs>
-              <!-- Sky gradient - night sky -->
-              <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#0f1729" />
-                <stop offset="50%" stop-color="#1a1f35" />
-                <stop offset="100%" stop-color="#1e2842" />
-              </linearGradient>
-
-              <!-- Hill gradient - main hill where person is stranded -->
-              <linearGradient id="hillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#2d4a3e" />
-                <stop offset="40%" stop-color="#1e3329" />
-                <stop offset="100%" stop-color="#0f1a14" />
-              </linearGradient>
-
-              <!-- Background hill gradient -->
-              <linearGradient id="bgHillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#1a2f28" />
-                <stop offset="100%" stop-color="#0a1510" />
-              </linearGradient>
-
-              <!-- Ground gradient -->
-              <linearGradient id="groundGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#1a1f14" />
-                <stop offset="100%" stop-color="#0a0f08" />
-              </linearGradient>
-
-              <!-- Snow cap gradient -->
-              <linearGradient id="snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff" />
-                <stop offset="100%" stop-color="#d1d5db" />
-              </linearGradient>
-
-              <!-- Glow effects -->
-              <filter id="glowRed" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
-                <feFlood flood-color="#ef4444" flood-opacity="0.6" />
-                <feComposite in2="blur" operator="in" />
-                <feMerge>
-                  <feMergeNode />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-
-              <filter
-                id="glowBlue"
-                x="-50%"
-                y="-50%"
-                width="200%"
-                height="200%"
-              >
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feFlood flood-color="#3b82f6" flood-opacity="0.5" />
-                <feComposite in2="blur" operator="in" />
-                <feMerge>
-                  <feMergeNode />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-
-              <filter
-                id="glowGreen"
-                x="-50%"
-                y="-50%"
-                width="200%"
-                height="200%"
-              >
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feFlood flood-color="#22c55e" flood-opacity="0.5" />
-                <feComposite in2="blur" operator="in" />
-                <feMerge>
-                  <feMergeNode />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-
-              <!-- Helicopter flight path - from ground station UP to hilltop (ends at sender) -->
-              <path
-                id="heliPath"
-                d="M500,320 C480,280 400,180 320,120 C270,90 230,75 210,70"
-                fill="none"
-              />
-            </defs>
-
-            <!-- ========== SKY ========== -->
-            <rect x="0" y="0" width="600" height="400" fill="url(#skyGrad)" />
-
-            <!-- Stars -->
-            <g class="stars" opacity="0.8">
-              <circle cx="45" cy="35" r="1.5" fill="#fff" />
-              <circle cx="120" cy="55" r="1" fill="#fff" opacity="0.7" />
-              <circle cx="180" cy="25" r="1.8" fill="#fff" />
-              <circle cx="250" cy="60" r="1" fill="#fff" opacity="0.6" />
-              <circle cx="320" cy="30" r="1.5" fill="#fff" />
-              <circle cx="380" cy="50" r="1" fill="#fff" opacity="0.8" />
-              <circle cx="450" cy="20" r="1.3" fill="#fff" />
-              <circle cx="520" cy="45" r="1" fill="#fff" opacity="0.7" />
-              <circle cx="560" cy="25" r="1.5" fill="#fff" />
-              <circle cx="85" cy="75" r="0.8" fill="#fff" opacity="0.5" />
-              <circle cx="420" cy="70" r="0.8" fill="#fff" opacity="0.5" />
-              <circle cx="280" cy="40" r="1.2" fill="#fff" opacity="0.9" />
-            </g>
-
-            <!-- Moon -->
-            <circle cx="520" cy="70" r="25" fill="#f0f0e8" opacity="0.9" />
-            <circle cx="530" cy="65" r="25" fill="url(#skyGrad)" />
-
-            <!-- ========== BACKGROUND MOUNTAINS ========== -->
-            <g class="bg-mountains">
-              <!-- Far distant mountains -->
-              <polygon
-                points="0,280 50,200 100,240 150,180 200,220 250,160 300,200 350,150 400,190 450,140 500,180 550,130 600,170 600,400 0,400"
-                fill="#111a15"
-                opacity="0.6"
-              />
-
-              <!-- Mid distant mountains -->
-              <polygon
-                points="0,300 80,220 140,260 200,200 260,240 320,180 380,220 440,170 500,210 560,160 600,200 600,400 0,400"
-                fill="#152018"
-                opacity="0.7"
-              />
-            </g>
-
-            <!-- ========== MAIN HILL (where SOS sender is) ========== -->
-            <g class="main-hill">
-              <!-- Hill body - large prominent hill on the left -->
-              <polygon
-                points="0,400 0,280 40,240 80,200 120,140 160,120 200,100 220,95 240,100 280,120 320,160 360,220 400,300 450,400"
-                fill="url(#hillGrad)"
-              />
-
-              <!-- Snow cap on peak -->
-              <polygon
-                points="180,115 200,100 220,95 240,100 260,115 250,112 240,108 220,105 200,108 190,112"
-                fill="url(#snowGrad)"
-                opacity="0.95"
-              />
-
-              <!-- Hill texture/ridges -->
-              <line
-                x1="220"
-                y1="95"
-                x2="280"
-                y2="180"
-                stroke="#1a2f25"
-                stroke-width="1.5"
-                opacity="0.4"
-              />
-              <line
-                x1="200"
-                y1="100"
-                x2="160"
-                y2="200"
-                stroke="#1a2f25"
-                stroke-width="1.5"
-                opacity="0.4"
-              />
-              <line
-                x1="240"
-                y1="100"
-                x2="340"
-                y2="250"
-                stroke="#1a2f25"
-                stroke-width="1.5"
-                opacity="0.3"
-              />
-
-              <!-- Shadow on hill -->
-              <polygon
-                points="220,95 280,120 340,200 400,300 350,300 280,200 240,130"
-                fill="#0a1510"
-                opacity="0.3"
-              />
-
-              <!-- Trees on hillside (simple silhouettes) -->
-              <g class="trees" fill="#0f1a12">
-                <polygon points="100,260 105,230 108,260" />
-                <polygon points="115,250 121,215 127,250" />
-                <polygon points="140,235 148,195 156,235" />
-                <polygon points="85,275 90,250 95,275" />
-                <polygon points="160,220 167,185 174,220" />
-                <polygon points="300,270 307,240 314,270" />
-                <polygon points="320,285 326,260 332,285" />
-                <polygon points="340,300 345,275 350,300" />
-              </g>
-            </g>
-
-            <!-- ========== GROUND AREA (where basestation is) ========== -->
-            <g class="ground">
-              <!-- Flat ground on the right side -->
-              <polygon
-                points="400,400 400,340 450,330 500,325 550,330 600,335 600,400"
-                fill="url(#groundGrad)"
-              />
-
-              <!-- Ground texture -->
-              <line
-                x1="420"
-                y1="360"
-                x2="580"
-                y2="355"
-                stroke="#1a1f14"
-                stroke-width="1"
-                opacity="0.3"
-              />
-              <line
-                x1="430"
-                y1="375"
-                x2="590"
-                y2="370"
-                stroke="#1a1f14"
-                stroke-width="1"
-                opacity="0.3"
-              />
-            </g>
-
-            <!-- ========== BASESTATION (Ground Level - Bottom Right) ========== -->
-            <g class="basestation" transform="translate(500, 290)">
-              <!-- Building base -->
-              <rect
-                x="-30"
-                y="10"
-                width="60"
-                height="40"
-                fill="#1a1a1a"
-                stroke="#333"
-                stroke-width="1"
-              />
-
-              <!-- Antenna tower -->
-              <rect x="-3" y="-40" width="6" height="50" fill="#444" />
-              <polygon points="0,-55 -8,-40 8,-40" fill="#22c55e" />
-
-              <!-- Signal waves from antenna -->
-              <g filter="url(#glowGreen)">
-                <path
-                  d="M-15,-50 Q0,-65 15,-50"
-                  fill="none"
-                  stroke="#22c55e"
-                  stroke-width="2"
-                  opacity="0.6"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0.6;0.2;0.6"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
-                </path>
-                <path
-                  d="M-22,-55 Q0,-75 22,-55"
-                  fill="none"
-                  stroke="#22c55e"
-                  stroke-width="1.5"
-                  opacity="0.4"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0.4;0.1;0.4"
-                    dur="2s"
-                    begin="0.3s"
-                    repeatCount="indefinite"
-                  />
-                </path>
-              </g>
-
-              <!-- Windows -->
-              <rect
-                x="-20"
-                y="18"
-                width="10"
-                height="8"
-                fill="#fbbf24"
-                opacity="0.8"
-              />
-              <rect
-                x="10"
-                y="18"
-                width="10"
-                height="8"
-                fill="#fbbf24"
-                opacity="0.8"
-              />
-              <rect x="-5" y="32" width="10" height="18" fill="#374151" />
-
-              <!-- Helipad -->
-              <ellipse
-                cx="50"
-                cy="45"
-                rx="25"
-                ry="8"
-                fill="#1f2937"
-                stroke="#4b5563"
-                stroke-width="2"
-              />
-              <text
-                x="50"
-                y="48"
-                text-anchor="middle"
-                fill="#6b7280"
-                font-size="8"
-                font-weight="bold"
-              >
-                H
-              </text>
-            </g>
-
-            <!-- ========== SOS PERSON (Hilltop - Top Left) ========== -->
-            <g class="sos-person" transform="translate(210, 70)">
-              <!-- Person silhouette -->
-              <circle cx="0" cy="-15" r="8" fill="#374151" />
-              <path
-                d="M0,-7 L0,15 M-10,5 L0,0 L10,5 M0,15 L-8,30 M0,15 L8,30"
-                stroke="#374151"
-                stroke-width="3"
-                stroke-linecap="round"
-              />
-
-              <!-- SOS Device in hand -->
-              <rect x="8" y="-5" width="10" height="15" rx="2" fill="#ef4444" />
-              <circle cx="13" cy="2" r="2" fill="#fbbf24" />
-
-              <!-- SOS Signal waves -->
-              <g filter="url(#glowRed)">
-                <circle
-                  cx="13"
-                  cy="2"
-                  r="15"
-                  fill="none"
-                  stroke="#ef4444"
-                  stroke-width="2"
-                >
-                  <animate
-                    attributeName="r"
-                    values="15;40;15"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.8;0;0.8"
-                    dur="2s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-                <circle
-                  cx="13"
-                  cy="2"
-                  r="15"
-                  fill="none"
-                  stroke="#ef4444"
-                  stroke-width="2"
-                >
-                  <animate
-                    attributeName="r"
-                    values="15;40;15"
-                    dur="2s"
-                    begin="0.7s"
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.8;0;0.8"
-                    dur="2s"
-                    begin="0.7s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-              </g>
-            </g>
-
-            <!-- ========== SIGNAL LINE (SOS to Basestation) ========== -->
-            <g class="signal-path">
-              <!-- Dashed line showing signal transmission -->
-              <path
-                d="M230,75 Q350,150 500,250"
-                fill="none"
-                stroke="#ef4444"
-                stroke-width="2"
-                stroke-dasharray="8 4"
-                opacity="0.4"
-              />
-
-              <!-- Animated signal pulse -->
-              <circle r="6" fill="#ef4444" filter="url(#glowRed)">
-                <animateMotion
-                  dur="2.5s"
-                  repeatCount="indefinite"
-                  path="M230,75 Q350,150 500,250"
-                />
-                <animate
-                  attributeName="r"
-                  values="4;6;4"
-                  dur="0.5s"
-                  repeatCount="indefinite"
-                />
-              </circle>
-            </g>
-
-            <!-- ========== HELICOPTER (Flying from ground to hilltop) ========== -->
-            <g class="helicopter">
-              <animateMotion dur="5s" repeatCount="indefinite">
-                <mpath href="#heliPath" />
-              </animateMotion>
-
-              <!-- Helicopter facing left (toward rescue target) -->
-              <g transform="scale(-1, 1)">
-                <!-- Main body -->
-                <ellipse cx="0" cy="0" rx="22" ry="9" fill="#3b82f6" />
-                <ellipse cx="0" cy="0" rx="19" ry="7" fill="#2563eb" />
-
-                <!-- Cockpit -->
-                <ellipse cx="12" cy="-2" rx="8" ry="5" fill="#1e40af" />
-                <ellipse
-                  cx="14"
-                  cy="-3"
-                  rx="4"
-                  ry="3"
-                  fill="#60a5fa"
-                  opacity="0.5"
-                />
-
-                <!-- Tail boom -->
-                <polygon points="-22,0 -45,-4 -45,4 -22,0" fill="#3b82f6" />
-                <rect
-                  x="-50"
-                  y="-8"
-                  width="8"
-                  height="16"
-                  rx="1"
-                  fill="#2563eb"
-                />
-
-                <!-- Tail rotor -->
-                <line
-                  x1="-46"
-                  y1="-12"
-                  x2="-46"
-                  y2="12"
-                  stroke="#94a3b8"
-                  stroke-width="2.5"
-                >
-                  <animate
-                    attributeName="y1"
-                    values="-15;-10;-15"
-                    dur="0.08s"
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="y2"
-                    values="15;10;15"
-                    dur="0.08s"
-                    repeatCount="indefinite"
-                  />
-                </line>
-
-                <!-- Main rotor mast -->
-                <rect x="-3" y="-12" width="6" height="5" fill="#1e3a5f" />
-
-                <!-- Main rotor (spinning) -->
-                <g transform="translate(0, -14)">
-                  <line
-                    x1="-30"
-                    y1="0"
-                    x2="30"
-                    y2="0"
-                    stroke="#94a3b8"
-                    stroke-width="4"
-                    stroke-linecap="round"
-                  >
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="0"
-                      to="360"
-                      dur="0.12s"
-                      repeatCount="indefinite"
-                    />
-                  </line>
-                </g>
-
-                <!-- Landing skids -->
-                <g stroke="#475569" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="-12" y1="9" x2="-12" y2="14" />
-                  <line x1="12" y1="9" x2="12" y2="14" />
-                  <line x1="-18" y1="14" x2="18" y2="14" />
-                </g>
-
-                <!-- Red cross -->
-                <rect x="-4" y="-3" width="8" height="3" fill="#ef4444" />
-                <rect x="-1.5" y="-6" width="3" height="9" fill="#ef4444" />
-
-                <!-- Searchlight beam -->
-                <polygon
-                  points="8,8 -10,50 30,50"
-                  fill="#fbbf24"
-                  opacity="0.15"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0.15;0.25;0.15"
-                    dur="1s"
-                    repeatCount="indefinite"
-                  />
-                </polygon>
-              </g>
-            </g>
-
-            <!-- ========== FLIGHT PATH (visible dashed line) ========== -->
-            <use
-              href="#heliPath"
-              stroke="#3b82f6"
-              stroke-width="1.5"
-              stroke-dasharray="6 4"
-              opacity="0.3"
-            />
-
-            <!-- ========== LABELS ========== -->
-            <!-- SOS Label -->
-            <g class="label-sos" transform="translate(210, 25)">
-              <rect
-                x="-40"
-                y="-12"
-                width="80"
-                height="24"
-                rx="3"
-                fill="#dc2626"
-              />
-              <text
-                x="0"
-                y="4"
-                text-anchor="middle"
-                fill="#ffffff"
-                font-size="12"
-                font-weight="700"
-                font-family="Inter, sans-serif"
-              >
-                SOS ACTIVE
-              </text>
-            </g>
-
-            <!-- Rescue HQ Label -->
-            <g class="label-hq" transform="translate(500, 370)">
-              <rect
-                x="-45"
-                y="-10"
-                width="90"
-                height="20"
-                rx="3"
-                fill="#166534"
-              />
-              <text
-                x="0"
-                y="4"
-                text-anchor="middle"
-                fill="#ffffff"
-                font-size="11"
-                font-weight="600"
-                font-family="Inter, sans-serif"
-              >
-                RESCUE HQ
-              </text>
-            </g>
-
-            <!-- Rescue En Route Label -->
-            <g class="label-enroute" transform="translate(380, 180)">
-              <rect
-                x="-55"
-                y="-10"
-                width="110"
-                height="20"
-                rx="3"
-                fill="#1d4ed8"
-              />
-              <text
-                x="0"
-                y="4"
-                text-anchor="middle"
-                fill="#ffffff"
-                font-size="10"
-                font-weight="600"
-                font-family="Inter, sans-serif"
-              >
-                RESCUE EN ROUTE
-              </text>
-              <animate
-                attributeName="opacity"
-                values="1;0.6;1"
-                dur="1.5s"
-                repeatCount="indefinite"
-              />
-            </g>
-          </svg>
+        
+        <div class="hero-scroll">
+            <div class="scroll-indicator">
+                <span class="scroll-line"></span>
+                <span class="scroll-text">Scroll</span>
+            </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Stats Banner -->
-    <section class="stats-banner" id="stats">
-      <div class="stat-item">
-        <span class="stat-number">10+</span>
-        <span class="stat-unit">km</span>
-        <span class="stat-desc">Signal Range</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-number">0</span>
-        <span class="stat-unit">internet</span>
-        <span class="stat-desc">Required</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-number">24</span>
-        <span class="stat-unit">/7</span>
-        <span class="stat-desc">Always On</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-number">&lt;5</span>
-        <span class="stat-unit">sec</span>
-        <span class="stat-desc">Alert Time</span>
-      </div>
+        
+        <!-- Signal Transmission Illustration -->
+        <div class="hero-illustration">
+            <svg class="signal-svg" viewBox="0 0 400 120" preserveAspectRatio="xMidYMid meet">
+                <!-- Device A (Sender) -->
+                <g class="device-sender" transform="translate(40, 60)">
+                    <rect x="-25" y="-20" width="50" height="35" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="0" y1="-20" x2="0" y2="-40" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="0" cy="-42" r="3" fill="currentColor"/>
+                    <!-- Antenna waves -->
+                    <path class="wave wave-1" d="M8,-35 Q15,-42 8,-50" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path class="wave wave-2" d="M14,-32 Q25,-42 14,-53" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path class="wave wave-3" d="M20,-29 Q35,-42 20,-56" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <!-- Screen indicator -->
+                    <rect x="-15" y="-10" width="30" height="15" rx="1" fill="currentColor" opacity="0.1"/>
+                    <circle cx="-8" cy="-3" r="2" fill="currentColor" class="blink"/>
+                </g>
+                
+                <!-- Signal Path -->
+                <g class="signal-path">
+                    <line x1="80" y1="35" x2="320" y2="35" stroke="currentColor" stroke-width="1" stroke-dasharray="4,8" opacity="0.3"/>
+                    <!-- Traveling signal dots -->
+                    <circle class="signal-dot dot-1" cx="80" cy="35" r="3" fill="currentColor"/>
+                    <circle class="signal-dot dot-2" cx="80" cy="35" r="3" fill="currentColor"/>
+                    <circle class="signal-dot dot-3" cx="80" cy="35" r="3" fill="currentColor"/>
+                </g>
+                
+                <!-- Device B (Receiver) -->
+                <g class="device-receiver" transform="translate(360, 60)">
+                    <rect x="-25" y="-20" width="50" height="35" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="0" y1="-20" x2="0" y2="-40" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="0" cy="-42" r="3" fill="currentColor"/>
+                    <!-- Antenna waves (receiving) -->
+                    <path class="wave-receive wave-r1" d="M-8,-35 Q-15,-42 -8,-50" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path class="wave-receive wave-r2" d="M-14,-32 Q-25,-42 -14,-53" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <!-- Screen indicator -->
+                    <rect x="-15" y="-10" width="30" height="15" rx="1" fill="currentColor" opacity="0.1"/>
+                    <circle cx="8" cy="-3" r="2" fill="currentColor" class="blink-receive"/>
+                </g>
+                
+                <!-- Labels -->
+                <text x="40" y="100" text-anchor="middle" class="device-label">SOS Device</text>
+                <text x="360" y="100" text-anchor="middle" class="device-label">Base Station</text>
+                <text x="200" y="70" text-anchor="middle" class="signal-label">LoRa Signal · No Internet Required</text>
+            </svg>
+        </div>
     </section>
 
     <!-- Problem Section -->
-    <section class="problem" id="problem">
-      <div class="container">
-        <div class="section-label">THE PROBLEM</div>
-        <h2 class="section-title">3.5 Million People Can't Call for Help</h2>
-
-        <div class="problem-grid">
-          <div class="problem-card">
-            <div class="problem-icon">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="24" cy="24" r="20" />
-                <path
-                  d="M24 4v8M24 36v8M4 24h8M36 24h8"
-                  stroke-dasharray="4 4"
-                />
-                <line
-                  x1="10"
-                  y1="10"
-                  x2="38"
-                  y2="38"
-                  stroke="#ef4444"
-                  stroke-width="3"
-                />
-              </svg>
+    <section class="section section-problem" id="problem">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-index">01</span>
+                <h2 class="section-title">The Problem</h2>
+                <p class="section-subtitle">
+                    In Nepal's remote mountains, a medical emergency can become fatal 
+                    simply because there's no way to call for help.
+                </p>
             </div>
-            <div class="problem-stat">40%</div>
-            <div class="problem-label">No Cell Coverage</div>
-          </div>
-
-          <div class="problem-card">
-            <div class="problem-icon">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M24 4L8 16v24h32V16L24 4z" />
-                <rect x="18" y="28" width="12" height="12" />
-                <line
-                  x1="4"
-                  y1="44"
-                  x2="44"
-                  y2="4"
-                  stroke="#ef4444"
-                  stroke-width="3"
-                />
-              </svg>
+            
+            <div class="problem-grid">
+                <div class="problem-visual">
+                    <div class="problem-map">
+                        <svg viewBox="0 0 400 300" class="coverage-map">
+                            <!-- Simplified mountain outline -->
+                            <path class="mountain-path" d="M0,280 Q50,260 100,200 T200,100 T300,150 T400,180 L400,300 L0,300 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                            
+                            <!-- No coverage zones -->
+                            <g class="no-coverage">
+                                <circle cx="120" cy="160" r="30" fill="currentColor" opacity="0.1"/>
+                                <circle cx="200" cy="120" r="25" fill="currentColor" opacity="0.1"/>
+                                <circle cx="280" cy="140" r="35" fill="currentColor" opacity="0.1"/>
+                                <text x="120" y="165" text-anchor="middle" class="zone-label">No Signal</text>
+                                <text x="200" y="125" text-anchor="middle" class="zone-label">No Signal</text>
+                                <text x="280" y="145" text-anchor="middle" class="zone-label">No Signal</text>
+                            </g>
+                            
+                            <!-- X marks -->
+                            <g class="x-marks">
+                                <path d="M115,150 L125,160 M125,150 L115,160" stroke="currentColor" stroke-width="2"/>
+                                <path d="M195,110 L205,120 M205,110 L195,120" stroke="currentColor" stroke-width="2"/>
+                                <path d="M275,130 L285,140 M285,130 L275,140" stroke="currentColor" stroke-width="2"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="problem-content">
+                    <div class="problem-stats">
+                        <div class="problem-stat" data-aos="fade-up">
+                            <span class="problem-number" data-count="83">0</span>
+                            <span class="problem-unit">%</span>
+                            <span class="problem-label">of Nepal's terrain has no cellular coverage</span>
+                        </div>
+                        <div class="problem-stat" data-aos="fade-up" data-aos-delay="100">
+                            <span class="problem-number" data-count="4.5">0</span>
+                            <span class="problem-unit">hrs</span>
+                            <span class="problem-label">average delay to reach emergency services</span>
+                        </div>
+                        <div class="problem-stat" data-aos="fade-up" data-aos-delay="200">
+                            <span class="problem-number" data-count="300">0</span>
+                            <span class="problem-unit">+</span>
+                            <span class="problem-label">preventable deaths annually in Everest region</span>
+                        </div>
+                    </div>
+                    
+                    <blockquote class="problem-quote">
+                        <p>"When you're stranded above 5000m with a broken leg, your smartphone is just a cold piece of glass."</p>
+                        <cite>— Mountain Rescue Nepal</cite>
+                    </blockquote>
+                </div>
             </div>
-            <div class="problem-stat">18h</div>
-            <div class="problem-label">Daily Power Outage</div>
-          </div>
-
-          <div class="problem-card">
-            <div class="problem-icon">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="24" cy="24" r="20" />
-                <path d="M24 12v12l8 4" />
-              </svg>
-            </div>
-            <div class="problem-stat">4-8h</div>
-            <div class="problem-label">Response Delay</div>
-          </div>
-
-          <div class="problem-card">
-            <div class="problem-icon">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M4 44L20 20l8 12 16-28" />
-                <circle cx="20" cy="20" r="3" fill="#ef4444" />
-                <circle cx="44" cy="4" r="3" fill="#ef4444" />
-              </svg>
-            </div>
-            <div class="problem-stat">Annual</div>
-            <div class="problem-label">Disaster Events</div>
-          </div>
         </div>
-      </div>
     </section>
 
     <!-- Solution Section -->
-    <section class="solution" id="solution">
-      <div class="container">
-        <div class="section-label">THE SOLUTION</div>
-        <h2 class="section-title">How LifeLine Works</h2>
-
-        <div class="workflow">
-          <div class="workflow-step">
-            <div class="step-num">01</div>
-            <div class="step-visual">
-              <svg viewBox="0 0 80 80" fill="none">
-                <rect
-                  x="10"
-                  y="10"
-                  width="60"
-                  height="60"
-                  fill="#1a1a1a"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-                <circle cx="40" cy="40" r="16" fill="#ef4444" />
-                <text
-                  x="40"
-                  y="46"
-                  text-anchor="middle"
-                  fill="white"
-                  font-size="14"
-                  font-weight="bold"
-                >
-                  SOS
-                </text>
-              </svg>
+    <section class="section section-solution" id="solution">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-index">02</span>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">
+                    Three simple components working together to bridge the connectivity gap.
+                </p>
             </div>
-            <div class="step-info">
-              <h3>Emergency Triggered</h3>
-              <p>Button press or AI sensor detection</p>
+            
+            <div class="solution-flow">
+                <!-- Step 1: Device -->
+                <div class="flow-step" data-step="1">
+                    <div class="step-visual">
+                        <div class="device-3d" id="device3d"></div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-number">01</div>
+                        <h3 class="step-title">Spark Node</h3>
+                        <p class="step-desc">
+                            A rugged ESP32 + LoRa device worn by trekkers and installed at checkpoints. 
+                            One button press sends an encoded SOS signal that consumes minimal bandwidth.
+                        </p>
+                        <ul class="step-features">
+                            <li>7-day battery life</li>
+                            <li>Works in -20°C</li>
+                            <li>Waterproof design</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Connection Line -->
+                <div class="flow-connector">
+                    <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                        <path class="connector-path" d="M50,0 L50,200" stroke="currentColor" stroke-width="2" stroke-dasharray="8,8"/>
+                        <circle class="connector-dot" cx="50" cy="100" r="4" fill="currentColor"/>
+                    </svg>
+                    <span class="connector-label">LoRa Signal</span>
+                </div>
+                
+                <!-- Step 2: Mesh -->
+                <div class="flow-step" data-step="2">
+                    <div class="step-visual">
+                        <div class="mesh-visualization" id="meshViz">
+                            <canvas id="meshCanvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-number">02</div>
+                        <h3 class="step-title">Mesh Network</h3>
+                        <p class="step-desc">
+                            Signals hop from node to node across the mountains until they reach a gateway. 
+                            No towers, no internet — just clever radio physics.
+                        </p>
+                        <ul class="step-features">
+                            <li>Up to 15km per hop</li>
+                            <li>Self-healing topology</li>
+                            <li>Line-of-sight optimized</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Connection Line -->
+                <div class="flow-connector">
+                    <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                        <path class="connector-path" d="M50,0 L50,200" stroke="currentColor" stroke-width="2" stroke-dasharray="8,8"/>
+                        <circle class="connector-dot" cx="50" cy="100" r="4" fill="currentColor"/>
+                    </svg>
+                    <span class="connector-label">Gateway Relay</span>
+                </div>
+                
+                <!-- Step 3: Portal -->
+                <div class="flow-step" data-step="3">
+                    <div class="step-visual">
+                        <div class="portal-preview">
+                            <div class="preview-window">
+                                <div class="preview-header">
+                                    <span class="preview-dot"></span>
+                                    <span class="preview-dot"></span>
+                                    <span class="preview-dot"></span>
+                                </div>
+                                <div class="preview-content">
+                                    <div class="preview-alert">
+                                        <span class="alert-icon">!</span>
+                                        <div class="alert-info">
+                                            <span class="alert-type">MEDICAL EMERGENCY</span>
+                                            <span class="alert-location">Namche Bazaar · 3,440m</span>
+                                        </div>
+                                        <span class="alert-time">12s ago</span>
+                                    </div>
+                                    <div class="preview-map"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-number">03</div>
+                        <h3 class="step-title">Command Portal</h3>
+                        <p class="step-desc">
+                            Authorities receive instant push notifications and email alerts. 
+                            A live dashboard shows incident location and dispatches the nearest rescue team.
+                        </p>
+                        <ul class="step-features">
+                            <li>Real-time alerts</li>
+                            <li>Resource tracking</li>
+                            <li>Offline-first PWA</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="workflow-arrow">
-            <svg viewBox="0 0 40 20" fill="none">
-              <path d="M0 10h30M25 5l5 5-5 5" stroke="#333" stroke-width="2" />
-            </svg>
-          </div>
-
-          <div class="workflow-step">
-            <div class="step-num">02</div>
-            <div class="step-visual">
-              <svg viewBox="0 0 80 80" fill="none">
-                <rect
-                  x="10"
-                  y="15"
-                  width="60"
-                  height="50"
-                  fill="#1a1a1a"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-                <rect x="20" y="25" width="40" height="6" fill="#333" />
-                <rect x="20" y="35" width="30" height="6" fill="#ef4444" />
-                <rect x="20" y="45" width="35" height="6" fill="#333" />
-              </svg>
-            </div>
-            <div class="step-info">
-              <h3>Edge Processing</h3>
-              <p>ESP32 classifies emergency type</p>
-            </div>
-          </div>
-
-          <div class="workflow-arrow">
-            <svg viewBox="0 0 40 20" fill="none">
-              <path d="M0 10h30M25 5l5 5-5 5" stroke="#333" stroke-width="2" />
-            </svg>
-          </div>
-
-          <div class="workflow-step">
-            <div class="step-num">03</div>
-            <div class="step-visual">
-              <svg viewBox="0 0 80 80" fill="none">
-                <circle
-                  cx="20"
-                  cy="40"
-                  r="8"
-                  fill="#333"
-                  stroke="#555"
-                  stroke-width="2"
-                />
-                <circle
-                  cx="40"
-                  cy="25"
-                  r="8"
-                  fill="#333"
-                  stroke="#555"
-                  stroke-width="2"
-                />
-                <circle
-                  cx="60"
-                  cy="40"
-                  r="8"
-                  fill="#333"
-                  stroke="#555"
-                  stroke-width="2"
-                />
-                <circle cx="40" cy="55" r="8" fill="#ef4444" />
-                <line
-                  x1="25"
-                  y1="37"
-                  x2="35"
-                  y2="28"
-                  stroke="#555"
-                  stroke-width="2"
-                />
-                <line
-                  x1="45"
-                  y1="28"
-                  x2="55"
-                  y2="37"
-                  stroke="#555"
-                  stroke-width="2"
-                />
-                <line
-                  x1="40"
-                  y1="47"
-                  x2="40"
-                  y2="33"
-                  stroke="#ef4444"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <div class="step-info">
-              <h3>Mesh Relay</h3>
-              <p>Signal hops 10+ km per node</p>
-            </div>
-          </div>
-
-          <div class="workflow-arrow">
-            <svg viewBox="0 0 40 20" fill="none">
-              <path d="M0 10h30M25 5l5 5-5 5" stroke="#333" stroke-width="2" />
-            </svg>
-          </div>
-
-          <div class="workflow-step">
-            <div class="step-num">04</div>
-            <div class="step-visual">
-              <svg viewBox="0 0 80 80" fill="none">
-                <rect
-                  x="10"
-                  y="15"
-                  width="60"
-                  height="40"
-                  fill="#1a1a1a"
-                  stroke="#22c55e"
-                  stroke-width="2"
-                />
-                <circle
-                  cx="40"
-                  cy="35"
-                  r="10"
-                  stroke="#22c55e"
-                  stroke-width="2"
-                />
-                <path d="M36 35l3 3 6-6" stroke="#22c55e" stroke-width="2" />
-                <line
-                  x1="30"
-                  y1="60"
-                  x2="50"
-                  y2="60"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-                <line
-                  x1="40"
-                  y1="55"
-                  x2="40"
-                  y2="65"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <div class="step-info">
-              <h3>Gateway Received</h3>
-              <p>Syncs to cloud dashboard</p>
-            </div>
-          </div>
-
-          <div class="workflow-arrow">
-            <svg viewBox="0 0 40 20" fill="none">
-              <path d="M0 10h30M25 5l5 5-5 5" stroke="#333" stroke-width="2" />
-            </svg>
-          </div>
-
-          <div class="workflow-step">
-            <div class="step-num">05</div>
-            <div class="step-visual">
-              <svg viewBox="0 0 80 80" fill="none">
-                <circle
-                  cx="25"
-                  cy="30"
-                  r="12"
-                  fill="#1a1a1a"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-                <circle
-                  cx="55"
-                  cy="30"
-                  r="12"
-                  fill="#1a1a1a"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-                <circle cx="40" cy="55" r="12" fill="#ef4444" />
-                <path
-                  d="M25 42v8M55 42v8M32 60h16"
-                  stroke="#333"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <div class="step-info">
-              <h3>Rescue Dispatched</h3>
-              <p>Nearest responders alerted</p>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
 
-    <!-- Impact Numbers -->
-    <section class="impact">
-      <div class="container">
-        <div class="impact-grid">
-          <div class="impact-card">
-            <div class="impact-number">3.5M+</div>
-            <div class="impact-label">People without emergency access</div>
-            <div class="impact-bar">
-              <div class="impact-fill" style="width: 70%"></div>
+    <!-- Impact Section -->
+    <section class="section section-impact" id="impact">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-index">03</span>
+                <h2 class="section-title">Impact</h2>
+                <p class="section-subtitle">
+                    Measurable results in saving lives and improving emergency response.
+                </p>
             </div>
-          </div>
-          <div class="impact-card">
-            <div class="impact-number">40%</div>
-            <div class="impact-label">Nepal lacks cell coverage</div>
-            <div class="impact-bar">
-              <div class="impact-fill" style="width: 40%"></div>
+            
+            <div class="impact-grid">
+                <div class="impact-card impact-main">
+                    <div class="impact-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="24" cy="24" r="20"/>
+                            <path d="M24 14v10l6 6"/>
+                        </svg>
+                    </div>
+                    <div class="impact-value">
+                        <span class="value-number" data-count="87">0</span>
+                        <span class="value-unit">%</span>
+                    </div>
+                    <div class="impact-label">Reduction in Response Time</div>
+                    <div class="impact-detail">From 4.5 hours average to under 35 minutes for first responder contact</div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-value">
+                        <span class="value-number" data-count="150">0</span>
+                        <span class="value-unit">+</span>
+                    </div>
+                    <div class="impact-label">Emergencies Handled</div>
+                    <div class="impact-detail">Since deployment in Solukhumbu</div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-value">
+                        <span class="value-number" data-count="8">0</span>
+                    </div>
+                    <div class="impact-label">Responder Teams</div>
+                    <div class="impact-detail">Connected to the network</div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-value">
+                        <span class="value-number" data-count="24">0</span>
+                        <span class="value-unit">/7</span>
+                    </div>
+                    <div class="impact-label">Always On</div>
+                    <div class="impact-detail">No downtime, no maintenance windows</div>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-value">
+                        <span class="value-number" data-count="0">0</span>
+                    </div>
+                    <div class="impact-label">Internet Required</div>
+                    <div class="impact-detail">Fully offline operation</div>
+                </div>
             </div>
-          </div>
-          <div class="impact-card">
-            <div class="impact-number">75%</div>
-            <div class="impact-label">Faster response with LifeLine</div>
-            <div class="impact-bar impact-bar-green">
-              <div
-                class="impact-fill impact-fill-green"
-                style="width: 75%"
-              ></div>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
 
-    <!-- Tech Section -->
-    <section class="tech" id="tech">
-      <div class="container">
-        <div class="section-label">TECHNOLOGY</div>
-        <h2 class="section-title">Built for Extreme Conditions</h2>
-
-        <div class="tech-grid">
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <rect x="5" y="5" width="30" height="30" />
-                <circle cx="20" cy="20" r="8" />
-                <line x1="5" y1="20" x2="12" y2="20" />
-                <line x1="28" y1="20" x2="35" y2="20" />
-                <line x1="20" y1="5" x2="20" y2="12" />
-                <line x1="20" y1="28" x2="20" y2="35" />
-              </svg>
+    <!-- Technology Section -->
+    <section class="section section-tech" id="technology">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-index">04</span>
+                <h2 class="section-title">Technology</h2>
+                <p class="section-subtitle">
+                    Built with proven, open technologies optimized for extreme conditions.
+                </p>
             </div>
-            <h3>ESP32-S3</h3>
-            <div class="tech-spec">N16R8 Module</div>
-          </div>
-
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path d="M5 25a15 15 0 0130 0" />
-                <path d="M10 25a10 10 0 0120 0" />
-                <path d="M15 25a5 5 0 0110 0" />
-                <circle cx="20" cy="30" r="2" fill="currentColor" />
-              </svg>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">LoRa Protocol</h3>
+                    <p class="tech-desc">Long Range, Low Power radio technology capable of 15km+ transmission in mountain terrain.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <path d="M9 9h6v6H9z"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">ESP32 Hardware</h3>
+                    <p class="tech-desc">Dual-core microcontroller with WiFi and Bluetooth, designed for IoT edge computing.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Mesh Topology</h3>
+                    <p class="tech-desc">Self-healing network where each node can relay signals, ensuring no single point of failure.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Index Mapping</h3>
+                    <p class="tech-desc">Bandwidth optimization system that encodes messages as integers, minimizing transmission size.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">FCM + Email</h3>
+                    <p class="tech-desc">Firebase Cloud Messaging for instant push notifications plus automated email alerts.</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <path d="M8 21h8M12 17v4"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">PWA Portal</h3>
+                    <p class="tech-desc">Progressive Web App dashboard that works offline and installs on any device.</p>
+                </div>
             </div>
-            <h3>LoRa Radio</h3>
-            <div class="tech-spec">433/868 MHz</div>
-          </div>
-
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path d="M5 30L20 10 35 30z" />
-                <circle cx="12" cy="26" r="2" fill="currentColor" />
-                <circle cx="28" cy="26" r="2" fill="currentColor" />
-              </svg>
-            </div>
-            <h3>Edge AI</h3>
-            <div class="tech-spec">TensorFlow Lite</div>
-          </div>
-
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <circle cx="10" cy="10" r="5" />
-                <circle cx="30" cy="10" r="5" />
-                <circle cx="10" cy="30" r="5" />
-                <circle cx="30" cy="30" r="5" />
-                <line x1="15" y1="10" x2="25" y2="10" />
-                <line x1="15" y1="30" x2="25" y2="30" />
-                <line x1="10" y1="15" x2="10" y2="25" />
-                <line x1="30" y1="15" x2="30" y2="25" />
-              </svg>
-            </div>
-            <h3>Mesh Network</h3>
-            <div class="tech-spec">Self-healing</div>
-          </div>
-
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <circle cx="20" cy="15" r="10" />
-                <path d="M15 15l3 3 7-7" />
-                <rect x="8" y="28" width="24" height="8" />
-              </svg>
-            </div>
-            <h3>Sensors</h3>
-            <div class="tech-spec">Biometric + GPS</div>
-          </div>
-
-          <div class="tech-card">
-            <div class="tech-icon-box">
-              <svg
-                viewBox="0 0 40 40"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <rect x="5" y="8" width="30" height="20" />
-                <line x1="12" y1="32" x2="28" y2="32" />
-                <line x1="20" y1="28" x2="20" y2="32" />
-                <circle cx="20" cy="18" r="4" />
-              </svg>
-            </div>
-            <h3>Dashboard</h3>
-            <div class="tech-spec">PHP + MySQL</div>
-          </div>
         </div>
-      </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta">
-      <div class="container">
-        <div class="cta-content">
-          <h2>Ready to Save Lives?</h2>
-          <a href="login.php" class="btn btn-white">Access Portal →</a>
+    <section class="section section-cta">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Save Lives?</h2>
+                <p class="cta-text">Access the command portal to monitor emergencies and coordinate rescue efforts.</p>
+                <a href="login.php" class="btn btn-primary btn-large">
+                    <span>Access Emergency Portal</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
         </div>
-      </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <div class="footer-logo">
-              <img
-                src="res/lifeline.png"
-                alt="LifeLine Logo"
-                class="footer-logo-img"
-              />
-              <span>LifeLine</span>
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="#" class="footer-logo">
+                        <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                            <circle cx="20" cy="20" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                            <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3"/>
+                        </svg>
+                        <span>LifeLine</span>
+                    </a>
+                    <p class="footer-tagline">Saving lives where networks don't reach.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-group">
+                        <h4>Navigation</h4>
+                        <a href="#problem">The Problem</a>
+                        <a href="#solution">How It Works</a>
+                        <a href="#impact">Impact</a>
+                        <a href="#technology">Technology</a>
+                    </div>
+                    <div class="footer-group">
+                        <h4>Resources</h4>
+                        <a href="login.php">Portal Login</a>
+                        <a href="API/README.md">API Docs</a>
+                    </div>
+                </div>
             </div>
-            <p>Emergency response for remote Nepal</p>
-          </div>
-          <div class="footer-links">
-            <a href="#problem">Problem</a>
-            <a href="#solution">Solution</a>
-            <a href="#tech">Technology</a>
-            <a href="login.php">Portal</a>
-          </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-credit">Created by <strong>Team Spark</strong></p>
+                <p class="footer-copy">© 2026 LifeLine. All rights reserved.</p>
+            </div>
         </div>
-        <div class="footer-bottom">
-          <span>Grade 12 Computer Project • Nepal</span>
-          <span>© 2026 LifeLine</span>
-        </div>
-      </div>
     </footer>
 
     <script src="JS/script.js"></script>
-  </body>
+</body>
 </html>
