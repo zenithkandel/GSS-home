@@ -256,7 +256,7 @@ img {
 }
 
 .nav.scrolled {
-    background: rgba(10, 10, 10, 0.9);
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.85) 100%);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--color-border);
 }
@@ -403,8 +403,9 @@ img {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30, 30, 30, 0.5) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 0% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 100% 80%, rgba(30, 30, 30, 0.6) 0%, transparent 50%);
 }
 
 .hero-grid {
@@ -559,13 +560,14 @@ img {
 }
 
 .btn-primary {
-    background: var(--color-white);
+    background: linear-gradient(135deg, var(--color-white) 0%, #e8e8e8 100%);
     color: var(--color-black);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15), 0 0 40px rgba(220, 38, 38, 0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
 }
 
 .btn-primary:hover svg {
@@ -973,7 +975,10 @@ img {
    Problem Section
    ===================================================== */
 .section-problem {
-    background: var(--color-surface);
+    background:
+        radial-gradient(ellipse 60% 40% at 0% 0%, rgba(220, 38, 38, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 100% 100%, rgba(60, 60, 60, 0.15) 0%, transparent 50%),
+        var(--color-surface);
 }
 
 .problem-grid {
@@ -1106,7 +1111,9 @@ img {
 
 .step-visual {
     aspect-ratio: 4/3;
-    background: var(--color-surface);
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(220, 38, 38, 0.03) 0%, transparent 50%),
+        var(--color-surface);
     border: 1px solid var(--color-border);
     display: flex;
     align-items: center;
@@ -1450,7 +1457,10 @@ img {
    Impact Section
    ===================================================== */
 .section-impact {
-    background: var(--color-surface);
+    background:
+        radial-gradient(ellipse 70% 50% at 100% 0%, rgba(220, 38, 38, 0.04) 0%, transparent 40%),
+        radial-gradient(ellipse 50% 40% at 0% 100%, rgba(80, 60, 40, 0.05) 0%, transparent 50%),
+        var(--color-surface);
 }
 
 .impact-grid {
@@ -1463,12 +1473,16 @@ img {
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     padding: var(--space-8);
-    transition: border-color var(--transition-fast), transform var(--transition-fast);
+    transition: border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-base);
+    position: relative;
 }
 
 .impact-card:hover {
     border-color: var(--color-gray-500);
     transform: translateY(-4px);
+    background:
+        radial-gradient(ellipse 100% 100% at 50% 100%, rgba(220, 38, 38, 0.03) 0%, transparent 70%),
+        var(--color-bg);
 }
 
 .impact-main {
@@ -1543,12 +1557,15 @@ img {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     padding: var(--space-8);
-    transition: border-color var(--transition-fast), transform var(--transition-fast);
+    transition: border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-base);
 }
 
 .tech-card:hover {
     border-color: var(--color-gray-500);
     transform: translateY(-4px);
+    background:
+        radial-gradient(ellipse 80% 80% at 0% 0%, rgba(220, 38, 38, 0.04) 0%, transparent 60%),
+        var(--color-surface);
 }
 
 .tech-icon {
@@ -1593,6 +1610,10 @@ img {
 .section-cta {
     padding: var(--space-32) 0;
     text-align: center;
+    background:
+        radial-gradient(ellipse 60% 60% at 50% 50%, rgba(220, 38, 38, 0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(100, 60, 30, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(60, 60, 80, 0.04) 0%, transparent 50%);
 }
 
 .cta-content {
@@ -1617,7 +1638,10 @@ img {
    Footer
    ===================================================== */
 .footer {
-    background: var(--color-surface);
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(20, 20, 20, 0.8) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 0% 0%, rgba(220, 38, 38, 0.02) 0%, transparent 50%),
+        var(--color-surface);
     border-top: 1px solid var(--color-border);
     padding: var(--space-16) 0;
 }
