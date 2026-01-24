@@ -136,30 +136,30 @@ function initTopoHero() {
     // Calculate elevation at a point based on all peaks
     function getElevation(x, y, t) {
         let elevation = 0;
-        
+
         peaks.forEach((peak, i) => {
             // Add subtle movement to peaks
             const px = peak.x + Math.sin(t * 0.5 + i) * 0.02;
             const py = peak.y + Math.cos(t * 0.3 + i * 1.5) * 0.015;
-            
+
             const dx = x - px;
             const dy = y - py;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            
+
             // Gaussian-like falloff for natural mountain shape
             const contribution = peak.height * Math.exp(-(dist * dist) / (2 * peak.spread * peak.spread));
             elevation += contribution;
         });
-        
+
         // Add some noise for natural terrain feel
         const noiseX = Math.sin(x * 15 + t * 0.2) * 0.02;
         const noiseY = Math.cos(y * 12 + t * 0.15) * 0.02;
         elevation += noiseX + noiseY;
-        
+
         // Mouse influence - subtle terrain deformation
         const mouseDist = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
         elevation += 0.1 * Math.exp(-mouseDist * mouseDist * 8);
-        
+
         return elevation;
     }
 
@@ -168,37 +168,37 @@ function initTopoHero() {
         const resolution = 80;
         const cellW = width / resolution;
         const cellH = height / resolution;
-        
+
         ctx.beginPath();
-        
+
         for (let i = 0; i < resolution; i++) {
             for (let j = 0; j < resolution; j++) {
                 const x = i / resolution;
                 const y = j / resolution;
-                
+
                 // Sample elevation at four corners
                 const e00 = getElevation(x, y, t);
-                const e10 = getElevation(x + 1/resolution, y, t);
-                const e01 = getElevation(x, y + 1/resolution, t);
-                const e11 = getElevation(x + 1/resolution, y + 1/resolution, t);
-                
+                const e10 = getElevation(x + 1 / resolution, y, t);
+                const e01 = getElevation(x, y + 1 / resolution, t);
+                const e11 = getElevation(x + 1 / resolution, y + 1 / resolution, t);
+
                 // Determine which corners are above the contour level
                 const b00 = e00 > level ? 1 : 0;
                 const b10 = e10 > level ? 1 : 0;
                 const b01 = e01 > level ? 1 : 0;
                 const b11 = e11 > level ? 1 : 0;
-                
+
                 const caseIndex = b00 + b10 * 2 + b01 * 4 + b11 * 8;
-                
+
                 // Skip cases with no contour crossing
                 if (caseIndex === 0 || caseIndex === 15) continue;
-                
+
                 const px = i * cellW;
                 const py = j * cellH;
-                
+
                 // Draw line segments based on marching squares case
                 const points = getMarchingSquaresPoints(caseIndex, px, py, cellW, cellH, e00, e10, e01, e11, level);
-                
+
                 if (points.length >= 2) {
                     ctx.moveTo(points[0].x, points[0].y);
                     ctx.lineTo(points[1].x, points[1].y);
@@ -209,22 +209,22 @@ function initTopoHero() {
                 }
             }
         }
-        
+
         ctx.stroke();
     }
 
     function getMarchingSquaresPoints(caseIndex, x, y, w, h, e00, e10, e01, e11, level) {
         const points = [];
-        
+
         // Interpolation helpers
         const interpX = (e1, e2) => (level - e1) / (e2 - e1);
-        
+
         // Edge midpoints with interpolation
         const top = { x: x + w * interpX(e00, e10), y: y };
         const bottom = { x: x + w * interpX(e01, e11), y: y + h };
         const left = { x: x, y: y + h * interpX(e00, e01) };
         const right = { x: x + w, y: y + h * interpX(e10, e11) };
-        
+
         // Marching squares lookup
         switch (caseIndex) {
             case 1: case 14: points.push(left, top); break;
@@ -236,32 +236,32 @@ function initTopoHero() {
             case 7: case 8: points.push(bottom, right); break;
             case 10: points.push(top, left, bottom, right); break;
         }
-        
+
         return points;
     }
 
     function draw() {
         requestAnimationFrame(draw);
         time += 0.008;
-        
+
         // Clear with slight fade for subtle trails
         ctx.fillStyle = 'rgba(10, 10, 10, 0.15)';
         ctx.fillRect(0, 0, width, height);
-        
+
         // Draw contour lines at different elevations
         const numContours = 12;
-        
+
         for (let i = 0; i < numContours; i++) {
             const level = 0.1 + (i / numContours) * 0.8;
             const brightness = 25 + (i / numContours) * 35;
             const alpha = 0.3 + (i / numContours) * 0.4;
-            
+
             ctx.strokeStyle = `rgba(${brightness}, ${brightness}, ${brightness}, ${alpha})`;
             ctx.lineWidth = i === numContours - 1 ? 1.5 : 0.8;
-            
+
             drawContourLine(level, time);
         }
-        
+
         // Draw signal nodes on the terrain
         drawSignalNodes(time);
     }
@@ -289,11 +289,11 @@ function initTopoHero() {
         // Draw connections
         ctx.strokeStyle = 'rgba(220, 38, 38, 0.15)';
         ctx.lineWidth = 1;
-        
+
         for (let i = 0; i < signalNodes.length - 1; i++) {
             const n1 = signalNodes[i];
             const n2 = signalNodes[i + 1];
-            
+
             ctx.beginPath();
             ctx.setLineDash([4, 8]);
             ctx.moveTo(n1.baseX * width, n1.baseY * height);
@@ -307,13 +307,13 @@ function initTopoHero() {
             const x = node.baseX * width;
             const y = node.baseY * height;
             const pulse = Math.sin(t * 3 + i * 1.2) * 0.5 + 0.5;
-            
+
             // Outer glow
             ctx.beginPath();
             ctx.arc(x, y, 12 + pulse * 6, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(220, 38, 38, ${0.1 + pulse * 0.1})`;
             ctx.fill();
-            
+
             // Core
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
@@ -326,12 +326,12 @@ function initTopoHero() {
         const to = signalNodes[activeSignal.to];
         const sigX = from.baseX + (to.baseX - from.baseX) * activeSignal.progress;
         const sigY = from.baseY + (to.baseY - from.baseY) * activeSignal.progress;
-        
+
         ctx.beginPath();
         ctx.arc(sigX * width, sigY * height, 6, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(220, 38, 38, 0.9)';
         ctx.fill();
-        
+
         // Signal trail
         ctx.beginPath();
         ctx.arc(sigX * width, sigY * height, 12, 0, Math.PI * 2);
@@ -376,9 +376,9 @@ function initRelayCanvas() {
     ];
 
     // Signal traveling through the relay chain
-    let signal = { 
-        currentHop: 0, 
-        progress: 0, 
+    let signal = {
+        currentHop: 0,
+        progress: 0,
         active: true,
         trail: []
     };
@@ -388,10 +388,10 @@ function initRelayCanvas() {
     function drawMountainSilhouette() {
         const w = width();
         const h = height();
-        
+
         ctx.beginPath();
         ctx.moveTo(0, h);
-        
+
         // Draw jagged mountain silhouette
         const points = [
             { x: 0, y: 0.85 },
@@ -410,14 +410,14 @@ function initRelayCanvas() {
             { x: 0.92, y: 0.55 },
             { x: 1, y: 0.6 },
         ];
-        
+
         points.forEach(p => {
             ctx.lineTo(p.x * w, p.y * h);
         });
-        
+
         ctx.lineTo(w, h);
         ctx.closePath();
-        
+
         // Mountain gradient
         const gradient = ctx.createLinearGradient(0, 0, 0, h);
         gradient.addColorStop(0, 'rgba(30, 30, 30, 0.8)');
@@ -431,21 +431,21 @@ function initRelayCanvas() {
         const h = height();
         const x = station.x * w;
         const y = station.y * h;
-        
+
         const isActive = index <= signal.currentHop;
         const pulse = Math.sin(t * 2 + index) * 0.5 + 0.5;
-        
+
         // Tower structure
         ctx.strokeStyle = isActive ? '#dc2626' : 'rgba(100, 100, 100, 0.6)';
         ctx.lineWidth = 2;
-        
+
         // Tower base
         ctx.beginPath();
         ctx.moveTo(x - 8, y);
         ctx.lineTo(x, y - 25);
         ctx.lineTo(x + 8, y);
         ctx.stroke();
-        
+
         // Cross beams
         ctx.beginPath();
         ctx.moveTo(x - 5, y - 8);
@@ -453,13 +453,13 @@ function initRelayCanvas() {
         ctx.moveTo(x - 3, y - 16);
         ctx.lineTo(x + 3, y - 16);
         ctx.stroke();
-        
+
         // Signal rings when active
         if (isActive) {
             for (let r = 0; r < 3; r++) {
                 const radius = 10 + r * 12 + pulse * 5;
                 const alpha = (1 - r / 3) * 0.3 * (0.5 + pulse * 0.5);
-                
+
                 ctx.beginPath();
                 ctx.arc(x, y - 25, radius, -Math.PI * 0.75, -Math.PI * 0.25);
                 ctx.strokeStyle = `rgba(220, 38, 38, ${alpha})`;
@@ -467,7 +467,7 @@ function initRelayCanvas() {
                 ctx.stroke();
             }
         }
-        
+
         // Label
         ctx.fillStyle = isActive ? 'rgba(220, 38, 38, 0.9)' : 'rgba(150, 150, 150, 0.7)';
         ctx.font = '10px "Space Grotesk", sans-serif';
@@ -478,12 +478,12 @@ function initRelayCanvas() {
     function drawConnections(t) {
         const w = width();
         const h = height();
-        
+
         for (let i = 0; i < stations.length - 1; i++) {
             const from = stations[i];
             const to = stations[i + 1];
             const isActive = i < signal.currentHop;
-            
+
             ctx.beginPath();
             ctx.setLineDash([6, 6]);
             ctx.moveTo(from.x * w, from.y * h - 25);
@@ -497,13 +497,13 @@ function initRelayCanvas() {
 
     function drawSignal(t) {
         if (!signal.active) return;
-        
+
         const w = width();
         const h = height();
-        
+
         const from = stations[signal.currentHop];
         const to = stations[signal.currentHop + 1];
-        
+
         if (!to) {
             // Reset signal
             signal.currentHop = 0;
@@ -511,14 +511,14 @@ function initRelayCanvas() {
             signal.trail = [];
             return;
         }
-        
+
         const x = from.x + (to.x - from.x) * signal.progress;
         const y = (from.y + (to.y - from.y) * signal.progress) - 0.07; // Arc above the line
-        
+
         // Add to trail
         signal.trail.push({ x, y, alpha: 1 });
         if (signal.trail.length > 15) signal.trail.shift();
-        
+
         // Draw trail
         signal.trail.forEach((pt, i) => {
             const alpha = (i / signal.trail.length) * 0.6;
@@ -527,19 +527,19 @@ function initRelayCanvas() {
             ctx.fillStyle = `rgba(220, 38, 38, ${alpha})`;
             ctx.fill();
         });
-        
+
         // Main signal
         ctx.beginPath();
         ctx.arc(x * w, y * h, 6, 0, Math.PI * 2);
         ctx.fillStyle = '#dc2626';
         ctx.fill();
-        
+
         // Glow
         ctx.beginPath();
         ctx.arc(x * w, y * h, 12, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(220, 38, 38, 0.3)';
         ctx.fill();
-        
+
         // Update
         signal.progress += 0.012;
         if (signal.progress >= 1) {
@@ -552,14 +552,14 @@ function initRelayCanvas() {
     function draw() {
         requestAnimationFrame(draw);
         time += 0.016;
-        
+
         const w = width();
         const h = height();
-        
+
         // Clear
         ctx.fillStyle = 'rgba(15, 15, 15, 1)';
         ctx.fillRect(0, 0, w, h);
-        
+
         // Draw elements
         drawMountainSilhouette();
         drawConnections(time);
