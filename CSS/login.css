@@ -21,11 +21,11 @@
     --color-accent-light: #ef4444;
     --color-success: #22c55e;
     --color-error: #ef4444;
-    
+
     /* Typography */
     --font-primary: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    
+
     /* Spacing */
     --space-1: 0.25rem;
     --space-2: 0.5rem;
@@ -37,7 +37,7 @@
     --space-10: 2.5rem;
     --space-12: 3rem;
     --space-16: 4rem;
-    
+
     /* Transitions */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --transition-fast: 150ms var(--ease-out);
@@ -45,13 +45,16 @@
 }
 
 /* Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -174,14 +177,32 @@ body {
     animation: nodeGlow 3s ease-in-out infinite;
 }
 
-.node-1 { animation-delay: 0s; }
-.node-2 { animation-delay: 0.5s; }
-.node-3 { animation-delay: 1s; }
-.node-4 { animation-delay: 1.5s; }
+.node-1 {
+    animation-delay: 0s;
+}
+
+.node-2 {
+    animation-delay: 0.5s;
+}
+
+.node-3 {
+    animation-delay: 1s;
+}
+
+.node-4 {
+    animation-delay: 1.5s;
+}
 
 @keyframes nodeGlow {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
 
 .pulse {
@@ -189,16 +210,28 @@ body {
     opacity: 0;
 }
 
-.pulse-1 { animation-delay: 0s; }
-.pulse-2 { animation-delay: 0.5s; }
-.pulse-3 { animation-delay: 1s; }
-.pulse-4 { animation-delay: 1.5s; }
+.pulse-1 {
+    animation-delay: 0s;
+}
+
+.pulse-2 {
+    animation-delay: 0.5s;
+}
+
+.pulse-3 {
+    animation-delay: 1s;
+}
+
+.pulse-4 {
+    animation-delay: 1.5s;
+}
 
 @keyframes pulseRing {
     0% {
         r: 8;
         opacity: 0.5;
     }
+
     100% {
         r: 24;
         opacity: 0;
@@ -210,9 +243,17 @@ body {
 }
 
 @keyframes lineFlow {
-    0% { stroke-dasharray: 0 100; }
-    50% { stroke-dasharray: 50 100; }
-    100% { stroke-dasharray: 0 100; }
+    0% {
+        stroke-dasharray: 0 100;
+    }
+
+    50% {
+        stroke-dasharray: 50 100;
+    }
+
+    100% {
+        stroke-dasharray: 0 100;
+    }
 }
 
 /* Brand footer */
@@ -241,8 +282,15 @@ body {
 }
 
 @keyframes statusPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .node-count {
@@ -326,8 +374,8 @@ body {
     background: var(--color-gray-800);
 }
 
-.form-input:focus + .input-focus,
-.form-input:focus ~ .input-focus {
+.form-input:focus+.input-focus,
+.form-input:focus~.input-focus {
     transform: scaleX(1);
 }
 
@@ -429,11 +477,11 @@ body {
     transition: transform var(--transition-fast);
 }
 
-.checkbox-wrapper input:checked + .checkbox-custom {
+.checkbox-wrapper input:checked+.checkbox-custom {
     border-color: var(--color-accent);
 }
 
-.checkbox-wrapper input:checked + .checkbox-custom::after {
+.checkbox-wrapper input:checked+.checkbox-custom::after {
     transform: scale(1);
 }
 
@@ -460,6 +508,7 @@ body {
         opacity: 0;
         transform: translateY(-8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -535,7 +584,9 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Form footer */
@@ -597,11 +648,11 @@ body {
     .login-wrapper {
         grid-template-columns: 1fr;
     }
-    
+
     .login-brand {
         display: none;
     }
-    
+
     .login-form-wrapper {
         padding: var(--space-8);
     }
@@ -611,11 +662,11 @@ body {
     .login-form-wrapper {
         padding: var(--space-6);
     }
-    
+
     .form-header h2 {
         font-size: 1.5rem;
     }
-    
+
     .btn-submit {
         padding: var(--space-4);
     }
@@ -641,7 +692,10 @@ body {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
