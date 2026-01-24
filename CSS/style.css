@@ -391,10 +391,31 @@ img {
     overflow: hidden;
 }
 
-.hero-canvas {
+/* Hero Background - Clean, performant CSS-only */
+.hero-bg {
     position: absolute;
     inset: 0;
     z-index: 0;
+    overflow: hidden;
+}
+
+.hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30, 30, 30, 0.5) 0%, transparent 50%);
+}
+
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 0%, transparent 70%);
 }
 
 .hero-content {
@@ -1010,9 +1031,48 @@ img {
 }
 
 .device-3d,
-.relay-visualization {
+.relay-visualization,
+.basestation-illustration {
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.basestation-illustration svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Base station animations */
+.basestation-illustration .signal-wave-1 {
+    animation: signalPulse 2s ease-in-out infinite;
+}
+
+.basestation-illustration .signal-wave-2 {
+    animation: signalPulse 2s ease-in-out infinite 0.3s;
+}
+
+.basestation-illustration .signal-wave-3 {
+    animation: signalPulse 2s ease-in-out infinite 0.6s;
+}
+
+.basestation-illustration .traveling-signal {
+    animation: travelSignal 3s ease-in-out infinite;
+}
+
+@keyframes signalPulse {
+    0%, 100% { opacity: 0.2; transform: translateY(0); }
+    50% { opacity: 0.6; transform: translateY(-3px); }
+}
+
+@keyframes travelSignal {
+    0% { opacity: 0; transform: translate(0, 0); }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translate(30px, -30px); }
 }
 
 /* Device Illustration */
@@ -1066,11 +1126,6 @@ img {
         transform: scale(1.1);
         opacity: 0.3;
     }
-}
-
-#relayCanvas {
-    width: 100%;
-    height: 100%;
 }
 
 /* Portal preview */
