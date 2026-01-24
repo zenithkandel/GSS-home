@@ -34,15 +34,26 @@ function updateLiveIndicator(status, text) {
 // Format timestamp
 function formatTime(timestamp) {
     if (!timestamp) return 'Unknown';
+
+    // Convert input timestamp to Date
     const date = new Date(timestamp);
+
+    // Nepal time offset: +5 hours 45 minutes (in milliseconds)
+    const NEPAL_OFFSET = (5 * 60 + 45) * 60 * 1000;
+
+    // Apply offset
+    const nepaliDate = new Date(date.getTime() + NEPAL_OFFSET);
+
     const now = new Date();
-    const diff = (now - date) / 1000;
+    const diff = (now - nepaliDate) / 1000;
 
     if (diff < 60) return 'Just now';
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return date.toLocaleDateString();
+
+    return nepaliDate.toLocaleDateString('en-NP');
 }
+
 
 // Format full date
 function formatFullDate(timestamp) {

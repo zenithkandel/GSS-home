@@ -16,7 +16,7 @@ class FCMHelper
 
     public function __construct()
     {
-        $this->serviceAccountPath = __DIR__ . '/../lifeline-notification-firebase-adminsdk-fbsvc-ad9b1c5d15.json';
+        $this->serviceAccountPath = __DIR__ . '/../firebase.json';
 
         // Check if service account file exists
         if (!file_exists($this->serviceAccountPath)) {
