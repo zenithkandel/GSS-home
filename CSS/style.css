@@ -402,7 +402,7 @@ img {
 .hero-gradient {
     position: absolute;
     inset: 0;
-    background: 
+    background:
         radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 38, 38, 0.08) 0%, transparent 60%),
         radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30, 30, 30, 0.5) 0%, transparent 50%);
 }
@@ -410,9 +410,9 @@ img {
 .hero-grid {
     position: absolute;
     inset: 0;
-    background-image: 
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 0%, transparent 70%);
     -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 0%, transparent 70%);
@@ -1064,15 +1064,37 @@ img {
 }
 
 @keyframes signalPulse {
-    0%, 100% { opacity: 0.2; transform: translateY(0); }
-    50% { opacity: 0.6; transform: translateY(-3px); }
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translateY(-3px);
+    }
 }
 
 @keyframes travelSignal {
-    0% { opacity: 0; transform: translate(0, 0); }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { opacity: 0; transform: translate(30px, -30px); }
+    0% {
+        opacity: 0;
+        transform: translate(0, 0);
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(30px, -30px);
+    }
 }
 
 /* Device Illustration */

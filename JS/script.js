@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
    ===================================================== */
 function initLoader() {
     const loader = document.getElementById('loader');
-    
+
     window.addEventListener('load', () => {
         setTimeout(() => {
             loader.classList.add('hidden');
@@ -128,7 +128,7 @@ function initScrollAnimations() {
     // Flow steps
     gsap.utils.toArray('.flow-step').forEach((step, i) => {
         const isOdd = i % 2 === 0;
-        
+
         gsap.from(step, {
             scrollTrigger: {
                 trigger: step,
