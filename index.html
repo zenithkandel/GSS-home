@@ -97,7 +97,10 @@
 
     <!-- Hero Section -->
     <section class="hero" id="hero">
-      <div class="hero-canvas" id="heroCanvas"></div>
+      <div class="hero-bg">
+        <div class="hero-gradient"></div>
+        <div class="hero-grid"></div>
+      </div>
 
       <div class="hero-content">
         <div class="hero-tag">
@@ -120,8 +123,8 @@
         </h1>
 
         <p class="hero-description">
-          A LoRa mesh network saving lives across Nepal's most remote mountains
-          — where no cell tower reaches, our signal still travels.
+          Long-range radio emergency system for Nepal's remote mountains. Client
+          nodes transmit directly to base stations — no internet required.
         </p>
 
         <div class="hero-actions">
@@ -635,25 +638,114 @@
             <span class="connector-label">LoRa Signal</span>
           </div>
 
-          <!-- Step 2: Relay Network -->
+          <!-- Step 2: Base Station -->
           <div class="flow-step" data-step="2">
             <div class="step-visual">
-              <div class="relay-visualization" id="relayViz">
-                <canvas id="relayCanvas"></canvas>
+              <div class="basestation-illustration">
+                <svg
+                  viewBox="0 0 240 200"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <!-- Mountain silhouette -->
+                  <path
+                    d="M0 200 L40 140 L80 160 L120 100 L160 130 L200 90 L240 120 L240 200 Z"
+                    fill="#1a1a1a"
+                  />
+
+                  <!-- Base station tower -->
+                  <g transform="translate(100, 40)">
+                    <!-- Tower structure -->
+                    <path
+                      d="M20 0 L10 80 L30 80 Z"
+                      fill="#2a2a2a"
+                      stroke="#3d3d3d"
+                      stroke-width="1"
+                    />
+                    <rect x="8" y="80" width="24" height="8" fill="#1f1f1f" />
+
+                    <!-- Antenna -->
+                    <rect x="18" y="-15" width="4" height="18" fill="#dc2626" />
+                    <circle cx="20" cy="-18" r="4" fill="#dc2626" />
+
+                    <!-- Signal waves -->
+                    <path
+                      d="M-10 20 Q20 10 50 20"
+                      stroke="#dc2626"
+                      stroke-width="1.5"
+                      fill="none"
+                      opacity="0.6"
+                      class="signal-wave-1"
+                    />
+                    <path
+                      d="M-20 30 Q20 15 60 30"
+                      stroke="#dc2626"
+                      stroke-width="1.5"
+                      fill="none"
+                      opacity="0.4"
+                      class="signal-wave-2"
+                    />
+                    <path
+                      d="M-30 40 Q20 20 70 40"
+                      stroke="#dc2626"
+                      stroke-width="1.5"
+                      fill="none"
+                      opacity="0.2"
+                      class="signal-wave-3"
+                    />
+                  </g>
+
+                  <!-- Client node (small device) -->
+                  <g transform="translate(40, 120)">
+                    <rect
+                      x="0"
+                      y="0"
+                      width="20"
+                      height="30"
+                      rx="3"
+                      fill="#1f1f1f"
+                      stroke="#3d3d3d"
+                    />
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="3"
+                      fill="#dc2626"
+                      class="pulse-dot"
+                    />
+                    <rect x="8" y="-8" width="4" height="10" fill="#3d3d3d" />
+                  </g>
+
+                  <!-- Signal path -->
+                  <path
+                    d="M55 115 L115 55"
+                    stroke="#dc2626"
+                    stroke-width="1"
+                    stroke-dasharray="4 4"
+                    opacity="0.5"
+                  />
+                  <circle
+                    cx="85"
+                    cy="85"
+                    r="3"
+                    fill="#dc2626"
+                    class="traveling-signal"
+                  />
+                </svg>
               </div>
             </div>
             <div class="step-content">
               <div class="step-number">02</div>
-              <h3 class="step-title">Relay Network</h3>
+              <h3 class="step-title">Base Station</h3>
               <p class="step-desc">
-                Signals hop from node to node across the mountains until they
-                reach a gateway. No towers, no internet — just clever radio
-                physics.
+                LoRa signals travel directly from client nodes to strategically
+                placed base stations — up to 15km line-of-sight range with no
+                infrastructure needed.
               </p>
               <ul class="step-features">
-                <li>Up to 15km per hop</li>
-                <li>Multi-hop routing</li>
-                <li>Line-of-sight optimized</li>
+                <li>Up to 15km range</li>
+                <li>Direct transmission</li>
+                <li>Solar powered stations</li>
               </ul>
             </div>
           </div>
@@ -676,7 +768,7 @@
                 fill="currentColor"
               />
             </svg>
-            <span class="connector-label">Gateway Relay</span>
+            <span class="connector-label">Internet Upload</span>
           </div>
 
           <!-- Step 3: Portal -->
@@ -862,10 +954,10 @@
                 />
               </svg>
             </div>
-            <h3 class="tech-title">Multi-Hop Relay</h3>
+            <h3 class="tech-title">Long Range Radio</h3>
             <p class="tech-desc">
-              Intelligent routing where each node can relay signals, extending
-              coverage across vast mountain ranges.
+              LoRa technology enables 15km+ direct transmission from remote
+              client nodes to base stations without repeaters.
             </p>
           </div>
 
