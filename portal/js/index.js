@@ -70,7 +70,7 @@ function initNavigation() {
 
 function navigateToPage(href, page) {
     const iframe = document.getElementById('content-frame');
-    
+
     // Update all nav active states
     document.querySelectorAll('.nav-item').forEach(nav => {
         nav.classList.toggle('active', nav.getAttribute('data-page') === page);
@@ -78,7 +78,7 @@ function navigateToPage(href, page) {
     document.querySelectorAll('.mobile-nav-item').forEach(nav => {
         nav.classList.toggle('active', nav.getAttribute('data-page') === page);
     });
-    
+
     // Load page
     iframe.src = href;
 }
@@ -87,13 +87,13 @@ function navigateToPage(href, page) {
 function initMobileMenu() {
     const moreBtn = document.getElementById('mobile-more-btn');
     const overlay = document.getElementById('mobile-menu-overlay');
-    
+
     if (moreBtn) {
         moreBtn.addEventListener('click', () => {
             overlay.classList.add('active');
         });
     }
-    
+
     if (overlay) {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle buttons
     const themeToggle = document.getElementById('theme-toggle');
     const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
-    
+
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
