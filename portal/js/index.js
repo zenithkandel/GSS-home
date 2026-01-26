@@ -33,19 +33,32 @@ function syncThemeToIframe() {
 // Navigation Management
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
     const iframe = document.getElementById('content-frame');
 
+    // Desktop nav
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
+            navigateToPage(item.getAttribute('href'), item.getAttribute('data-page'));
+        });
+    });
 
-            // Update active state
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
+    // Mobile bottom nav
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToPage(item.getAttribute('href'), item.getAttribute('data-page'));
+        });
+    });
 
-            // Load page in iframe
-            const href = item.getAttribute('href');
-            iframe.src = href;
+    // Mobile more menu items
+    mobileMenuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeMobileMenu();
+            navigateToPage(item.getAttribute('href'), item.getAttribute('data-page'));
         });
     });
 
@@ -55,17 +68,61 @@ function initNavigation() {
     });
 }
 
+function navigateToPage(href, page) {
+    const iframe = document.getElementById('content-frame');
+    
+    // Update all nav active states
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.toggle('active', nav.getAttribute('data-page') === page);
+    });
+    document.querySelectorAll('.mobile-nav-item').forEach(nav => {
+        nav.classList.toggle('active', nav.getAttribute('data-page') === page);
+    });
+    
+    // Load page
+    iframe.src = href;
+}
+
+// Mobile More Menu
+function initMobileMenu() {
+    const moreBtn = document.getElementById('mobile-more-btn');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    
+    if (moreBtn) {
+        moreBtn.addEventListener('click', () => {
+            overlay.classList.add('active');
+        });
+    }
+    
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeMobileMenu();
+            }
+        });
+    }
+}
+
+function closeMobileMenu() {
+    const overlay = document.getElementById('mobile-menu-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
+
 // Connection Status
 function updateConnectionStatus(connected, message = '') {
     const dot = document.getElementById('connection-dot');
     const text = document.getElementById('connection-text');
 
-    if (connected) {
-        dot.className = 'status-dot connected';
-        text.textContent = message || 'Connected';
-    } else {
-        dot.className = 'status-dot error';
-        text.textContent = message || 'Disconnected';
+    if (dot && text) {
+        if (connected) {
+            dot.className = 'status-dot connected';
+            text.textContent = message || 'Connected';
+        } else {
+            dot.className = 'status-dot error';
+            text.textContent = message || 'Disconnected';
+        }
     }
 }
 
@@ -89,19 +146,25 @@ async function checkConnection() {
 // Start polling for connection
 function startConnectionPolling() {
     checkConnection();
-    pollInterval = setInterval(checkConnection, 10000); // Check every 10 seconds
+    pollInterval = setInterval(checkConnection, 10000);
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initNavigation();
+    initMobileMenu();
     startConnectionPolling();
 
-    // Theme toggle button
+    // Theme toggle buttons
     const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
+    }
+    if (mobileThemeToggle) {
+        mobileThemeToggle.addEventListener('click', toggleTheme);
     }
 });
 
