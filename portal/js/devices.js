@@ -31,6 +31,35 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// Load device stats
+async function loadStats() {
+    try {
+        // Fetch all devices without pagination for accurate stats
+        const res = await fetch(`${API_BASE}/Read/device.php?limit=1000`);
+        const data = await res.json();
+
+        if (data.success) {
+            allDevices = data.data.devices || data.data || [];
+            updateStats();
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+// Update stats display
+function updateStats() {
+    const total = allDevices.length;
+    const active = allDevices.filter(d => d.status === 'active').length;
+    const inactive = allDevices.filter(d => d.status === 'inactive').length;
+    const maintenance = allDevices.filter(d => d.status === 'maintenance').length;
+
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('active-count').textContent = active;
+    document.getElementById('inactive-count').textContent = inactive;
+    document.getElementById('maintenance-count').textContent = maintenance;
+}
+
 // Load locations for dropdowns
 async function loadLocations() {
     try {
@@ -281,6 +310,7 @@ async function saveDevice() {
         if (data.success) {
             showToast(id ? 'Device updated successfully' : 'Device created successfully');
             closeModal();
+            loadStats();
             loadDevices();
         } else {
             showToast(data.message || 'Error saving device', 'error');
@@ -315,6 +345,7 @@ async function confirmDelete() {
         if (data.success) {
             showToast('Device deleted successfully');
             closeDeleteModal();
+            loadStats();
             loadDevices();
         } else {
             showToast(data.message || 'Error deleting device', 'error');
@@ -392,5 +423,6 @@ document.getElementById('location-filter').addEventListener('change', () => { cu
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     syncTheme();
+    loadStats();
     loadLocations().then(() => loadDevices());
 });

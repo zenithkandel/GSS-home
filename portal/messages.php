@@ -123,12 +123,28 @@
 
     <!-- View Modal -->
     <div class="modal-overlay" id="view-modal">
-        <div class="modal">
+        <div class="modal modal-lg">
             <div class="modal-header">
                 <span class="modal-title">Alert Details</span>
                 <button class="modal-close" onclick="closeViewModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
-            <div class="modal-body" id="message-details">
+            <div class="modal-body">
+                <div class="view-content">
+                    <div id="message-details"></div>
+                    <div class="view-map-section">
+                        <div class="map-container" id="view-map-container">
+                            <div class="map-loading">
+                                <i class="fa-duotone fa-spinner fa-spin"></i>
+                                <span>Loading map...</span>
+                            </div>
+                        </div>
+                        <div class="map-actions">
+                            <button class="btn btn-primary" id="open-maps-btn" onclick="openInGoogleMaps()">
+                                <i class="fa-duotone fa-map"></i> Open in Google Maps
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeViewModal()">Close</button>

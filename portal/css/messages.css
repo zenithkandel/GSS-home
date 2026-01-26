@@ -244,3 +244,78 @@
         padding: 12px 0;
     }
 }
+
+/* View Modal with Map - Glassmorphism */
+.modal-lg {
+    max-width: 800px;
+    width: 95%;
+}
+
+.view-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#message-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.view-map-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.view-map-section .map-container {
+    height: 280px;
+    min-height: 250px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.view-map-section .map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.view-map-section .map-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.view-map-section .map-loading i {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.map-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .view-content {
+        grid-template-columns: 1fr;
+    }
+
+    .view-map-section .map-container {
+        height: 220px;
+        min-height: 200px;
+    }
+
+    .modal-lg {
+        max-width: 100%;
+    }
+}

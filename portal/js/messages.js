@@ -293,11 +293,54 @@ function goToPage(page) {
     loadMessages();
 }
 
+// Current viewing message
+let currentViewMessage = null;
+
+// Get Google Maps embed URL for a location
+function getGoogleMapsEmbedUrl(locationName) {
+    const query = encodeURIComponent(locationName + ", Nepal");
+    return `https://www.google.com/maps?q=${query}&output=embed`;
+}
+
+// Load map in view modal
+function loadViewMap(locationName) {
+    const mapContainer = document.getElementById('view-map-container');
+    if (!mapContainer || !locationName) {
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="map-loading">
+                    <i class="fa-duotone fa-map-location-dot"></i>
+                    <span>No location available</span>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    const embedUrl = getGoogleMapsEmbedUrl(locationName);
+    mapContainer.innerHTML = `
+        <iframe 
+            src="${embedUrl}" 
+            loading="lazy"
+            style="width: 100%; height: 100%; border: none;"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+    `;
+}
+
+// Open in Google Maps
+function openInGoogleMaps() {
+    if (!currentViewMessage || !currentViewMessage.location_name) return;
+    window.open(`https://www.google.com/maps/search/${encodeURIComponent(currentViewMessage.location_name + ", Nepal")}`, '_blank');
+}
+
 // View message
 function viewMessage(id) {
     const msg = messages.find(m => m.MID == id);
     if (!msg) return;
 
+    currentViewMessage = msg;
     const status = getStatus(msg);
     const details = document.getElementById('message-details');
 
@@ -341,6 +384,9 @@ function viewMessage(id) {
     `;
 
     document.getElementById('view-modal').classList.add('active');
+
+    // Load map after modal is shown
+    loadViewMap(msg.location_name);
 }
 
 // Format date fully for details view
@@ -380,6 +426,18 @@ async function markResolved(id) {
 
 function closeViewModal() {
     document.getElementById('view-modal').classList.remove('active');
+    currentViewMessage = null;
+
+    // Reset map container
+    const mapContainer = document.getElementById('view-map-container');
+    if (mapContainer) {
+        mapContainer.innerHTML = `
+            <div class="map-loading">
+                <i class="fa-duotone fa-spinner fa-spin"></i>
+                <span>Loading map...</span>
+            </div>
+        `;
+    }
 }
 
 // Create message
