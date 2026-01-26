@@ -110,6 +110,27 @@ function closeMobileMenu() {
     }
 }
 
+// Sidebar Collapse
+function initSidebarCollapse() {
+    const collapseBtn = document.getElementById('collapse-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content');
+
+    if (!collapseBtn || !sidebar) return;
+
+    // Load saved state
+    const isCollapsed = localStorage.getItem('lifeline-sidebar-collapsed') === 'true';
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+    }
+
+    collapseBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        const collapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('lifeline-sidebar-collapsed', collapsed);
+    });
+}
+
 // Connection Status
 function updateConnectionStatus(connected, message = '') {
     const dot = document.getElementById('connection-dot');
@@ -154,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initNavigation();
     initMobileMenu();
+    initSidebarCollapse();
     startConnectionPolling();
 
     // Theme toggle buttons

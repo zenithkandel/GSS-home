@@ -15,6 +15,20 @@
 </head>
 
 <body>
+    <!-- Alert Priority Banner - Shows when active alerts exist -->
+    <div class="alert-banner" id="alert-banner">
+        <div class="alert-banner-inner">
+            <div class="alert-banner-pulse"></div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span class="alert-banner-text">
+                <strong id="banner-count">0</strong> Active Emergency Alert<span id="banner-plural">s</span>
+            </span>
+            <button class="alert-banner-btn" onclick="scrollToAlerts()">
+                View Alerts <i class="fa-solid fa-arrow-down"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="header">
         <h1>Dashboard</h1>
@@ -24,14 +38,13 @@
         </div>
     </div>
 
-    <!-- Stats Overview -->
+    <!-- Stats Overview - Compact -->
     <section class="stats-grid">
         <div class="stat-card">
             <div class="stat-card-icon"><i class="fa-solid fa-microchip"></i></div>
             <div class="stat-content">
                 <div class="stat-label">Total Devices</div>
                 <div class="stat-value" id="stat-total">-</div>
-                <div class="stat-sub" id="stat-total-sub">Registered</div>
             </div>
         </div>
         <div class="stat-card">
@@ -39,7 +52,6 @@
             <div class="stat-content">
                 <div class="stat-label">Online</div>
                 <div class="stat-value success" id="stat-active">-</div>
-                <div class="stat-sub" id="stat-active-sub">Active now</div>
             </div>
         </div>
         <div class="stat-card">
@@ -47,49 +59,59 @@
             <div class="stat-content">
                 <div class="stat-label">Offline</div>
                 <div class="stat-value warning" id="stat-offline">-</div>
-                <div class="stat-sub" id="stat-offline-sub">Disconnected</div>
             </div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card alert-stat" id="alert-stat-card">
             <div class="stat-card-icon danger"><i class="fa-solid fa-bell"></i></div>
             <div class="stat-content">
                 <div class="stat-label">Active Alerts</div>
-                <div class="stat-value" id="stat-alerts">-</div>
-                <div class="stat-sub" id="stat-alerts-sub">Pending</div>
+                <div class="stat-value danger" id="stat-alerts">-</div>
             </div>
         </div>
     </section>
 
-    <!-- Main Content Grid -->
-    <div class="dashboard-grid">
-        <!-- Alerts Section -->
-        <section class="alerts-section">
-            <div class="section-header">
-                <span class="section-title"><i class="fa-solid fa-bell"></i> Alerts</span>
-                <span class="badge" id="alert-count">0 Active</span>
+    <!-- Primary Alert Section - Full Width Priority -->
+    <section class="alerts-priority" id="alerts-section">
+        <div class="alerts-header">
+            <div class="alerts-header-left">
+                <i class="fa-solid fa-bell"></i>
+                <span class="alerts-title">Emergency Alerts</span>
+                <span class="alerts-badge" id="alert-count">0</span>
             </div>
-            <div class="alerts-container" id="alerts-container">
-                <div class="loading">
-                    <span class="spinner"></span>
-                    Loading...
-                </div>
+            <div class="alerts-header-right">
+                <span class="refresh-indicator" id="refresh-indicator">
+                    <i class="fa-solid fa-rotate"></i> Auto-refresh
+                </span>
             </div>
-        </section>
+        </div>
 
-        <!-- Device Status Section -->
-        <section class="activity-section">
-            <div class="section-header">
-                <span class="section-title"><i class="fa-solid fa-microchip"></i> Devices</span>
-                <span class="badge neutral" id="device-count">0</span>
+        <!-- Latest Alert Highlight -->
+        <div class="latest-alert-container" id="latest-alert-container">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Other Alerts List -->
+        <div class="alerts-list" id="alerts-list">
+            <div class="loading">
+                <span class="spinner"></span>
+                Loading alerts...
             </div>
-            <div class="activity-list" id="device-list">
-                <div class="loading">
-                    <span class="spinner"></span>
-                    Loading...
-                </div>
+        </div>
+    </section>
+
+    <!-- Device Status - Secondary -->
+    <section class="devices-section">
+        <div class="section-header">
+            <span class="section-title"><i class="fa-solid fa-microchip"></i> Device Status</span>
+            <span class="badge neutral" id="device-count">0</span>
+        </div>
+        <div class="device-grid" id="device-list">
+            <div class="loading">
+                <span class="spinner"></span>
+                Loading...
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <!-- Alert Detail Modal -->
     <div class="modal-overlay" id="alert-modal">
