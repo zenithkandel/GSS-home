@@ -297,7 +297,7 @@ function openCreateModal() {
     // Add initial entry
     addMappingEntry();
 
-    document.getElementById('edit-modal').classList.add('show');
+    document.getElementById('edit-modal').classList.add('active');
 }
 
 // Open Edit Modal
@@ -320,12 +320,12 @@ async function editIndex(iid) {
         addMappingEntry(code, value);
     });
 
-    document.getElementById('edit-modal').classList.add('show');
+    document.getElementById('edit-modal').classList.add('active');
 }
 
 // Close Edit Modal
 function closeEditModal() {
-    document.getElementById('edit-modal').classList.remove('show');
+    document.getElementById('edit-modal').classList.remove('active');
 }
 
 // Get header for entries
@@ -484,12 +484,12 @@ function viewIndex(iid) {
         </div>
     `;
 
-    document.getElementById('view-modal').classList.add('show');
+    document.getElementById('view-modal').classList.add('active');
 }
 
 // Close View Modal
 function closeViewModal() {
-    document.getElementById('view-modal').classList.remove('show');
+    document.getElementById('view-modal').classList.remove('active');
     currentViewId = null;
 }
 
@@ -508,12 +508,12 @@ function deleteIndex(iid) {
 
     deleteId = iid;
     document.getElementById('delete-type').textContent = index.type;
-    document.getElementById('delete-modal').classList.add('show');
+    document.getElementById('delete-modal').classList.add('active');
 }
 
 // Close Delete Modal
 function closeDeleteModal() {
-    document.getElementById('delete-modal').classList.remove('show');
+    document.getElementById('delete-modal').classList.remove('active');
     deleteId = null;
 }
 
@@ -545,12 +545,12 @@ function openAddEntryModal(iid) {
     document.getElementById('add-entry-iid').value = iid;
     document.getElementById('new-entry-code').value = '';
     document.getElementById('new-entry-value').value = '';
-    document.getElementById('add-entry-modal').classList.add('show');
+    document.getElementById('add-entry-modal').classList.add('active');
     document.getElementById('new-entry-code').focus();
 }
 
 function closeAddEntryModal() {
-    document.getElementById('add-entry-modal').classList.remove('show');
+    document.getElementById('add-entry-modal').classList.remove('active');
 }
 
 async function saveNewEntry() {

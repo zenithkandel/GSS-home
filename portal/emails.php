@@ -79,6 +79,12 @@
         </div>
     </div>
 
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message"></span>
+    </div>
+
     <script src="js/emails.js"></script>
 </body>
 
