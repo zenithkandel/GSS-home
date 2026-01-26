@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/helps.css">
 </head>
@@ -17,7 +17,7 @@
 <body>
     <div class="header">
         <h1>Responders</h1>
-        <button class="btn btn-primary" onclick="openModal('create')"><i class="fa-solid fa-plus"></i> Add
+        <button class="btn btn-primary" onclick="openModal('create')"><i class="fa-duotone fa-plus"></i> Add
             Responder</button>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="toolbar">
         <div class="toolbar-left">
             <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <i class="fa-duotone fa-magnifying-glass search-icon"></i>
                 <input type="text" id="search-input" placeholder="Search...">
             </div>
             <select class="filter-select" id="status-filter">
@@ -53,7 +53,7 @@
                 <option value="busy">Busy</option>
             </select>
         </div>
-        <button class="btn" onclick="loadHelps()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        <button class="btn" onclick="loadHelps()"><i class="fa-duotone fa-rotate"></i> Refresh</button>
     </div>
 
     <div id="table-container">
@@ -73,7 +73,7 @@
         <div class="modal">
             <div class="modal-header">
                 <span class="modal-title" id="modal-title">Add Responder</span>
-                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="help-form">
@@ -130,7 +130,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveHelp()"><i class="fa-solid fa-check"></i> Save</button>
+                <button class="btn btn-primary" onclick="saveHelp()"><i class="fa-duotone fa-check"></i> Save</button>
             </div>
         </div>
     </div>
@@ -140,7 +140,7 @@
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
                 <span class="modal-title">Delete Responder</span>
-                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete this responder?</p>
@@ -150,7 +150,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-duotone fa-trash"></i>
                     Delete</button>
             </div>
         </div>
@@ -158,7 +158,7 @@
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-duotone fa-check"></i>
         <span id="toast-message"></span>
     </div>
 

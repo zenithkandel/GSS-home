@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/mapping.css">
 </head>
@@ -17,7 +17,7 @@
 <body>
     <div class="header">
         <h1>Index Mapping</h1>
-        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-duotone fa-plus"></i> New
             Mapping</button>
     </div>
 
@@ -45,7 +45,7 @@
             </select>
             <input type="text" class="search-input" id="search-input" placeholder="Search...">
         </div>
-        <button class="btn" onclick="loadIndexes()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        <button class="btn" onclick="loadIndexes()"><i class="fa-duotone fa-rotate"></i> Refresh</button>
     </div>
 
     <!-- Index Cards Container -->
@@ -61,7 +61,7 @@
         <div class="modal modal-lg">
             <div class="modal-header">
                 <span class="modal-title" id="modal-title">New Index Mapping</span>
-                <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeEditModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="index-form">
@@ -87,14 +87,14 @@
                             <!-- Dynamic entries will be added here -->
                         </div>
                         <button type="button" class="btn btn-sm" onclick="addMappingEntry()">
-                            <i class="fa-solid fa-plus"></i> Add Entry
+                            <i class="fa-duotone fa-plus"></i> Add Entry
                         </button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeEditModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveIndex()"><i class="fa-solid fa-check"></i> Save</button>
+                <button class="btn btn-primary" onclick="saveIndex()"><i class="fa-duotone fa-check"></i> Save</button>
             </div>
         </div>
     </div>
@@ -104,14 +104,14 @@
         <div class="modal modal-lg">
             <div class="modal-header">
                 <span class="modal-title"><span id="view-title">Index Details</span></span>
-                <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeViewModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="view-content">
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeViewModal()">Close</button>
                 <button class="btn btn-primary" id="view-edit-btn" onclick="editFromView()"><i
-                        class="fa-solid fa-pen"></i> Edit</button>
+                        class="fa-duotone fa-pen"></i> Edit</button>
             </div>
         </div>
     </div>
@@ -121,7 +121,7 @@
         <div class="modal modal-sm">
             <div class="modal-header">
                 <span class="modal-title">Delete Mapping</span>
-                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <p class="delete-warning">
@@ -134,7 +134,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-duotone fa-trash"></i>
                     Delete</button>
             </div>
         </div>
@@ -145,7 +145,7 @@
         <div class="modal modal-sm">
             <div class="modal-header">
                 <span class="modal-title">Add Entry</span>
-                <button class="modal-close" onclick="closeAddEntryModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeAddEntryModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="add-entry-iid">
@@ -160,14 +160,14 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeAddEntryModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveNewEntry()"><i class="fa-solid fa-plus"></i> Add</button>
+                <button class="btn btn-primary" onclick="saveNewEntry()"><i class="fa-duotone fa-plus"></i> Add</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-duotone fa-check"></i>
         <span id="toast-message">Success</span>
     </div>
 

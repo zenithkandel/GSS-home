@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/devices.css">
 </head>
@@ -18,14 +18,14 @@
     <div class="header">
         <h1>Devices</h1>
         <button class="btn btn-primary" onclick="openModal('create')">
-            <i class="fa-solid fa-plus"></i> Add Device
+            <i class="fa-duotone fa-plus"></i> Add Device
         </button>
     </div>
 
     <div class="toolbar">
         <div class="toolbar-left">
             <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-duotone fa-magnifying-glass"></i>
                 <input type="text" id="search-input" placeholder="Search...">
             </div>
             <select class="filter-select" id="status-filter">
@@ -39,7 +39,7 @@
             </select>
         </div>
         <button class="btn" onclick="loadDevices()">
-            <i class="fa-solid fa-rotate"></i> Refresh
+            <i class="fa-duotone fa-rotate"></i> Refresh
         </button>
     </div>
 
@@ -61,7 +61,7 @@
             <div class="modal-header">
                 <span class="modal-title" id="modal-title">Add Device</span>
                 <button class="modal-close" onclick="closeModal()">
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="fa-duotone fa-xmark"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -93,7 +93,7 @@
             <div class="modal-footer">
                 <button class="btn" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="saveDevice()">
-                    <i class="fa-solid fa-check"></i> Save
+                    <i class="fa-duotone fa-check"></i> Save
                 </button>
             </div>
         </div>
@@ -105,7 +105,7 @@
             <div class="modal-header">
                 <span class="modal-title">Delete Device</span>
                 <button class="modal-close" onclick="closeDeleteModal()">
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="fa-duotone fa-xmark"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -117,7 +117,7 @@
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
                 <button class="btn btn-danger" onclick="confirmDelete()">
-                    <i class="fa-solid fa-trash"></i> Delete
+                    <i class="fa-duotone fa-trash"></i> Delete
                 </button>
             </div>
         </div>
@@ -129,20 +129,20 @@
             <div class="modal-header">
                 <span class="modal-title" id="map-modal-title">Location</span>
                 <button class="modal-close" onclick="closeMapModal()">
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="fa-duotone fa-xmark"></i>
                 </button>
             </div>
             <div class="modal-body" style="padding: 0;">
                 <div class="map-container" id="map-container">
                     <div class="map-loading">
-                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <i class="fa-duotone fa-spinner fa-spin"></i>
                         <span>Loading...</span>
                     </div>
                 </div>
                 <div class="map-info" id="map-info">
                     <span class="map-location-name" id="map-location-name"></span>
                     <button class="btn btn-primary" id="open-gmaps-btn" onclick="openInGoogleMaps()">
-                        <i class="fa-solid fa-map"></i> Open in Maps
+                        <i class="fa-duotone fa-map"></i> Open in Maps
                     </button>
                 </div>
             </div>
@@ -151,7 +151,7 @@
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-duotone fa-check"></i>
         <span id="toast-message"></span>
     </div>
 

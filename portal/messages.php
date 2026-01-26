@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/messages.css">
 </head>
@@ -17,7 +17,8 @@
 <body>
     <div class="header">
         <h1>Alerts</h1>
-        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Alert</button>
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-duotone fa-plus"></i> New
+            Alert</button>
     </div>
 
     <div class="stats-bar">
@@ -51,7 +52,7 @@
             <input type="date" class="date-input" id="from-date">
             <input type="date" class="date-input" id="to-date">
         </div>
-        <button class="btn" onclick="loadMessages()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        <button class="btn" onclick="loadMessages()"><i class="fa-duotone fa-rotate"></i> Refresh</button>
     </div>
 
     <div id="table-container">
@@ -71,7 +72,7 @@
         <div class="modal">
             <div class="modal-header">
                 <span class="modal-title">New Alert</span>
-                <button class="modal-close" onclick="closeCreateModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeCreateModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="message-form">
@@ -98,9 +99,9 @@
             <div class="modal-footer">
                 <button class="btn" onclick="closeCreateModal()" id="cancel-btn">Cancel</button>
                 <button class="btn btn-primary" onclick="createMessage()" id="send-btn">
-                    <span class="btn-text"><i class="fa-solid fa-plus"></i> Create</span>
+                    <span class="btn-text"><i class="fa-duotone fa-plus"></i> Create</span>
                     <span class="btn-loading" style="display: none;">
-                        <i class="fa-solid fa-spinner fa-spin"></i> Sending...
+                        <i class="fa-duotone fa-spinner fa-spin"></i> Sending...
                     </span>
                 </button>
             </div>
@@ -125,7 +126,7 @@
         <div class="modal">
             <div class="modal-header">
                 <span class="modal-title">Alert Details</span>
-                <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeViewModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="message-details">
             </div>
@@ -140,7 +141,7 @@
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
                 <span class="modal-title">Delete Alert</span>
-                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-duotone fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete this alert?</p>
@@ -150,7 +151,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-duotone fa-trash"></i>
                     Delete</button>
             </div>
         </div>
@@ -158,7 +159,7 @@
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-duotone fa-check"></i>
         <span id="toast-message"></span>
     </div>
 

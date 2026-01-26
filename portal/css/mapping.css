@@ -1,112 +1,139 @@
-/* Mapping Page - Minimal */
+/* ========================================
+   MAPPING PAGE - Glassmorphism
+   ======================================== */
 
 /* Index Cards Grid */
 .index-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
 }
 
 .index-card {
-    background: var(--bg-card);
+    background: var(--bg-card, rgba(28, 28, 35, 0.8));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.index-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .index-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 14px 18px;
     border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
 }
 
 .index-card-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .index-card-title .type-badge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    padding: 5px 12px;
     font-size: 0.6875rem;
-    font-weight: 500;
-    border-radius: 4px;
+    font-weight: 600;
+    border-radius: 6px;
     text-transform: capitalize;
+    letter-spacing: 0.02em;
 }
 
 .type-badge.location {
-    background: rgba(59, 130, 246, 0.15);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.08));
     color: var(--info);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 
 .type-badge.message {
-    background: rgba(234, 179, 8, 0.15);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(234, 179, 8, 0.08));
     color: var(--warning);
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
 }
 
 .index-card-actions {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
 .index-card-actions .btn-icon {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-hover);
-    border: none;
-    border-radius: 4px;
+    background: var(--bg-hover, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--border);
+    border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
+    transition: all 0.2s ease;
 }
 
 .index-card-actions .btn-icon:hover {
     color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
 }
 
 .index-card-actions .btn-icon.edit:hover {
     color: var(--info);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .index-card-actions .btn-icon.delete:hover {
     color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
 }
 
 .index-card-actions .btn-icon.add:hover {
     color: var(--success);
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
 }
 
 .index-card-body {
-    padding: 12px 16px;
+    padding: 14px 18px;
 }
 
 .index-description {
     font-size: 0.8125rem;
     color: var(--text-secondary);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
 
 .index-meta {
     display: flex;
-    gap: 16px;
-    margin-bottom: 12px;
+    gap: 18px;
+    margin-bottom: 14px;
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-/* Mapping Table */
+/* Mapping Table - Glassmorphism */
 .mapping-table-container {
-    max-height: 220px;
+    max-height: 240px;
     overflow-y: auto;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
+    background: var(--bg, rgba(20, 20, 26, 0.5));
 }
 
 .mapping-table {
@@ -117,18 +144,18 @@
 
 .mapping-table th,
 .mapping-table td {
-    padding: 8px 12px;
+    padding: 10px 14px;
     text-align: left;
     border-bottom: 1px solid var(--border);
 }
 
 .mapping-table th {
-    background: var(--bg-hover);
-    font-weight: 500;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+    font-weight: 600;
     color: var(--text-secondary);
     font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
     position: sticky;
     top: 0;
 }
@@ -138,14 +165,17 @@
 }
 
 .mapping-table tr:hover td {
-    background: var(--bg-hover);
+    background: var(--bg-hover, rgba(255, 255, 255, 0.03));
 }
 
 .mapping-table .code-cell {
-    font-family: monospace;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
     color: var(--accent);
-    font-weight: 600;
-    width: 60px;
+    font-weight: 700;
+    width: 70px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+    border-radius: 4px;
 }
 
 .mapping-table .value-cell {
@@ -153,7 +183,7 @@
 }
 
 .mapping-table .actions-cell {
-    width: 70px;
+    width: 80px;
     text-align: right;
 }
 
@@ -162,12 +192,15 @@
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    padding: 4px;
-    font-size: 0.75rem;
+    padding: 6px;
+    font-size: 0.8125rem;
+    transition: all 0.2s ease;
+    border-radius: 4px;
 }
 
 .mapping-table .actions-cell button:hover {
     color: var(--text);
+    background: var(--bg-hover);
 }
 
 .mapping-table .actions-cell button.edit-entry:hover {
@@ -178,69 +211,83 @@
     color: var(--danger);
 }
 
-/* Mapping Entry Editor */
+/* Mapping Entry Editor - Glassmorphism */
 .mapping-entries {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
-    max-height: 300px;
+    gap: 10px;
+    margin-bottom: 14px;
+    max-height: 320px;
     overflow-y: auto;
+    padding: 4px;
 }
 
 .mapping-entry {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    padding: 8px;
+    background: var(--bg-hover, rgba(255, 255, 255, 0.02));
+    border-radius: 8px;
+    transition: background 0.2s ease;
 }
 
-.mapping-entry input {
-    flex: 1;
+.mapping-entry:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .mapping-entry .code-input {
-    width: 80px;
-    flex: 0 0 80px;
+    width: 90px;
+    flex: 0 0 90px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    font-weight: 600;
 }
 
 .mapping-entry .remove-entry {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: none;
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-muted);
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .mapping-entry .remove-entry:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+    border-color: rgba(239, 68, 68, 0.2);
     color: var(--danger);
 }
 
-/* Empty state */
+/* Empty state - Glassmorphism */
 .empty-state {
     text-align: center;
-    padding: 48px 24px;
+    padding: 56px 24px;
     color: var(--text-muted);
 }
 
 .empty-state i {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    opacity: 0.5;
+    font-size: 2.5rem;
+    margin-bottom: 14px;
+    opacity: 0.4;
+    color: var(--accent);
 }
 
 .empty-state p {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
 }
 
 /* Delete warning */
 .delete-warning {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+    border-radius: 10px;
+    border-left: 3px solid var(--danger);
 }
 
 .delete-info {
@@ -250,7 +297,7 @@
 
 /* View modal mappings */
 .view-mappings {
-    max-height: 350px;
+    max-height: 380px;
     overflow-y: auto;
 }
 
@@ -258,5 +305,18 @@
 @media (max-width: 768px) {
     .index-cards {
         grid-template-columns: 1fr;
+    }
+
+    .index-card {
+        border-radius: 12px;
+    }
+
+    .mapping-entry {
+        flex-wrap: wrap;
+    }
+
+    .mapping-entry .code-input {
+        width: 100%;
+        flex: 1 0 100%;
     }
 }

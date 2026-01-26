@@ -222,7 +222,7 @@
     .message-text {
         max-width: 180px;
     }
-    
+
     .sending-content {
         padding: 24px;
         margin: 16px;
@@ -238,7 +238,7 @@
     .detail-label {
         width: 100%;
     }
-    
+
     .detail-row:hover {
         margin: 0;
         padding: 12px 0;
