@@ -4,21 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - LifeLine</title>
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-thin.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-solid.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-regular.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-light.css">
+    <title>Alerts - LifeLine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/messages.css">
 </head>
 
 <body>
     <div class="header">
-        <h1><i class="fa-solid fa-message-exclamation"></i> Emergency Messages</h1>
-        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New
-            Message</button>
+        <h1>Alerts</h1>
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Alert</button>
     </div>
 
     <div class="stats-bar">
@@ -47,18 +46,18 @@
                 <option value="">All Devices</option>
             </select>
             <select class="filter-select" id="message-type-filter">
-                <option value="">All Message Types</option>
+                <option value="">All Types</option>
             </select>
-            <input type="date" class="date-input" id="from-date" placeholder="From">
-            <input type="date" class="date-input" id="to-date" placeholder="To">
+            <input type="date" class="date-input" id="from-date">
+            <input type="date" class="date-input" id="to-date">
         </div>
-        <button class="btn" onclick="loadMessages()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+        <button class="btn" onclick="loadMessages()"><i class="fa-solid fa-rotate"></i> Refresh</button>
     </div>
 
     <div id="table-container">
         <div class="loading">
             <span class="spinner"></span>
-            Loading messages...
+            Loading...
         </div>
     </div>
 
@@ -71,36 +70,35 @@
     <div class="modal-overlay" id="create-modal">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-plus-circle"></i> New Emergency Message</span>
+                <span class="modal-title">New Alert</span>
                 <button class="modal-close" onclick="closeCreateModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="message-form">
                     <div class="form-group">
-                        <label for="msg-device"><i class="fa-solid fa-microchip"></i> Device *</label>
+                        <label for="msg-device">Device *</label>
                         <select id="msg-device" required>
                             <option value="">Select Device</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="msg-type"><i class="fa-solid fa-triangle-exclamation"></i> Message Type *</label>
+                        <label for="msg-type">Alert Type *</label>
                         <select id="msg-type" required>
-                            <option value="">Select Message Type</option>
+                            <option value="">Select Type</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="msg-rssi"><i class="fa-solid fa-signal"></i> Signal Strength (RSSI)</label>
+                        <label for="msg-rssi">Signal (RSSI)</label>
                         <input type="number" id="msg-rssi" placeholder="-65" min="-120" max="0">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeCreateModal()" id="cancel-btn"><i class="fa-solid fa-xmark"></i>
-                    Cancel</button>
+                <button class="btn" onclick="closeCreateModal()" id="cancel-btn">Cancel</button>
                 <button class="btn btn-primary" onclick="createMessage()" id="send-btn">
-                    <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Create Message</span>
+                    <span class="btn-text"><i class="fa-solid fa-plus"></i> Create</span>
                     <span class="btn-loading" style="display: none;">
                         <i class="fa-solid fa-spinner fa-spin"></i> Sending...
                     </span>
@@ -111,12 +109,12 @@
             <div class="sending-overlay" id="sending-overlay">
                 <div class="sending-content">
                     <div class="sending-spinner"></div>
-                    <p class="sending-title">Sending Emergency Alert</p>
-                    <p class="sending-subtitle" id="sending-status">Creating message...</p>
+                    <p class="sending-title">Sending Alert</p>
+                    <p class="sending-subtitle" id="sending-status">Creating...</p>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
-                    <p class="sending-info">Sending push notifications and emails to all registered receivers</p>
+                    <p class="sending-info">Notifying all registered receivers</p>
                 </div>
             </div>
         </div>
@@ -126,13 +124,13 @@
     <div class="modal-overlay" id="view-modal">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-circle-info"></i> Message Details</span>
+                <span class="modal-title">Alert Details</span>
                 <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="message-details">
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+                <button class="btn" onclick="closeViewModal()">Close</button>
             </div>
         </div>
     </div>
@@ -141,27 +139,26 @@
     <div class="modal-overlay" id="delete-modal">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-trash-can"></i> Confirm Delete</span>
+                <span class="modal-title">Delete Alert</span>
                 <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <p><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i> Are you sure you want
-                    to delete this message?</p>
+                <p>Are you sure you want to delete this alert?</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">
                     This action cannot be undone.
                 </p>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                <button class="btn btn-primary" style="background: var(--danger); border-color: var(--danger);"
-                    onclick="confirmDelete()"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                <button class="btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                    Delete</button>
             </div>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-circle-check"></i>
+        <i class="fa-solid fa-check"></i>
         <span id="toast-message"></span>
     </div>
 
