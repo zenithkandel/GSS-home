@@ -44,37 +44,37 @@
 
         <ul class="nav-links">
             <li>
-                <a href="dashboard.php" class="nav-item active" data-page="dashboard">
+                <a href="dashboard.php" class="nav-item active" data-page="dashboard" data-tooltip="Dashboard">
                     <span class="nav-icon"><i class="fa-duotone fa-objects-column"></i></span>
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="messages.php" class="nav-item" data-page="messages">
+                <a href="messages.php" class="nav-item" data-page="messages" data-tooltip="Alerts">
                     <span class="nav-icon"><i class="fa-duotone fa-bell"></i></span>
                     <span class="nav-label">Alerts</span>
                 </a>
             </li>
             <li>
-                <a href="devices.php" class="nav-item" data-page="devices">
+                <a href="devices.php" class="nav-item" data-page="devices" data-tooltip="Devices">
                     <span class="nav-icon"><i class="fa-duotone fa-microchip"></i></span>
                     <span class="nav-label">Devices</span>
                 </a>
             </li>
             <li>
-                <a href="helps.php" class="nav-item" data-page="helps">
+                <a href="helps.php" class="nav-item" data-page="helps" data-tooltip="Responders">
                     <span class="nav-icon"><i class="fa-duotone fa-user-helmet-safety"></i></span>
                     <span class="nav-label">Responders</span>
                 </a>
             </li>
             <li>
-                <a href="mapping.php" class="nav-item" data-page="mapping">
+                <a href="mapping.php" class="nav-item" data-page="mapping" data-tooltip="Mapping">
                     <span class="nav-icon"><i class="fa-duotone fa-diagram-project"></i></span>
                     <span class="nav-label">Mapping</span>
                 </a>
             </li>
             <li>
-                <a href="emails.php" class="nav-item" data-page="emails">
+                <a href="emails.php" class="nav-item" data-page="emails" data-tooltip="Emails">
                     <span class="nav-icon"><i class="fa-duotone fa-envelope"></i></span>
                     <span class="nav-label">Emails</span>
                 </a>

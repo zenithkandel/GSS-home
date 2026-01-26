@@ -160,16 +160,44 @@ body {
     font-size: 1.125rem;
 }
 
+/* Tooltip for collapsed nav items */
+.sidebar.collapsed .nav-item {
+    position: relative;
+}
+
+.sidebar.collapsed .nav-item::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 12px;
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.15s ease;
+    z-index: 100;
+    box-shadow: var(--shadow);
+}
+
+.sidebar.collapsed .nav-item:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
 .sidebar.collapsed .theme-btn {
     padding: 0;
     justify-content: center;
     width: 40px;
     height: 40px;
     margin: 0 auto;
-}
-
-.sidebar.collapsed .theme-btn .theme-text {
-    display: none;
 }
 
 .sidebar.collapsed .connection-status {
