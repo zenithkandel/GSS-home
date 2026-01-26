@@ -62,6 +62,10 @@
     font-size: 0.875rem;
 }
 
+.email-table .email-col i {
+    margin-right: 6px;
+}
+
 .email-table .actions-col {
     width: 80px;
     text-align: center;
