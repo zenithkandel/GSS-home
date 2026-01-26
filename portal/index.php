@@ -8,9 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/brands.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
     <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -24,8 +23,8 @@
             <span class="logo-text">LifeLine</span>
         </div>
         <button class="mobile-theme-btn" id="mobile-theme-toggle">
-            <span class="theme-icon-dark"><i class="fa-solid fa-sun-bright"></i></span>
-            <span class="theme-icon-light"><i class="fa-solid fa-moon"></i></span>
+            <span class="theme-icon-dark"><i class="fa-duotone fa-sun-bright"></i></span>
+            <span class="theme-icon-light"><i class="fa-duotone fa-moon-stars"></i></span>
         </button>
     </header>
 
@@ -39,44 +38,44 @@
                 <span class="logo-text">LifeLine</span>
             </div>
             <button class="collapse-btn" id="collapse-btn" title="Collapse sidebar">
-                <i class="fa-solid fa-chevron-left"></i>
+                <i class="fa-duotone fa-sidebar-flip"></i>
             </button>
         </div>
 
         <ul class="nav-links">
             <li>
                 <a href="dashboard.php" class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon"><i class="fa-solid fa-grid-2"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-objects-column"></i></span>
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="messages.php" class="nav-item" data-page="messages">
-                    <span class="nav-icon"><i class="fa-solid fa-bell"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-bell"></i></span>
                     <span class="nav-label">Alerts</span>
                 </a>
             </li>
             <li>
                 <a href="devices.php" class="nav-item" data-page="devices">
-                    <span class="nav-icon"><i class="fa-solid fa-microchip"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-microchip"></i></span>
                     <span class="nav-label">Devices</span>
                 </a>
             </li>
             <li>
                 <a href="helps.php" class="nav-item" data-page="helps">
-                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-user-helmet-safety"></i></span>
                     <span class="nav-label">Responders</span>
                 </a>
             </li>
             <li>
                 <a href="mapping.php" class="nav-item" data-page="mapping">
-                    <span class="nav-icon"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-diagram-project"></i></span>
                     <span class="nav-label">Mapping</span>
                 </a>
             </li>
             <li>
                 <a href="emails.php" class="nav-item" data-page="emails">
-                    <span class="nav-icon"><i class="fa-solid fa-envelope"></i></span>
+                    <span class="nav-icon"><i class="fa-duotone fa-envelope"></i></span>
                     <span class="nav-label">Emails</span>
                 </a>
             </li>
@@ -84,8 +83,8 @@
 
         <div class="sidebar-footer">
             <button id="theme-toggle" class="theme-btn" title="Toggle theme">
-                <span class="theme-icon-dark"><i class="fa-solid fa-sun-bright"></i></span>
-                <span class="theme-icon-light"><i class="fa-solid fa-moon"></i></span>
+                <span class="theme-icon-dark"><i class="fa-duotone fa-sun-bright"></i></span>
+                <span class="theme-icon-light"><i class="fa-duotone fa-moon-stars"></i></span>
             </button>
             <div class="connection-status">
                 <span class="status-dot" id="connection-dot"></span>
