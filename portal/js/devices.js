@@ -1,6 +1,7 @@
 // Devices Page JavaScript
 const API_BASE = '../API';
 let devices = [];
+let allDevices = []; // Store all devices for stats
 let locations = {};
 let currentPage = 1;
 let totalPages = 1;

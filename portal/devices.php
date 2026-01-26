@@ -22,6 +22,25 @@
         </button>
     </div>
 
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number" id="total-count">-</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-success" id="active-count">-</span>
+            <span class="stat-label">Active</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-warning" id="inactive-count">-</span>
+            <span class="stat-label">Inactive</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number text-muted" id="maintenance-count">-</span>
+            <span class="stat-label">Maintenance</span>
+        </div>
+    </div>
+
     <div class="toolbar">
         <div class="toolbar-left">
             <div class="search-box">
