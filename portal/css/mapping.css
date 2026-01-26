@@ -71,9 +71,17 @@
     color: var(--text);
 }
 
-.index-card-actions .btn-icon.edit:hover { color: var(--info); }
-.index-card-actions .btn-icon.delete:hover { color: var(--danger); }
-.index-card-actions .btn-icon.add:hover { color: var(--success); }
+.index-card-actions .btn-icon.edit:hover {
+    color: var(--info);
+}
+
+.index-card-actions .btn-icon.delete:hover {
+    color: var(--danger);
+}
+
+.index-card-actions .btn-icon.add:hover {
+    color: var(--success);
+}
 
 .index-card-body {
     padding: 12px 16px;
@@ -162,8 +170,13 @@
     color: var(--text);
 }
 
-.mapping-table .actions-cell button.edit-entry:hover { color: var(--info); }
-.mapping-table .actions-cell button.delete-entry:hover { color: var(--danger); }
+.mapping-table .actions-cell button.edit-entry:hover {
+    color: var(--info);
+}
+
+.mapping-table .actions-cell button.delete-entry:hover {
+    color: var(--danger);
+}
 
 /* Mapping Entry Editor */
 .mapping-entries {
