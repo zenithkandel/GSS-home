@@ -3,16 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>LifeLine Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/brands.css">
     <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="../res/lifeline.png" alt="LifeLine">
+            </div>
+            <span class="logo-text">LifeLine</span>
+        </div>
+        <button class="mobile-theme-btn" id="mobile-theme-toggle">
+            <span class="theme-icon-dark"><i class="fa-solid fa-sun-bright"></i></span>
+            <span class="theme-icon-light"><i class="fa-solid fa-moon"></i></span>
+        </button>
+    </header>
+
+    <!-- Desktop Sidebar -->
     <nav class="sidebar">
         <div class="logo">
             <div class="logo-icon">
@@ -26,42 +43,36 @@
                 <a href="dashboard.php" class="nav-item active" data-page="dashboard">
                     <span class="nav-icon"><i class="fa-solid fa-grid-2"></i></span>
                     <span class="nav-label">Dashboard</span>
-                    <span class="nav-indicator"></span>
                 </a>
             </li>
             <li>
                 <a href="messages.php" class="nav-item" data-page="messages">
-                    <span class="nav-icon"><i class="fa-solid fa-message-exclamation"></i></span>
-                    <span class="nav-label">Messages</span>
-                    <span class="nav-indicator"></span>
+                    <span class="nav-icon"><i class="fa-solid fa-bell"></i></span>
+                    <span class="nav-label">Alerts</span>
                 </a>
             </li>
             <li>
                 <a href="devices.php" class="nav-item" data-page="devices">
                     <span class="nav-icon"><i class="fa-solid fa-microchip"></i></span>
                     <span class="nav-label">Devices</span>
-                    <span class="nav-indicator"></span>
                 </a>
             </li>
             <li>
                 <a href="helps.php" class="nav-item" data-page="helps">
-                    <span class="nav-icon"><i class="fa-solid fa-user-helmet-safety"></i></span>
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
                     <span class="nav-label">Responders</span>
-                    <span class="nav-indicator"></span>
                 </a>
             </li>
             <li>
                 <a href="mapping.php" class="nav-item" data-page="mapping">
                     <span class="nav-icon"><i class="fa-solid fa-diagram-project"></i></span>
                     <span class="nav-label">Mapping</span>
-                    <span class="nav-indicator"></span>
                 </a>
             </li>
             <li>
                 <a href="emails.php" class="nav-item" data-page="emails">
                     <span class="nav-icon"><i class="fa-solid fa-envelope"></i></span>
-                    <span class="nav-label">Email Receivers</span>
-                    <span class="nav-indicator"></span>
+                    <span class="nav-label">Emails</span>
                 </a>
             </li>
         </ul>
@@ -78,9 +89,50 @@
         </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="content">
         <iframe id="content-frame" src="dashboard.php" frameborder="0"></iframe>
     </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-inner">
+            <a href="dashboard.php" class="mobile-nav-item active" data-page="dashboard">
+                <i class="fa-solid fa-grid-2"></i>
+                <span>Home</span>
+            </a>
+            <a href="messages.php" class="mobile-nav-item" data-page="messages">
+                <i class="fa-solid fa-bell"></i>
+                <span>Alerts</span>
+            </a>
+            <a href="devices.php" class="mobile-nav-item" data-page="devices">
+                <i class="fa-solid fa-microchip"></i>
+                <span>Devices</span>
+            </a>
+            <button class="mobile-more-btn" id="mobile-more-btn">
+                <i class="fa-solid fa-ellipsis"></i>
+                <span>More</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile More Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+        <div class="mobile-menu">
+            <a href="helps.php" class="mobile-menu-item" data-page="helps">
+                <i class="fa-solid fa-users"></i>
+                <span>Responders</span>
+            </a>
+            <a href="mapping.php" class="mobile-menu-item" data-page="mapping">
+                <i class="fa-solid fa-diagram-project"></i>
+                <span>Mapping</span>
+            </a>
+            <a href="emails.php" class="mobile-menu-item" data-page="emails">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Emails</span>
+            </a>
+        </div>
+    </div>
 
     <script src="js/index.js"></script>
     <script type="module">
