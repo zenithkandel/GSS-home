@@ -112,7 +112,7 @@ body {
 
 .sidebar.collapsed .sidebar-top {
     flex-direction: column;
-    padding: 12px;
+    padding: 16px;
     gap: 8px;
     align-items: center;
     min-height: auto;
@@ -138,7 +138,7 @@ body {
 }
 
 .sidebar.collapsed .nav-links {
-    padding: 8px;
+    padding: 12px;
 }
 
 .sidebar.collapsed .nav-links li {
@@ -226,7 +226,7 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0px;
     transition: all var(--transition);
 }
 
@@ -299,7 +299,7 @@ body {
     flex: 1;
     list-style: none;
     padding: 14px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .nav-links li {
