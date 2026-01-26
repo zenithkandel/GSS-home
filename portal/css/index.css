@@ -19,7 +19,8 @@
 [data-theme="dark"] {
     --bg: #09090b;
     --bg-card: #111113;
-    --bg-hover: #18181b;
+    --bg-secondary: #18181b;
+    --bg-hover: #1f1f23;
     --border: #27272a;
     --text: #fafafa;
     --text-secondary: #a1a1aa;
@@ -31,8 +32,9 @@
 [data-theme="light"] {
     --bg: #fafafa;
     --bg-card: #ffffff;
-    --bg-hover: #f4f4f5;
-    --border: #e4e4e7;
+    --bg-secondary: #f4f4f5;
+    --bg-hover: #e4e4e7;
+    --border: #d4d4d8;
     --text: #09090b;
     --text-secondary: #71717a;
     --text-muted: #a1a1aa;
@@ -82,17 +84,17 @@ body {
 
 .sidebar.collapsed .sidebar-top {
     flex-direction: column;
-    padding: 12px 8px;
-    gap: 8px;
+    padding: 12px;
+    gap: 10px;
+    align-items: center;
 }
 
 .sidebar.collapsed .logo {
-    padding: 8px;
     justify-content: center;
 }
 
 .sidebar.collapsed .collapse-btn {
-    width: 100%;
+    width: 32px;
     justify-content: center;
 }
 
@@ -112,6 +114,9 @@ body {
 .sidebar.collapsed .theme-btn {
     padding: 0;
     justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
 }
 
 .sidebar.collapsed .connection-status {
@@ -119,22 +124,26 @@ body {
     padding: 8px;
 }
 
+.sidebar.collapsed .sidebar-footer {
+    align-items: center;
+}
+
 /* Sidebar Top */
 .sidebar-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 16px;
     border-bottom: 1px solid var(--border);
-    gap: 8px;
+    gap: 12px;
+    min-height: 64px;
 }
 
 /* Logo */
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px;
+    gap: 10px;
     transition: all 0.2s ease;
 }
 
@@ -165,20 +174,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border: none;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
     background: var(--bg-secondary);
     border-radius: 6px;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .collapse-btn:hover {
-    background: var(--border);
-    color: var(--text-primary);
+    background: var(--bg-hover);
+    color: var(--text);
+    border-color: var(--text-muted);
 }
 
 .collapse-btn i {
@@ -207,6 +217,7 @@ body {
     color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 500;
+    text-decoration: none;
     transition: all var(--transition);
     cursor: pointer;
 }
@@ -217,7 +228,8 @@ body {
 }
 
 .nav-item.active {
-    background: var(--bg-hover);
+    background: var(--accent);
+    background: rgba(239, 68, 68, 0.1);
     color: var(--text);
 }
 
@@ -227,8 +239,9 @@ body {
 
 .nav-icon {
     width: 20px;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .nav-label {
