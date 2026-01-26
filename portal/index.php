@@ -30,12 +30,17 @@
     </header>
 
     <!-- Desktop Sidebar -->
-    <nav class="sidebar">
-        <div class="logo">
-            <div class="logo-icon">
-                <img src="../res/lifeline.png" alt="LifeLine">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="../res/lifeline.png" alt="LifeLine">
+                </div>
+                <span class="logo-text">LifeLine</span>
             </div>
-            <span class="logo-text">LifeLine</span>
+            <button class="collapse-btn" id="collapse-btn" title="Collapse sidebar">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
         </div>
 
         <ul class="nav-links">
