@@ -236,14 +236,22 @@ h3 {
 }
 
 .btn i {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+    opacity: 1;
 }
 
 .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     border-color: transparent;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.btn-primary i {
+    color: #ffffff;
+    --fa-primary-color: #ffffff;
+    --fa-secondary-color: rgba(255, 255, 255, 0.7);
+    --fa-secondary-opacity: 0.7;
 }
 
 .btn-primary:hover {
@@ -254,8 +262,15 @@ h3 {
 .btn-success {
     background: linear-gradient(135deg, var(--success), #16a34a);
     border-color: transparent;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 16px var(--success-glow);
+}
+
+.btn-success i {
+    color: #ffffff;
+    --fa-primary-color: #ffffff;
+    --fa-secondary-color: rgba(255, 255, 255, 0.7);
+    --fa-secondary-opacity: 0.7;
 }
 
 .btn-success:hover {
@@ -265,8 +280,15 @@ h3 {
 .btn-danger {
     background: linear-gradient(135deg, var(--danger), #dc2626);
     border-color: transparent;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 16px var(--danger-glow);
+}
+
+.btn-danger i {
+    color: #ffffff;
+    --fa-primary-color: #ffffff;
+    --fa-secondary-color: rgba(255, 255, 255, 0.7);
+    --fa-secondary-opacity: 0.7;
 }
 
 .btn-danger:hover {

@@ -38,6 +38,10 @@
 
     <div class="toolbar">
         <div class="toolbar-left">
+            <div class="search-box">
+                <i class="fa-duotone fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search alerts...">
+            </div>
             <select class="filter-select" id="status-filter">
                 <option value="">All Status</option>
                 <option value="active">Active</option>

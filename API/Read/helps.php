@@ -53,10 +53,13 @@ try {
         $params['status'] = $_GET['status'];
     }
 
-    // Search by name
-    if (isset($_GET['search'])) {
-        $query .= " AND (name LIKE :search OR location LIKE :search)";
-        $params['search'] = '%' . $_GET['search'] . '%';
+    // Search by name, location, or contact
+    if (isset($_GET['search']) && !empty($_GET['search'])) {
+        $query .= " AND (name LIKE :search OR location LIKE :search2 OR contact LIKE :search3)";
+        $searchTerm = '%' . $_GET['search'] . '%';
+        $params['search'] = $searchTerm;
+        $params['search2'] = $searchTerm;
+        $params['search3'] = $searchTerm;
     }
 
     // Order by
@@ -95,8 +98,8 @@ try {
     if (isset($_GET['status'])) {
         $countQuery .= " AND status = :status";
     }
-    if (isset($_GET['search'])) {
-        $countQuery .= " AND (name LIKE :search OR location LIKE :search)";
+    if (isset($_GET['search']) && !empty($_GET['search'])) {
+        $countQuery .= " AND (name LIKE :search OR location LIKE :search2 OR contact LIKE :search3)";
     }
 
     $countStmt = $db->prepare($countQuery);
