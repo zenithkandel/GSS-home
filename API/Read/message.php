@@ -128,6 +128,8 @@ try {
     $countQuery = "
         SELECT COUNT(*) FROM messages m
         JOIN devices d ON m.DID = d.DID
+        LEFT JOIN indexes il ON il.type = 'location'
+        LEFT JOIN indexes im ON im.type = 'message'
         WHERE 1=1
     ";
     if (isset($_GET['did']))
@@ -140,6 +142,11 @@ try {
         $countQuery .= " AND m.timestamp >= :from_date";
     if (isset($_GET['to']))
         $countQuery .= " AND m.timestamp <= :to_date";
+    if (isset($_GET['search']) && !empty($_GET['search'])) {
+        $countQuery .= " AND (d.device_name LIKE :search 
+            OR JSON_UNQUOTE(JSON_EXTRACT(il.mapping, CONCAT('\$.', d.LID))) LIKE :search2
+            OR JSON_UNQUOTE(JSON_EXTRACT(im.mapping, CONCAT('\$.', m.message_code))) LIKE :search3)";
+    }
 
     $countStmt = $db->prepare($countQuery);
     foreach ($params as $key => $value) {
