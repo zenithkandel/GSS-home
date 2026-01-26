@@ -662,19 +662,21 @@ label i {
 }
 
 /* ========================================
-   MODAL
+   MODAL - Glassmorphism
    ======================================== */
 .modal-overlay {
     position: fixed;
     inset: 0;
     background: var(--overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     opacity: 0;
     visibility: hidden;
-    transition: all var(--transition);
+    transition: all var(--transition-slow);
     z-index: 1000;
 }
 
@@ -688,13 +690,16 @@ label i {
     max-width: 480px;
     max-height: 90vh;
     background: var(--bg-card);
+    backdrop-filter: blur(var(--glass-blur-heavy));
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transform: scale(0.95) translateY(10px);
-    transition: transform var(--transition);
+    transform: scale(0.9) translateY(20px);
+    transition: transform var(--transition-slow);
+    box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 0, 0, 0.3);
 }
 
 .modal-overlay.active .modal {
@@ -778,7 +783,7 @@ label i {
 }
 
 /* ========================================
-   TOAST
+   TOAST - Glassmorphism
    ======================================== */
 .toast {
     position: fixed;
@@ -786,15 +791,17 @@ label i {
     right: 24px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
+    gap: 12px;
+    padding: 14px 22px;
     background: var(--bg-card);
+    backdrop-filter: blur(var(--glass-blur-heavy));
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-lg);
     transform: translateY(100px);
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2000;
     font-size: 0.875rem;
 }
