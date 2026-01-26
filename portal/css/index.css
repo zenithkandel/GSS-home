@@ -453,7 +453,7 @@ body {
 }
 
 .mobile-nav-item.active {
-    color: var(--accent);
+    color: var(--text);
 }
 
 .mobile-nav-item:active {

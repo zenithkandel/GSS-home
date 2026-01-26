@@ -54,10 +54,10 @@
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
     --shadow-glow: 0 0 40px rgba(239, 68, 68, 0.15);
 
-    /* Duotone icon colors */
-    --fa-primary-color: var(--text);
-    --fa-secondary-color: var(--accent);
-    --fa-secondary-opacity: 0.7;
+    /* Duotone icon colors - neutral greys */
+    --fa-primary-color: #d4d4d8;
+    --fa-secondary-color: #71717a;
+    --fa-secondary-opacity: 0.6;
 }
 
 /* Light Theme */
@@ -95,10 +95,10 @@
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.15);
     --shadow-glow: 0 0 40px rgba(220, 38, 38, 0.1);
 
-    /* Duotone icon colors */
-    --fa-primary-color: var(--text);
-    --fa-secondary-color: var(--accent);
-    --fa-secondary-opacity: 0.8;
+    /* Duotone icon colors - neutral greys */
+    --fa-primary-color: #3f3f46;
+    --fa-secondary-color: #a1a1aa;
+    --fa-secondary-opacity: 0.5;
 }
 
 /* ========================================
