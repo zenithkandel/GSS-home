@@ -8,14 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/devices.css">
 </head>
 
 <body>
     <div class="header">
-        <h1><i class="fa-solid fa-microchip"></i> Devices</h1>
+        <h1>Devices</h1>
         <button class="btn btn-primary" onclick="openModal('create')">
             <i class="fa-solid fa-plus"></i> Add Device
         </button>
@@ -25,7 +26,7 @@
         <div class="toolbar-left">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-input" placeholder="Search devices...">
+                <input type="text" id="search-input" placeholder="Search...">
             </div>
             <select class="filter-select" id="status-filter">
                 <option value="">All Status</option>
@@ -38,14 +39,14 @@
             </select>
         </div>
         <button class="btn" onclick="loadDevices()">
-            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+            <i class="fa-solid fa-rotate"></i> Refresh
         </button>
     </div>
 
     <div id="table-container">
         <div class="loading">
             <span class="spinner"></span>
-            Loading devices...
+            Loading...
         </div>
     </div>
 
@@ -58,9 +59,7 @@
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title" id="modal-title">
-                    <i class="fa-solid fa-plus-circle"></i> Add Device
-                </span>
+                <span class="modal-title" id="modal-title">Add Device</span>
                 <button class="modal-close" onclick="closeModal()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -92,9 +91,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeModal()">
-                    <i class="fa-solid fa-xmark"></i> Cancel
-                </button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="saveDevice()">
                     <i class="fa-solid fa-check"></i> Save
                 </button>
@@ -104,11 +101,9 @@
 
     <!-- Delete Confirmation Modal -->
     <div class="modal-overlay" id="delete-modal">
-        <div class="modal" style="max-width: 420px;">
+        <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
-                <span class="modal-title">
-                    <i class="fa-solid fa-trash-can text-danger"></i> Confirm Delete
-                </span>
+                <span class="modal-title">Delete Device</span>
                 <button class="modal-close" onclick="closeDeleteModal()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -116,15 +111,13 @@
             <div class="modal-body">
                 <p>Are you sure you want to delete this device?</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">
-                    <i class="fa-solid fa-circle-info"></i> This will also delete all associated messages.
+                    This will also delete all associated alerts.
                 </p>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeDeleteModal()">
-                    <i class="fa-solid fa-xmark"></i> Cancel
-                </button>
+                <button class="btn" onclick="closeDeleteModal()">Cancel</button>
                 <button class="btn btn-danger" onclick="confirmDelete()">
-                    <i class="fa-solid fa-trash-can"></i> Delete
+                    <i class="fa-solid fa-trash"></i> Delete
                 </button>
             </div>
         </div>
@@ -132,11 +125,9 @@
 
     <!-- Map Modal -->
     <div class="modal-overlay" id="map-modal">
-        <div class="modal" style="max-width: 700px;">
+        <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
-                <span class="modal-title" id="map-modal-title">
-                    <i class="fa-solid fa-location-dot"></i> Location
-                </span>
+                <span class="modal-title" id="map-modal-title">Location</span>
                 <button class="modal-close" onclick="closeMapModal()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -145,13 +136,13 @@
                 <div class="map-container" id="map-container">
                     <div class="map-loading">
                         <i class="fa-solid fa-spinner fa-spin"></i>
-                        <span>Loading map...</span>
+                        <span>Loading...</span>
                     </div>
                 </div>
                 <div class="map-info" id="map-info">
                     <span class="map-location-name" id="map-location-name"></span>
                     <button class="btn btn-primary" id="open-gmaps-btn" onclick="openInGoogleMaps()">
-                        <i class="fa-solid fa-map-location-dot"></i> Open in Google Maps
+                        <i class="fa-solid fa-map"></i> Open in Maps
                     </button>
                 </div>
             </div>
@@ -160,7 +151,7 @@
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-circle-check"></i>
+        <i class="fa-solid fa-check"></i>
         <span id="toast-message"></span>
     </div>
 
