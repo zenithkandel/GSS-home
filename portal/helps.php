@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responders - LifeLine</title>
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-thin.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-solid.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-regular.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-light.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/fontawesome.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/solid.css">
     <link rel="stylesheet" href="css/shared.css">
     <link rel="stylesheet" href="css/helps.css">
 </head>
 
 <body>
     <div class="header">
-        <h1><i class="fa-solid fa-user-helmet-safety"></i> Responders</h1>
+        <h1>Responders</h1>
         <button class="btn btn-primary" onclick="openModal('create')"><i class="fa-solid fa-plus"></i> Add
             Responder</button>
     </div>
@@ -44,7 +44,7 @@
         <div class="toolbar-left">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="Search responders...">
+                <input type="text" id="search-input" placeholder="Search...">
             </div>
             <select class="filter-select" id="status-filter">
                 <option value="">All Status</option>
@@ -53,13 +53,13 @@
                 <option value="busy">Busy</option>
             </select>
         </div>
-        <button class="btn" onclick="loadHelps()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+        <button class="btn" onclick="loadHelps()"><i class="fa-solid fa-rotate"></i> Refresh</button>
     </div>
 
     <div id="table-container">
         <div class="loading">
             <span class="spinner"></span>
-            Loading responders...
+            Loading...
         </div>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title" id="modal-title"><i class="fa-solid fa-plus-circle"></i> Add Responder</span>
+                <span class="modal-title" id="modal-title">Add Responder</span>
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
@@ -81,30 +81,30 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="help-name"><i class="fa-solid fa-user"></i> Name *</label>
-                            <input type="text" id="help-name" placeholder="Nepal Army Rescue Team" required>
+                            <label for="help-name">Name *</label>
+                            <input type="text" id="help-name" placeholder="Rescue Team Alpha" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="help-contact"><i class="fa-solid fa-phone"></i> Contact *</label>
-                            <input type="text" id="help-contact" placeholder="+977-1-4412345" required>
+                            <label for="help-contact">Contact *</label>
+                            <input type="text" id="help-contact" placeholder="+1234567890" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="help-location"><i class="fa-solid fa-location-dot"></i> Location</label>
-                            <input type="text" id="help-location" placeholder="Namche Bazaar">
+                            <label for="help-location">Location</label>
+                            <input type="text" id="help-location" placeholder="Base Camp">
                         </div>
 
                         <div class="form-group">
-                            <label for="help-eta"><i class="fa-solid fa-clock"></i> ETA</label>
+                            <label for="help-eta">ETA</label>
                             <input type="text" id="help-eta" placeholder="30 minutes">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="help-status"><i class="fa-solid fa-circle-dot"></i> Status</label>
+                        <label for="help-status">Status</label>
                         <select id="help-status">
                             <option value="available">Available</option>
                             <option value="dispatched">Dispatched</option>
@@ -113,15 +113,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fa-solid fa-list-check"></i> Responds To (Message Types)</label>
+                        <label>Responds To</label>
                         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-                            Select which emergency types this responder handles
+                            Select alert types this responder handles
                         </p>
                         <div class="multi-select-container" id="messages-select">
                             <div class="multi-select-trigger" onclick="toggleDropdown()" tabindex="0">
-                                <span class="placeholder" id="select-placeholder"><i
-                                        class="fa-solid fa-hand-pointer"></i> Click to select message
-                                    types...</span>
+                                <span class="placeholder" id="select-placeholder">Select alert types...</span>
                             </div>
                             <div class="multi-select-dropdown" id="messages-dropdown">
                                 <!-- Options populated by JS -->
@@ -131,9 +129,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                <button class="btn btn-primary" onclick="saveHelp()"><i class="fa-solid fa-floppy-disk"></i>
-                    Save</button>
+                <button class="btn" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveHelp()"><i class="fa-solid fa-check"></i> Save</button>
             </div>
         </div>
     </div>
@@ -142,27 +139,26 @@
     <div class="modal-overlay" id="delete-modal">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-trash-can"></i> Confirm Delete</span>
+                <span class="modal-title">Delete Responder</span>
                 <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <p><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i> Are you sure you want
-                    to delete this responder?</p>
+                <p>Are you sure you want to delete this responder?</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">
                     This action cannot be undone.
                 </p>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                <button class="btn btn-primary" style="background: var(--danger); border-color: var(--danger);"
-                    onclick="confirmDelete()"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                <button class="btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                    Delete</button>
             </div>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast">
-        <i class="fa-solid fa-circle-check"></i>
+        <i class="fa-solid fa-check"></i>
         <span id="toast-message"></span>
     </div>
 
