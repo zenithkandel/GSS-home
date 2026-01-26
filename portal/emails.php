@@ -75,7 +75,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i> Delete</button>
+                <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i>
+                    Delete</button>
             </div>
         </div>
     </div>
