@@ -94,6 +94,7 @@ async function loadMessages() {
         const messageCode = document.getElementById('message-type-filter').value;
         const fromDate = document.getElementById('from-date').value;
         const toDate = document.getElementById('to-date').value;
+        const search = document.getElementById('search-input')?.value || '';
 
         let url = `${API_BASE}/Read/message.php?page=${currentPage}&limit=20`;
         if (status) url += `&status=${status}`;
@@ -101,6 +102,7 @@ async function loadMessages() {
         if (messageCode) url += `&message_code=${messageCode}`;
         if (fromDate) url += `&from=${fromDate}`;
         if (toDate) url += `&to=${toDate}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
 
         const res = await fetch(url);
         const data = await res.json();
@@ -593,7 +595,24 @@ async function confirmDelete() {
     }
 }
 
+// Debounce utility
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Filters
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+    searchInput.addEventListener('input', debounce(() => { currentPage = 1; loadMessages(); }, 300));
+}
 document.getElementById('status-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
 document.getElementById('device-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });
 document.getElementById('message-type-filter').addEventListener('change', () => { currentPage = 1; loadMessages(); });

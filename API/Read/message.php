@@ -92,6 +92,17 @@ try {
         }
     }
 
+    // Search by device name, location name, or message text
+    if (isset($_GET['search']) && !empty($_GET['search'])) {
+        $query .= " AND (d.device_name LIKE :search 
+            OR JSON_UNQUOTE(JSON_EXTRACT(il.mapping, CONCAT('\$.', d.LID))) LIKE :search2
+            OR JSON_UNQUOTE(JSON_EXTRACT(im.mapping, CONCAT('\$.', m.message_code))) LIKE :search3)";
+        $searchTerm = '%' . $_GET['search'] . '%';
+        $params['search'] = $searchTerm;
+        $params['search2'] = $searchTerm;
+        $params['search3'] = $searchTerm;
+    }
+
     // Order by (newest first)
     $query .= " ORDER BY m.timestamp DESC";
 
