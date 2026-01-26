@@ -137,9 +137,40 @@ try {
     $countStmt->execute();
     $total = $countStmt->fetchColumn();
 
+    // Get stats for active/resolved counts (without filters except date range)
+    $statsQuery = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN m.status = 'resolved' THEN 1 ELSE 0 END) as resolved,
+        SUM(CASE WHEN m.status != 'resolved' OR m.status IS NULL OR m.status = '' THEN 1 ELSE 0 END) as active
+        FROM messages m
+        JOIN devices d ON m.DID = d.DID
+        WHERE 1=1";
+    $statsParams = [];
+
+    if (isset($_GET['from'])) {
+        $statsQuery .= " AND m.timestamp >= :from_date";
+        $statsParams['from_date'] = $_GET['from'];
+    }
+    if (isset($_GET['to'])) {
+        $statsQuery .= " AND m.timestamp <= :to_date";
+        $statsParams['to_date'] = $_GET['to'];
+    }
+
+    $statsStmt = $db->prepare($statsQuery);
+    foreach ($statsParams as $key => $value) {
+        $statsStmt->bindValue($key, $value);
+    }
+    $statsStmt->execute();
+    $stats = $statsStmt->fetch();
+
     sendResponse(true, [
         'messages' => $messages,
         'total' => (int) $total,
+        'stats' => [
+            'total' => (int) $stats['total'],
+            'active' => (int) $stats['active'],
+            'resolved' => (int) $stats['resolved']
+        ],
         'pagination' => [
             'page' => $page,
             'limit' => $limit,

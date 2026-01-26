@@ -108,8 +108,24 @@ try {
     $countStmt->execute();
     $total = $countStmt->fetchColumn();
 
+    // Get stats for status counts (without filters)
+    $statsQuery = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available,
+        SUM(CASE WHEN status = 'dispatched' THEN 1 ELSE 0 END) as dispatched,
+        SUM(CASE WHEN status = 'busy' THEN 1 ELSE 0 END) as busy
+        FROM helps";
+    $statsStmt = $db->query($statsQuery);
+    $stats = $statsStmt->fetch();
+
     sendResponse(true, [
         'helps' => $helps,
+        'stats' => [
+            'total' => (int) $stats['total'],
+            'available' => (int) $stats['available'],
+            'dispatched' => (int) $stats['dispatched'],
+            'busy' => (int) $stats['busy']
+        ],
         'pagination' => [
             'page' => $page,
             'limit' => $limit,

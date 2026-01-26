@@ -143,13 +143,14 @@ async function loadHelps() {
         if (data.success) {
             helps = data.data.helps || [];
             const pagination = data.data.pagination;
+            const stats = data.data.stats;
 
             if (pagination) {
                 totalPages = pagination.pages;
                 updatePagination(pagination);
             }
 
-            updateStats();
+            updateStats(stats);
             renderTable();
         } else {
             container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="empty-state-text">${data.message}</div></div>`;
@@ -160,11 +161,20 @@ async function loadHelps() {
     }
 }
 
-function updateStats() {
-    document.getElementById('total-count').textContent = helps.length;
-    document.getElementById('available-count').textContent = helps.filter(h => h.status === 'available').length;
-    document.getElementById('dispatched-count').textContent = helps.filter(h => h.status === 'dispatched').length;
-    document.getElementById('busy-count').textContent = helps.filter(h => h.status === 'busy').length;
+function updateStats(stats) {
+    if (stats) {
+        // Use stats from API for accurate total counts
+        document.getElementById('total-count').textContent = stats.total || 0;
+        document.getElementById('available-count').textContent = stats.available || 0;
+        document.getElementById('dispatched-count').textContent = stats.dispatched || 0;
+        document.getElementById('busy-count').textContent = stats.busy || 0;
+    } else {
+        // Fallback to current page counts
+        document.getElementById('total-count').textContent = helps.length;
+        document.getElementById('available-count').textContent = helps.filter(h => h.status === 'available').length;
+        document.getElementById('dispatched-count').textContent = helps.filter(h => h.status === 'dispatched').length;
+        document.getElementById('busy-count').textContent = helps.filter(h => h.status === 'busy').length;
+    }
 }
 
 function renderTable() {

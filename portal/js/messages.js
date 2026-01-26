@@ -108,13 +108,14 @@ async function loadMessages() {
         if (data.success) {
             messages = data.data.messages || data.data || [];
             const pagination = data.data.pagination;
+            const stats = data.data.stats;
 
             if (pagination) {
                 totalPages = pagination.pages;
                 updatePagination(pagination);
             }
 
-            updateStats();
+            updateStats(stats);
             renderTable();
         } else {
             container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="empty-state-text">${data.message}</div></div>`;
@@ -158,10 +159,17 @@ function getRssiBars(rssi) {
     return [level >= 1, level >= 2, level >= 3, level >= 4];
 }
 
-function updateStats() {
-    document.getElementById('total-count').textContent = messages.length;
-    document.getElementById('active-count').textContent = messages.filter(m => getStatus(m) === 'active').length;
-    document.getElementById('resolved-count').textContent = messages.filter(m => getStatus(m) === 'resolved').length;
+function updateStats(stats) {
+    if (stats) {
+        document.getElementById('total-count').textContent = stats.total;
+        document.getElementById('active-count').textContent = stats.active;
+        document.getElementById('resolved-count').textContent = stats.resolved;
+    } else {
+        // Fallback to page-based counts if stats not provided
+        document.getElementById('total-count').textContent = messages.length;
+        document.getElementById('active-count').textContent = messages.filter(m => getStatus(m) === 'active').length;
+        document.getElementById('resolved-count').textContent = messages.filter(m => getStatus(m) === 'resolved').length;
+    }
 }
 
 function renderTable() {
