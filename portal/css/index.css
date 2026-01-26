@@ -36,9 +36,9 @@
     --accent: #ef4444;
     --accent-glow: rgba(239, 68, 68, 0.4);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --fa-primary-color: var(--text-secondary);
-    --fa-secondary-color: var(--accent);
-    --fa-secondary-opacity: 0.7;
+    --fa-primary-color: #d4d4d8;
+    --fa-secondary-color: #71717a;
+    --fa-secondary-opacity: 0.6;
 }
 
 /* Light Theme */
@@ -57,9 +57,9 @@
     --accent: #dc2626;
     --accent-glow: rgba(220, 38, 38, 0.3);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --fa-primary-color: var(--text-secondary);
-    --fa-secondary-color: var(--accent);
-    --fa-secondary-opacity: 0.8;
+    --fa-primary-color: #3f3f46;
+    --fa-secondary-color: #a1a1aa;
+    --fa-secondary-opacity: 0.5;
 }
 
 html,
@@ -267,18 +267,20 @@ body {
 }
 
 .nav-item.active {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(161, 161, 170, 0.15) 0%, rgba(161, 161, 170, 0.05) 100%);
     color: var(--text);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(161, 161, 170, 0.25);
+    box-shadow: 0 0 20px rgba(161, 161, 170, 0.08);
 }
 
 .nav-item.active .nav-icon {
-    color: var(--accent);
+    color: var(--text);
 }
 
 .nav-item.active .nav-icon i {
-    --fa-secondary-opacity: 1;
+    --fa-primary-color: var(--text);
+    --fa-secondary-color: var(--text-secondary);
+    --fa-secondary-opacity: 0.7;
 }
 
 .nav-icon {
