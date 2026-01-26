@@ -240,21 +240,25 @@ function openModal(mode, id = null) {
     const overlay = document.getElementById('modal-overlay');
     const title = document.getElementById('modal-title');
     const form = document.getElementById('device-form');
+    const didGroup = document.getElementById('did-group');
 
     form.reset();
     document.getElementById('device-id').value = '';
 
     if (mode === 'edit' && id) {
         title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Device';
+        didGroup.style.display = 'block';
         const device = devices.find(d => d.DID == id);
         if (device) {
             document.getElementById('device-id').value = device.DID;
+            document.getElementById('device-did').value = device.DID;
             document.getElementById('device-name').value = device.device_name || '';
             document.getElementById('device-location').value = device.LID;
             document.getElementById('device-status').value = device.status || 'active';
         }
     } else {
         title.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Device';
+        didGroup.style.display = 'none';
     }
 
     overlay.classList.add('active');
@@ -266,6 +270,7 @@ function closeModal() {
 
 async function saveDevice() {
     const id = document.getElementById('device-id').value;
+    const newDid = document.getElementById('device-did')?.value;
     const deviceName = document.getElementById('device-name').value;
     const lid = document.getElementById('device-location').value;
     const status = document.getElementById('device-status').value;
@@ -284,6 +289,7 @@ async function saveDevice() {
             method = 'PUT';
             body = JSON.stringify({
                 DID: parseInt(id),
+                new_DID: newDid ? parseInt(newDid) : null,
                 device_name: deviceName,
                 LID: parseInt(lid),
                 status: status

@@ -87,6 +87,11 @@
                 <form id="device-form">
                     <input type="hidden" id="device-id">
 
+                    <div class="form-group" id="did-group" style="display: none;">
+                        <label for="device-did">Device ID (DID)</label>
+                        <input type="number" id="device-did" placeholder="1" min="1">
+                    </div>
+
                     <div class="form-group">
                         <label for="device-name">Device Name</label>
                         <input type="text" id="device-name" placeholder="ESP-Node-01">

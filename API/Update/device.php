@@ -36,9 +36,29 @@ try {
         sendResponse(false, null, 'Device not found', 404);
     }
 
+    // Handle DID change if new_DID is provided
+    $newDeviceId = $deviceId;
+    if (isset($input['new_DID']) && $input['new_DID'] && $input['new_DID'] != $deviceId) {
+        $newDid = (int) $input['new_DID'];
+
+        // Check if new DID already exists
+        $checkNewStmt = $db->prepare("SELECT DID FROM devices WHERE DID = :did");
+        $checkNewStmt->execute(['did' => $newDid]);
+
+        if ($checkNewStmt->fetch()) {
+            sendResponse(false, null, 'Device ID ' . $newDid . ' already exists', 400);
+        }
+
+        // Update the DID
+        $updateDidStmt = $db->prepare("UPDATE devices SET DID = :new_did WHERE DID = :old_did");
+        $updateDidStmt->execute(['new_did' => $newDid, 'old_did' => $deviceId]);
+
+        $newDeviceId = $newDid;
+    }
+
     // Build update query dynamically
     $updates = [];
-    $params = ['did' => $deviceId];
+    $params = ['did' => $newDeviceId];
 
     // Updatable fields
     $allowedFields = ['device_name', 'LID', 'status', 'last_ping'];
@@ -75,7 +95,7 @@ try {
         LEFT JOIN indexes i ON i.type = 'location'
         WHERE d.DID = :did
     ");
-    $fetchStmt->execute(['did' => $deviceId]);
+    $fetchStmt->execute(['did' => $newDeviceId]);
     $device = $fetchStmt->fetch();
 
     sendResponse(true, $device, 'Device updated successfully');

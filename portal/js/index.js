@@ -71,6 +71,10 @@ function initNavigation() {
 function navigateToPage(href, page) {
     const iframe = document.getElementById('content-frame');
 
+    // Save current page to sessionStorage
+    sessionStorage.setItem('lifeline-current-page', page);
+    sessionStorage.setItem('lifeline-current-href', href);
+
     // Update all nav active states
     document.querySelectorAll('.nav-item').forEach(nav => {
         nav.classList.toggle('active', nav.getAttribute('data-page') === page);
@@ -81,6 +85,16 @@ function navigateToPage(href, page) {
 
     // Load page
     iframe.src = href;
+}
+
+// Restore saved page from sessionStorage
+function restoreSavedPage() {
+    const savedPage = sessionStorage.getItem('lifeline-current-page');
+    const savedHref = sessionStorage.getItem('lifeline-current-href');
+
+    if (savedPage && savedHref) {
+        navigateToPage(savedHref, savedPage);
+    }
 }
 
 // Mobile More Menu
@@ -177,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initSidebarCollapse();
     startConnectionPolling();
+    restoreSavedPage();
 
     // Theme toggle buttons
     const themeToggle = document.getElementById('theme-toggle');
