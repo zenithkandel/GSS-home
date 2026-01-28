@@ -87,9 +87,10 @@
                 <form id="device-form">
                     <input type="hidden" id="device-id">
 
-                    <div class="form-group" id="did-group" style="display: none;">
-                        <label for="device-did">Device ID (DID)</label>
-                        <input type="number" id="device-did" placeholder="1" min="1">
+                    <div class="form-group" id="did-group">
+                        <label for="device-did" id="did-label">Device ID (DID)</label>
+                        <input type="number" id="device-did" placeholder="Auto-generated if empty" min="1">
+                        <small id="did-hint" class="form-hint">Leave empty to auto-generate</small>
                     </div>
 
                     <div class="form-group">

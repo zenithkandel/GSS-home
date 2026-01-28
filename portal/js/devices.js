@@ -240,25 +240,31 @@ function openModal(mode, id = null) {
     const overlay = document.getElementById('modal-overlay');
     const title = document.getElementById('modal-title');
     const form = document.getElementById('device-form');
-    const didGroup = document.getElementById('did-group');
+    const didLabel = document.getElementById('did-label');
+    const didInput = document.getElementById('device-did');
+    const didHint = document.getElementById('did-hint');
 
     form.reset();
     document.getElementById('device-id').value = '';
 
     if (mode === 'edit' && id) {
         title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Device';
-        didGroup.style.display = 'block';
+        didLabel.textContent = 'Device ID (DID)';
+        didHint.textContent = 'Change to reassign device ID';
         const device = devices.find(d => d.DID == id);
         if (device) {
             document.getElementById('device-id').value = device.DID;
-            document.getElementById('device-did').value = device.DID;
+            didInput.value = device.DID;
             document.getElementById('device-name').value = device.device_name || '';
             document.getElementById('device-location').value = device.LID;
             document.getElementById('device-status').value = device.status || 'active';
         }
     } else {
         title.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Device';
-        didGroup.style.display = 'none';
+        didLabel.textContent = 'Device ID (DID)';
+        didHint.textContent = 'Leave empty to auto-generate';
+        didInput.value = '';
+        didInput.placeholder = 'Auto-generated if empty';
     }
 
     overlay.classList.add('active');
@@ -298,11 +304,16 @@ async function saveDevice() {
             // Create
             url = `${API_BASE}/Create/device.php`;
             method = 'POST';
-            body = JSON.stringify({
+            const createData = {
                 device_name: deviceName,
                 LID: parseInt(lid),
                 status: status
-            });
+            };
+            // Include DID if user specified one
+            if (newDid) {
+                createData.DID = parseInt(newDid);
+            }
+            body = JSON.stringify(createData);
         }
 
         const res = await fetch(url, {
