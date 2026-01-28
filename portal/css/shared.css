@@ -602,6 +602,7 @@ label i {
     letter-spacing: 0.05em;
     color: var(--text-secondary);
     background: var(--bg-hover);
+    white-space: nowrap;
 }
 
 .data-table tr:last-child td {
@@ -630,14 +631,112 @@ label i {
 #table-container {
     overflow-x: auto;
     border-radius: var(--radius-lg);
+    -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 768px) {
+/* Custom scrollbar for table */
+#table-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+#table-container::-webkit-scrollbar-track {
+    background: var(--bg-hover);
+    border-radius: 3px;
+}
+
+#table-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+#table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Tablet view */
+@media (max-width: 992px) {
 
     .data-table th,
     .data-table td {
-        padding: 10px 12px;
-        font-size: 0.75rem;
+        padding: 12px 14px;
+        font-size: 0.8125rem;
+    }
+
+    .data-table {
+        min-width: 700px;
+    }
+}
+
+/* Mobile view - Card layout */
+@media (max-width: 768px) {
+    #table-container {
+        overflow-x: visible;
+    }
+
+    .data-table {
+        min-width: unset;
+        display: block;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .data-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-card);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .data-table tbody tr:hover td {
+        background: transparent;
+    }
+
+    .data-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        border: none;
+        font-size: 0.8125rem;
+    }
+
+    .data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    .data-table .actions {
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+        margin-top: 4px;
+    }
+
+    .data-table td.actions::before {
+        display: none;
     }
 }
 

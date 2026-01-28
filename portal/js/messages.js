@@ -208,20 +208,20 @@ function renderTable() {
         const bars = getRssiBars(msg.RSSI);
         return `
                     <tr>
-                        <td><span style="color: var(--text-muted);">#${msg.MID}</span></td>
-                        <td>
+                        <td data-label="ID"><span style="color: var(--text-muted);">#${msg.MID}</span></td>
+                        <td data-label="Status">
                             <span class="status-badge ${status}">
                                 <i class="fa-solid fa-circle"></i>
                                 ${status.charAt(0).toUpperCase() + status.slice(1)}
                             </span>
                         </td>
-                        <td class="message-text">
+                        <td data-label="Message" class="message-text">
                             <div class="message-type">${getIcon(msg.message_code)} ${msg.message_text || messageTypes[msg.message_code] || 'Unknown'}</div>
                             <div class="message-meta">Code: ${msg.message_code}</div>
                         </td>
-                        <td><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 6px;"></i>${msg.device_name || 'Device ' + msg.DID}</td>
-                        <td><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 6px;"></i>${msg.location_name || 'Unknown'}</td>
-                        <td>
+                        <td data-label="Device"><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 6px;"></i>${msg.device_name || 'Device ' + msg.DID}</td>
+                        <td data-label="Location"><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 6px;"></i>${msg.location_name || 'Unknown'}</td>
+                        <td data-label="Signal">
                             <div class="rssi-indicator">
                                 <div class="rssi-bars">
                                     <div class="rssi-bar ${bars[0] ? 'active' : ''}"></div>
@@ -232,7 +232,7 @@ function renderTable() {
                                 <span style="font-size: 11px; color: var(--text-muted);">${msg.RSSI || '-'}</span>
                             </div>
                         </td>
-                        <td><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${formatTime(msg.timestamp)}</td>
+                        <td data-label="Time"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${formatTime(msg.timestamp)}</td>
                         <td class="actions">
                             <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View"><i class="fa-solid fa-eye"></i></button>
                             ${status === 'active' ? `<button class="btn btn-icon success" onclick="markResolved(${msg.MID})" title="Mark Resolved"><i class="fa-solid fa-circle-check"></i></button>` : ''}

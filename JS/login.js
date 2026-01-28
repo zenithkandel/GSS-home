@@ -229,7 +229,7 @@ function initFormSubmission() {
 
                 // Redirect after short delay
                 setTimeout(() => {
-                    window.location.href = 'portal/dashboard.php';
+                    window.location.href = 'portal/index.php';
                 }, 1000);
             } else {
                 showAlert(alertEl, result.message || 'Invalid credentials', 'error');

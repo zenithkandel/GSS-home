@@ -82,10 +82,15 @@
         </ul>
 
         <div class="sidebar-footer">
-            <button id="theme-toggle" class="theme-btn" title="Toggle theme">
-                <span class="theme-icon-dark"><i class="fa-duotone fa-sun-bright"></i></span>
-                <span class="theme-icon-light"><i class="fa-duotone fa-moon-stars"></i></span>
-            </button>
+            <div class="footer-actions">
+                <button id="theme-toggle" class="theme-btn" title="Toggle theme">
+                    <span class="theme-icon-dark"><i class="fa-duotone fa-sun-bright"></i></span>
+                    <span class="theme-icon-light"><i class="fa-duotone fa-moon-stars"></i></span>
+                </button>
+                <button id="logout-btn" class="logout-btn" title="Logout">
+                    <i class="fa-duotone fa-right-from-bracket"></i>
+                </button>
+            </div>
             <div class="connection-status">
                 <span class="status-dot" id="connection-dot"></span>
                 <span class="status-text" id="connection-text">Connecting...</span>

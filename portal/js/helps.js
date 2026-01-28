@@ -211,18 +211,18 @@ function renderTable() {
         const forMessages = help.for_messages || [];
         return `
                     <tr>
-                        <td><span style="color: var(--text-muted);">#${help.HID}</span></td>
-                        <td><i class="fa-solid fa-user-helmet-safety" style="color: var(--accent); margin-right: 8px;"></i><strong>${help.name}</strong></td>
-                        <td><i class="fa-solid fa-phone" style="color: var(--text-muted); margin-right: 6px;"></i>${help.contact}</td>
-                        <td><i class="fa-solid fa-location-dot" style="color: var(--text-muted); margin-right: 6px;"></i>${help.location || '-'}</td>
-                        <td>
+                        <td data-label="ID"><span style="color: var(--text-muted);">#${help.HID}</span></td>
+                        <td data-label="Name"><i class="fa-solid fa-user-helmet-safety" style="color: var(--accent); margin-right: 8px;"></i><strong>${help.name}</strong></td>
+                        <td data-label="Contact"><i class="fa-solid fa-phone" style="color: var(--text-muted); margin-right: 6px;"></i>${help.contact}</td>
+                        <td data-label="Location"><i class="fa-solid fa-location-dot" style="color: var(--text-muted); margin-right: 6px;"></i>${help.location || '-'}</td>
+                        <td data-label="Status">
                             <span class="status-badge ${help.status || 'available'}">
                                 <i class="fa-solid fa-circle"></i>
                                 ${(help.status || 'available').charAt(0).toUpperCase() + (help.status || 'available').slice(1)}
                             </span>
                         </td>
-                        <td><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${help.eta || '-'}</td>
-                        <td>
+                        <td data-label="ETA"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${help.eta || '-'}</td>
+                        <td data-label="Responds To">
                             <div class="for-messages-list">
                                 ${forMessages.length > 0 ?
                 forMessages.slice(0, 2).map(code =>
@@ -233,7 +233,7 @@ function renderTable() {
             }
                             </div>
                         </td>
-                        <td class="actions">
+                        <td data-label="Actions" class="actions">
                             <button class="btn btn-icon edit" onclick="openModal('edit', ${help.HID})" title="Edit"><i class="fa-solid fa-pen"></i></button>
                             <button class="btn btn-icon delete" onclick="openDeleteModal(${help.HID})" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
                         </td>

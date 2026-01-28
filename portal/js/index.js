@@ -184,6 +184,27 @@ function startConnectionPolling() {
     pollInterval = setInterval(checkConnection, 10000);
 }
 
+// Logout function
+async function logout() {
+    try {
+        const res = await fetch('../API/auth/logout.php');
+        const data = await res.json();
+
+        if (data.success) {
+            // Clear session storage
+            sessionStorage.removeItem('lifeline-current-page');
+            sessionStorage.removeItem('lifeline-current-href');
+
+            // Redirect to login page
+            window.location.href = '../login.php';
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        // Redirect anyway
+        window.location.href = '../login.php';
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -202,6 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (mobileThemeToggle) {
         mobileThemeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
     }
 });
 
