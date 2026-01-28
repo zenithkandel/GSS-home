@@ -458,7 +458,7 @@ function toggleSelectRow(id, checkbox) {
     }
     updateSelectAllCheckbox();
     updateBulkActionBar();
-    
+
     // Update row visual
     const row = document.querySelector(`tr[data-id="${id}"]`);
     if (row) {
@@ -478,11 +478,11 @@ function updateRowSelections() {
 function updateSelectAllCheckbox() {
     const selectAll = document.getElementById('select-all');
     if (!selectAll) return;
-    
+
     const pageIds = devices.map(d => d.DID);
     const allSelected = pageIds.length > 0 && pageIds.every(id => selectedDevices.has(id));
     const someSelected = pageIds.some(id => selectedDevices.has(id));
-    
+
     selectAll.checked = allSelected;
     selectAll.indeterminate = someSelected && !allSelected;
 }
@@ -490,7 +490,7 @@ function updateSelectAllCheckbox() {
 function updateBulkActionBar() {
     const bar = document.getElementById('bulk-action-bar');
     const count = document.getElementById('selected-count');
-    
+
     if (selectedDevices.size > 0) {
         bar.classList.add('visible');
         count.textContent = selectedDevices.size;
@@ -508,11 +508,11 @@ function clearSelection() {
 
 async function bulkUpdateStatus(status) {
     if (selectedDevices.size === 0) return;
-    
+
     const ids = Array.from(selectedDevices);
     let successCount = 0;
     let errorCount = 0;
-    
+
     for (const id of ids) {
         try {
             const res = await fetch(`${API_BASE}/Update/device.php`, {
@@ -527,7 +527,7 @@ async function bulkUpdateStatus(status) {
             errorCount++;
         }
     }
-    
+
     if (successCount > 0) {
         showToast(`${successCount} device(s) updated to ${status}`);
         clearSelection();
@@ -551,11 +551,11 @@ function closeBulkDeleteModal() {
 
 async function confirmBulkDelete() {
     if (selectedDevices.size === 0) return;
-    
+
     const ids = Array.from(selectedDevices);
     let successCount = 0;
     let errorCount = 0;
-    
+
     for (const id of ids) {
         try {
             const res = await fetch(`${API_BASE}/Delete/device.php?id=${id}`, {
@@ -568,9 +568,9 @@ async function confirmBulkDelete() {
             errorCount++;
         }
     }
-    
+
     closeBulkDeleteModal();
-    
+
     if (successCount > 0) {
         showToast(`${successCount} device(s) deleted successfully`);
         clearSelection();
