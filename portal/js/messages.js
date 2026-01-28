@@ -6,6 +6,7 @@ let messageTypes = {};
 let currentPage = 1;
 let totalPages = 1;
 let deleteId = null;
+let selectedMessages = new Set(); // Track selected message IDs
 
 // Theme sync
 function syncTheme() {

@@ -69,10 +69,14 @@
             <button class="btn btn-sm" onclick="clearSelection()"><i class="fa-solid fa-xmark"></i> Clear</button>
         </div>
         <div class="bulk-actions">
-            <button class="btn btn-sm btn-success" onclick="bulkUpdateStatus('active')"><i class="fa-solid fa-circle-check"></i> Set Active</button>
-            <button class="btn btn-sm" onclick="bulkUpdateStatus('inactive')"><i class="fa-solid fa-circle-minus"></i> Set Inactive</button>
-            <button class="btn btn-sm" onclick="bulkUpdateStatus('maintenance')"><i class="fa-solid fa-wrench"></i> Maintenance</button>
-            <button class="btn btn-sm btn-danger" onclick="openBulkDeleteModal()"><i class="fa-solid fa-trash-can"></i> Delete</button>
+            <button class="btn btn-sm btn-success" onclick="bulkUpdateStatus('active')"><i
+                    class="fa-solid fa-circle-check"></i> Set Active</button>
+            <button class="btn btn-sm" onclick="bulkUpdateStatus('inactive')"><i class="fa-solid fa-circle-minus"></i>
+                Set Inactive</button>
+            <button class="btn btn-sm" onclick="bulkUpdateStatus('maintenance')"><i class="fa-solid fa-wrench"></i>
+                Maintenance</button>
+            <button class="btn btn-sm btn-danger" onclick="openBulkDeleteModal()"><i class="fa-solid fa-trash-can"></i>
+                Delete</button>
         </div>
     </div>
 
@@ -166,7 +170,8 @@
     <div class="modal-overlay" id="bulk-delete-modal">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i> Delete Multiple Devices</span>
+                <span class="modal-title"><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i>
+                    Delete Multiple Devices</span>
                 <button class="modal-close" onclick="closeBulkDeleteModal()">
                     <i class="fa-duotone fa-xmark"></i>
                 </button>
