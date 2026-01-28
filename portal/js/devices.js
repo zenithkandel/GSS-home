@@ -6,6 +6,7 @@ let locations = {};
 let currentPage = 1;
 let totalPages = 1;
 let deleteId = null;
+let selectedDevices = new Set(); // Track selected device IDs
 
 // Theme sync
 function syncTheme() {
@@ -153,6 +154,7 @@ function renderTable() {
         <table class="data-table">
             <thead>
                 <tr>
+                    <th class="checkbox-col"><input type="checkbox" id="select-all" onchange="toggleSelectAll(this)"></th>
                     <th>ID</th>
                     <th>Device Name</th>
                     <th>Location</th>
@@ -163,7 +165,8 @@ function renderTable() {
             </thead>
             <tbody>
                 ${devices.map(device => `
-                    <tr>
+                    <tr data-id="${device.DID}" class="${selectedDevices.has(device.DID) ? 'selected' : ''}">
+                        <td class="checkbox-col" data-label=""><input type="checkbox" class="row-checkbox" ${selectedDevices.has(device.DID) ? 'checked' : ''} onchange="toggleSelectRow(${device.DID}, this)"></td>
                         <td data-label="ID"><span style="color: var(--text-muted);">#${device.DID}</span></td>
                         <td data-label="Device"><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 8px;"></i>${device.device_name || 'Unnamed Device'}</td>
                         <td data-label="Location"><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i>${device.location_name || locations[device.LID] || 'Unknown'}</td>
@@ -174,7 +177,7 @@ function renderTable() {
                             </span>
                         </td>
                         <td data-label="Last Ping"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 8px;"></i>${formatTime(device.last_ping)}</td>
-                        <td class="actions">
+                        <td class="actions" data-label="Actions">
                             <button class="btn btn-icon view" onclick="viewLocation('${device.location_name || locations[device.LID] || ''}')" title="View on Map">
                                 <i class="fa-solid fa-map-location-dot"></i>
                             </button>
@@ -191,6 +194,7 @@ function renderTable() {
         </table>
     `;
 
+    updateBulkActionBar();
     document.getElementById('pagination').style.display = 'flex';
 }
 
@@ -430,6 +434,152 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+// ========================================
+// BULK SELECTION FUNCTIONS
+// ========================================
+
+function toggleSelectAll(checkbox) {
+    if (checkbox.checked) {
+        devices.forEach(d => selectedDevices.add(d.DID));
+    } else {
+        devices.forEach(d => selectedDevices.delete(d.DID));
+    }
+    updateRowSelections();
+    updateBulkActionBar();
+}
+
+function toggleSelectRow(id, checkbox) {
+    if (checkbox.checked) {
+        selectedDevices.add(id);
+    } else {
+        selectedDevices.delete(id);
+    }
+    updateSelectAllCheckbox();
+    updateBulkActionBar();
+    
+    // Update row visual
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    if (row) {
+        row.classList.toggle('selected', checkbox.checked);
+    }
+}
+
+function updateRowSelections() {
+    document.querySelectorAll('.row-checkbox').forEach(cb => {
+        const row = cb.closest('tr');
+        const id = parseInt(row.dataset.id);
+        cb.checked = selectedDevices.has(id);
+        row.classList.toggle('selected', cb.checked);
+    });
+}
+
+function updateSelectAllCheckbox() {
+    const selectAll = document.getElementById('select-all');
+    if (!selectAll) return;
+    
+    const pageIds = devices.map(d => d.DID);
+    const allSelected = pageIds.length > 0 && pageIds.every(id => selectedDevices.has(id));
+    const someSelected = pageIds.some(id => selectedDevices.has(id));
+    
+    selectAll.checked = allSelected;
+    selectAll.indeterminate = someSelected && !allSelected;
+}
+
+function updateBulkActionBar() {
+    const bar = document.getElementById('bulk-action-bar');
+    const count = document.getElementById('selected-count');
+    
+    if (selectedDevices.size > 0) {
+        bar.classList.add('visible');
+        count.textContent = selectedDevices.size;
+    } else {
+        bar.classList.remove('visible');
+    }
+}
+
+function clearSelection() {
+    selectedDevices.clear();
+    updateRowSelections();
+    updateSelectAllCheckbox();
+    updateBulkActionBar();
+}
+
+async function bulkUpdateStatus(status) {
+    if (selectedDevices.size === 0) return;
+    
+    const ids = Array.from(selectedDevices);
+    let successCount = 0;
+    let errorCount = 0;
+    
+    for (const id of ids) {
+        try {
+            const res = await fetch(`${API_BASE}/Update/device.php`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ DID: id, status: status })
+            });
+            const data = await res.json();
+            if (data.success) successCount++;
+            else errorCount++;
+        } catch (e) {
+            errorCount++;
+        }
+    }
+    
+    if (successCount > 0) {
+        showToast(`${successCount} device(s) updated to ${status}`);
+        clearSelection();
+        loadStats();
+        loadDevices();
+    }
+    if (errorCount > 0) {
+        showToast(`Failed to update ${errorCount} device(s)`, 'error');
+    }
+}
+
+function openBulkDeleteModal() {
+    if (selectedDevices.size === 0) return;
+    document.getElementById('bulk-delete-count').textContent = selectedDevices.size;
+    document.getElementById('bulk-delete-modal').classList.add('active');
+}
+
+function closeBulkDeleteModal() {
+    document.getElementById('bulk-delete-modal').classList.remove('active');
+}
+
+async function confirmBulkDelete() {
+    if (selectedDevices.size === 0) return;
+    
+    const ids = Array.from(selectedDevices);
+    let successCount = 0;
+    let errorCount = 0;
+    
+    for (const id of ids) {
+        try {
+            const res = await fetch(`${API_BASE}/Delete/device.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            if (data.success) successCount++;
+            else errorCount++;
+        } catch (e) {
+            errorCount++;
+        }
+    }
+    
+    closeBulkDeleteModal();
+    
+    if (successCount > 0) {
+        showToast(`${successCount} device(s) deleted successfully`);
+        clearSelection();
+        loadStats();
+        loadDevices();
+    }
+    if (errorCount > 0) {
+        showToast(`Failed to delete ${errorCount} device(s)`, 'error');
+    }
 }
 
 // Event listeners
