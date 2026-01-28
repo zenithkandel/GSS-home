@@ -193,6 +193,7 @@ function renderTable() {
         <table class="data-table">
             <thead>
                 <tr>
+                    <th class="checkbox-col"><input type="checkbox" id="select-all" onchange="toggleSelectAll(this)"></th>
                     <th>ID</th>
                     <th>Status</th>
                     <th>Message</th>
@@ -208,7 +209,8 @@ function renderTable() {
         const status = getStatus(msg);
         const bars = getRssiBars(msg.RSSI);
         return `
-                    <tr>
+                    <tr data-id="${msg.MID}" class="${selectedMessages.has(msg.MID) ? 'selected' : ''}">
+                        <td class="checkbox-col" data-label=""><input type="checkbox" class="row-checkbox" ${selectedMessages.has(msg.MID) ? 'checked' : ''} onchange="toggleSelectRow(${msg.MID}, this)"></td>
                         <td data-label="ID"><span style="color: var(--text-muted);">#${msg.MID}</span></td>
                         <td data-label="Status">
                             <span class="status-badge ${status}">
@@ -234,7 +236,7 @@ function renderTable() {
                             </div>
                         </td>
                         <td data-label="Time"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${formatTime(msg.timestamp)}</td>
-                        <td class="actions">
+                        <td class="actions" data-label="Actions">
                             <button class="btn btn-icon view" onclick="viewMessage(${msg.MID})" title="View"><i class="fa-solid fa-eye"></i></button>
                             ${status === 'active' ? `<button class="btn btn-icon success" onclick="markResolved(${msg.MID})" title="Mark Resolved"><i class="fa-solid fa-circle-check"></i></button>` : ''}
                             <button class="btn btn-icon delete" onclick="openDeleteModal(${msg.MID})" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
@@ -246,6 +248,7 @@ function renderTable() {
         </table>
     `;
 
+    updateBulkActionBar();
     document.getElementById('pagination').style.display = 'flex';
 }
 
