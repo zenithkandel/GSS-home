@@ -59,6 +59,20 @@
         <button class="btn" onclick="loadMessages()"><i class="fa-duotone fa-rotate"></i> Refresh</button>
     </div>
 
+    <!-- Bulk Action Bar -->
+    <div class="bulk-action-bar" id="bulk-action-bar">
+        <div class="bulk-info">
+            <span class="bulk-count"><span id="selected-count">0</span> selected</span>
+            <button class="btn btn-sm" onclick="clearSelection()"><i class="fa-solid fa-xmark"></i> Clear</button>
+        </div>
+        <div class="bulk-actions">
+            <button class="btn btn-sm btn-success" onclick="bulkMarkResolved()"><i class="fa-solid fa-circle-check"></i>
+                Mark Resolved</button>
+            <button class="btn btn-sm btn-danger" onclick="openBulkDeleteModal()"><i class="fa-solid fa-trash-can"></i>
+                Delete</button>
+        </div>
+    </div>
+
     <div id="table-container">
         <div class="loading">
             <span class="spinner"></span>
@@ -173,6 +187,29 @@
                 <button class="btn" onclick="closeDeleteModal()">Cancel</button>
                 <button class="btn btn-danger" onclick="confirmDelete()"><i class="fa-duotone fa-trash"></i>
                     Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Delete Modal -->
+    <div class="modal-overlay" id="bulk-delete-modal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i>
+                    Delete Multiple Alerts</span>
+                <button class="modal-close" onclick="closeBulkDeleteModal()"><i
+                        class="fa-duotone fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong><span id="bulk-delete-count">0</span> alerts</strong>?</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeBulkDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmBulkDelete()"><i class="fa-duotone fa-trash"></i> Delete
+                    All</button>
             </div>
         </div>
     </div>

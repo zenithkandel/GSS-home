@@ -220,12 +220,16 @@
 /* Responsive */
 @media (max-width: 768px) {
     .message-text {
-        max-width: 180px;
+        max-width: none;
     }
 
     .sending-content {
         padding: 24px;
         margin: 16px;
+    }
+
+    .rssi-indicator {
+        justify-content: flex-end;
     }
 }
 

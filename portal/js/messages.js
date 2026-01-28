@@ -612,6 +612,149 @@ function debounce(func, wait) {
     };
 }
 
+// ========================================
+// BULK SELECTION FUNCTIONS
+// ========================================
+
+function toggleSelectAll(checkbox) {
+    if (checkbox.checked) {
+        messages.forEach(m => selectedMessages.add(m.MID));
+    } else {
+        messages.forEach(m => selectedMessages.delete(m.MID));
+    }
+    updateRowSelections();
+    updateBulkActionBar();
+}
+
+function toggleSelectRow(id, checkbox) {
+    if (checkbox.checked) {
+        selectedMessages.add(id);
+    } else {
+        selectedMessages.delete(id);
+    }
+    updateSelectAllCheckbox();
+    updateBulkActionBar();
+
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    if (row) {
+        row.classList.toggle('selected', checkbox.checked);
+    }
+}
+
+function updateRowSelections() {
+    document.querySelectorAll('.row-checkbox').forEach(cb => {
+        const row = cb.closest('tr');
+        const id = parseInt(row.dataset.id);
+        cb.checked = selectedMessages.has(id);
+        row.classList.toggle('selected', cb.checked);
+    });
+}
+
+function updateSelectAllCheckbox() {
+    const selectAll = document.getElementById('select-all');
+    if (!selectAll) return;
+
+    const pageIds = messages.map(m => m.MID);
+    const allSelected = pageIds.length > 0 && pageIds.every(id => selectedMessages.has(id));
+    const someSelected = pageIds.some(id => selectedMessages.has(id));
+
+    selectAll.checked = allSelected;
+    selectAll.indeterminate = someSelected && !allSelected;
+}
+
+function updateBulkActionBar() {
+    const bar = document.getElementById('bulk-action-bar');
+    const count = document.getElementById('selected-count');
+
+    if (selectedMessages.size > 0) {
+        bar.classList.add('visible');
+        count.textContent = selectedMessages.size;
+    } else {
+        bar.classList.remove('visible');
+    }
+}
+
+function clearSelection() {
+    selectedMessages.clear();
+    updateRowSelections();
+    updateSelectAllCheckbox();
+    updateBulkActionBar();
+}
+
+async function bulkMarkResolved() {
+    if (selectedMessages.size === 0) return;
+
+    const ids = Array.from(selectedMessages);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of ids) {
+        try {
+            const res = await fetch(`${API_BASE}/Update/message.php`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ MID: id, status: 'resolved' })
+            });
+            const data = await res.json();
+            if (data.success) successCount++;
+            else errorCount++;
+        } catch (e) {
+            errorCount++;
+        }
+    }
+
+    if (successCount > 0) {
+        showToast(`${successCount} alert(s) marked as resolved`);
+        clearSelection();
+        loadMessages();
+    }
+    if (errorCount > 0) {
+        showToast(`Failed to update ${errorCount} alert(s)`, 'error');
+    }
+}
+
+function openBulkDeleteModal() {
+    if (selectedMessages.size === 0) return;
+    document.getElementById('bulk-delete-count').textContent = selectedMessages.size;
+    document.getElementById('bulk-delete-modal').classList.add('active');
+}
+
+function closeBulkDeleteModal() {
+    document.getElementById('bulk-delete-modal').classList.remove('active');
+}
+
+async function confirmBulkDelete() {
+    if (selectedMessages.size === 0) return;
+
+    const ids = Array.from(selectedMessages);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of ids) {
+        try {
+            const res = await fetch(`${API_BASE}/Delete/message.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            if (data.success) successCount++;
+            else errorCount++;
+        } catch (e) {
+            errorCount++;
+        }
+    }
+
+    closeBulkDeleteModal();
+
+    if (successCount > 0) {
+        showToast(`${successCount} alert(s) deleted successfully`);
+        clearSelection();
+        loadMessages();
+    }
+    if (errorCount > 0) {
+        showToast(`Failed to delete ${errorCount} alert(s)`, 'error');
+    }
+}
+
 // Filters
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
