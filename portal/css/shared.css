@@ -402,6 +402,13 @@ label i {
     margin-bottom: 16px;
 }
 
+.form-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
