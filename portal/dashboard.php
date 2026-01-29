@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
-    <link rel="stylesheet" href="css/shared.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/shared.css?v=2.0">
+    <link rel="stylesheet" href="css/dashboard.css?v=2.0">
 </head>
 
 <body>
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <script src="js/dashboard.js"></script>
+    <script src="js/dashboard.js?v=2.0"></script>
 </body>
 
 </html>
