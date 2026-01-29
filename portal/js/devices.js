@@ -167,16 +167,16 @@ function renderTable() {
                 ${devices.map(device => `
                     <tr data-id="${device.DID}" class="${selectedDevices.has(device.DID) ? 'selected' : ''}">
                         <td class="checkbox-col" data-label=""><input type="checkbox" class="row-checkbox" ${selectedDevices.has(device.DID) ? 'checked' : ''} onchange="toggleSelectRow(${device.DID}, this)"></td>
-                        <td data-label="ID"><span style="color: var(--text-muted);">#${device.DID}</span></td>
-                        <td data-label="Device"><i class="fa-solid fa-microchip" style="color: var(--text-muted); margin-right: 8px;"></i>${device.device_name || 'Unnamed Device'}</td>
-                        <td data-label="Location"><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i>${device.location_name || locations[device.LID] || 'Unknown'}</td>
+                        <td data-label="ID"><span class="cell-value">#${device.DID}</span></td>
+                        <td data-label="Device"><span class="cell-value"><i class="fa-solid fa-microchip"></i> ${device.device_name || 'Unnamed Device'}</span></td>
+                        <td data-label="Location"><span class="cell-value"><i class="fa-solid fa-location-dot"></i> ${device.location_name || locations[device.LID] || 'Unknown'}</span></td>
                         <td data-label="Status">
                             <span class="status-badge ${device.status || 'inactive'}">
                                 <i class="fa-solid fa-circle"></i>
                                 ${(device.status || 'inactive').charAt(0).toUpperCase() + (device.status || 'inactive').slice(1)}
                             </span>
                         </td>
-                        <td data-label="Last Ping"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 8px;"></i>${formatTime(device.last_ping)}</td>
+                        <td data-label="Last Ping"><span class="cell-value"><i class="fa-solid fa-clock"></i> ${formatTime(device.last_ping)}</span></td>
                         <td class="actions" data-label="Actions">
                             <button class="btn btn-icon view" onclick="viewLocation('${device.location_name || locations[device.LID] || ''}')" title="View on Map">
                                 <i class="fa-solid fa-map-location-dot"></i>

@@ -755,8 +755,29 @@ label i {
         flex-shrink: 0;
     }
 
+    /* Cell value container */
+    .cell-value {
+        margin-left: auto;
+        text-align: right;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cell-value i {
+        color: var(--text-muted);
+        font-size: 0.875em;
+        order: -1;
+    }
+
+    .cell-muted {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        margin-left: auto;
+    }
+
     /* Cell value styling */
-    .data-table td>span,
+    .data-table td>span:not(.cell-value):not(.cell-muted),
     .data-table td>strong,
     .data-table td>div,
     .data-table td>.status-badge {
@@ -764,7 +785,7 @@ label i {
         text-align: right;
     }
 
-    /* Icons in cells - move to left with label */
+    /* Icons directly in cells (legacy) */
     .data-table td>i:first-child {
         margin-right: 0;
         margin-left: 8px;

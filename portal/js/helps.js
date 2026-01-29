@@ -211,17 +211,17 @@ function renderTable() {
         const forMessages = help.for_messages || [];
         return `
                     <tr>
-                        <td data-label="ID"><span style="color: var(--text-muted);">#${help.HID}</span></td>
-                        <td data-label="Name"><i class="fa-solid fa-user-helmet-safety" style="color: var(--accent); margin-right: 8px;"></i><strong>${help.name}</strong></td>
-                        <td data-label="Contact"><i class="fa-solid fa-phone" style="color: var(--text-muted); margin-right: 6px;"></i>${help.contact}</td>
-                        <td data-label="Location"><i class="fa-solid fa-location-dot" style="color: var(--text-muted); margin-right: 6px;"></i>${help.location || '-'}</td>
+                        <td data-label="ID"><span class="cell-value">#${help.HID}</span></td>
+                        <td data-label="Name"><span class="cell-value"><i class="fa-solid fa-user-helmet-safety"></i> <strong>${help.name}</strong></span></td>
+                        <td data-label="Contact"><span class="cell-value"><i class="fa-solid fa-phone"></i> ${help.contact}</span></td>
+                        <td data-label="Location"><span class="cell-value"><i class="fa-solid fa-location-dot"></i> ${help.location || '-'}</span></td>
                         <td data-label="Status">
                             <span class="status-badge ${help.status || 'available'}">
                                 <i class="fa-solid fa-circle"></i>
                                 ${(help.status || 'available').charAt(0).toUpperCase() + (help.status || 'available').slice(1)}
                             </span>
                         </td>
-                        <td data-label="ETA"><i class="fa-solid fa-clock" style="color: var(--text-muted); margin-right: 6px;"></i>${help.eta || '-'}</td>
+                        <td data-label="ETA"><span class="cell-value"><i class="fa-solid fa-clock"></i> ${help.eta || '-'}</span></td>
                         <td data-label="Responds To">
                             <div class="for-messages-list">
                                 ${forMessages.length > 0 ?
@@ -229,7 +229,7 @@ function renderTable() {
                     `<span class="message-tag" title="${messageTypes[code] || 'Code ' + code}">${getMessageShortName(code)}</span>`
                 ).join('') +
                 (forMessages.length > 2 ? `<span class="message-tag-more">+${forMessages.length - 2} more</span>` : '')
-                : '<span style="color: var(--text-muted); font-size: 12px;">All types</span>'
+                : '<span class="cell-muted">All types</span>'
             }
                             </div>
                         </td>
