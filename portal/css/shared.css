@@ -826,8 +826,8 @@ label i {
         border-radius: 4px;
     }
 
-    /* Card has selection header padding */
-    .data-table tbody tr {
+    /* Card has selection header padding - ONLY when checkbox present */
+    .data-table tbody tr:has(.checkbox-col) {
         padding-top: 44px;
     }
 
