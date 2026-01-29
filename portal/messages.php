@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/all.css">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.1.0/css/sharp-duotone-solid.css">
-    <link rel="stylesheet" href="css/shared.css">
-    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/shared.css?v=2.0">
+    <link rel="stylesheet" href="css/messages.css?v=2.0">
 </head>
 
 <body>
@@ -220,7 +220,7 @@
         <span id="toast-message"></span>
     </div>
 
-    <script src="js/messages.js"></script>
+    <script src="js/messages.js?v=2.0"></script>
 </body>
 
 </html>
