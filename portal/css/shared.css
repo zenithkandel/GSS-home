@@ -756,16 +756,16 @@ label i {
     }
 
     /* Cell value styling */
-    .data-table td > span,
-    .data-table td > strong,
-    .data-table td > div,
-    .data-table td > .status-badge {
+    .data-table td>span,
+    .data-table td>strong,
+    .data-table td>div,
+    .data-table td>.status-badge {
         margin-left: auto;
         text-align: right;
     }
 
     /* Icons in cells - move to left with label */
-    .data-table td > i:first-child {
+    .data-table td>i:first-child {
         margin-right: 0;
         margin-left: 8px;
         order: 1;
@@ -1501,21 +1501,32 @@ label i {
         height: 34px;
     }
 
-    /* Cards more compact */
+    /* Cards more compact on very small screens */
     .data-table tbody tr {
-        padding: 14px;
-        padding-right: 44px;
-        gap: 8px;
+        padding-top: 40px;
     }
 
     .data-table td {
+        padding: 10px 14px;
         font-size: 0.75rem;
-        padding: 4px 0;
     }
 
     .data-table td::before {
         font-size: 0.5625rem;
-        min-width: 60px;
+        min-width: 75px;
+    }
+
+    .data-table td.checkbox-col {
+        padding: 8px 14px;
+    }
+
+    .data-table .actions {
+        padding: 10px 14px;
+    }
+
+    .data-table .actions .btn-icon {
+        width: 36px;
+        height: 36px;
     }
 
     /* Pagination compact */
