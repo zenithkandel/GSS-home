@@ -24,7 +24,7 @@
                 <strong id="banner-count">0</strong> Active Emergency Alert<span id="banner-plural">s</span>
             </span>
             <button class="alert-banner-btn" onclick="scrollToAlerts()">
-                View Alerts <i class="fa-duotone fa-arrow-down"></i>
+                View Alerts <i class="fa-duotone fa-angle-down"></i>
             </button>
         </div>
     </div>
